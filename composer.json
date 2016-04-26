@@ -1,5 +1,5 @@
 {
-    "name": "mapbender/query-builder-element",
+    "name": "mapbender/query-builder",
     "description": "Mapbender query builder element",
     "keywords": ["mapbender", "data", "query builder"],
     "type": "library",
