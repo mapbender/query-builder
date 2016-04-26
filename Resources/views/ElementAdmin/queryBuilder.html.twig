@@ -1,0 +1,9 @@
+<div class="elementForm defaultForm elementFormQueryBuilder">
+    {{ form_label(form.title) }}{{ form_widget(form.title) }}
+    <div class="clearContainer"></div>
+
+    {% for keyName, val in form.configuration %}
+        {{ form_label(val) }}{{ form_widget(val) }}
+        <div class="clearContainer"></div>
+    {% endfor %}
+</div>

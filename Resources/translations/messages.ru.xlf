@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="ru" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="2c734955f85486af43063f0247340c7c" resname="mb.query.builder.Cancel">
+        <source>mb.query.builder.Cancel</source>
+        <target>Отмена</target>
+      </trans-unit>
+      <trans-unit id="2028c0f428fcb35b501f4bbeb1388ea6" resname="mb.query.builder.Edit">
+        <source>mb.query.builder.Edit</source>
+        <target>Редактировать</target>
+      </trans-unit>
+      <trans-unit id="5dc940ac1d4fb53a05e626c21223f2a7" resname="mb.query.builder.Create">
+        <source>mb.query.builder.Create</source>
+        <target>Создать</target>
+      </trans-unit>
+      <trans-unit id="3fe8be4b8a14c5f6301bf7749ad04fc0" resname="mb.query.builder.Save">
+        <source>mb.query.builder.Save</source>
+        <target>Сохранить</target>
+      </trans-unit>
+      <trans-unit id="ee21d4fb36eb870cdc869fe3caea4b14" resname="mb.query.builder.Remove">
+        <source>mb.query.builder.Remove</source>
+        <target>Удалить</target>
+      </trans-unit>
+      <trans-unit id="4c2117f8ddefe81dc8f34fbc125837cd" resname="mb.query.builder.Execute">
+        <source>mb.query.builder.Execute</source>
+        <target>Выполнить</target>
+      </trans-unit>
+      <trans-unit id="5bc09bb13ae9e499fcfdf07f6add647d" resname="mb.query.builder.sql.title">
+        <source>mb.query.builder.sql.title</source>
+        <target>Заголовок</target>
+      </trans-unit>
+      <trans-unit id="10ef58e2132ccc453154a4a0c0705ac5" resname="mb.query.builder.sql.connection.name">
+        <source>mb.query.builder.sql.connection.name</source>
+        <target>Соеденение</target>
+      </trans-unit>
+      <trans-unit id="529c0a11a62d3040019af73275008d75" resname="mb.query.builder.sql.publish">
+        <source>mb.query.builder.sql.publish</source>
+        <target>Опубликовать</target>
+      </trans-unit>
+      <trans-unit id="f16c94cbffb658265cbf5d3b10b66a6f" resname="mb.query.builder.confirm.remove">
+        <source>mb.query.builder.confirm.remove</source>
+        <target>Потвердите удаление</target>
+      </trans-unit>
+      <trans-unit id="44e10431341c397b6f4b0114ea2982c9" resname="mb.query.builder.OK">
+        <source>mb.query.builder.OK</source>
+        <target>OK</target>
+      </trans-unit>
+      <trans-unit id="055cbd228ca9821f9c31e5b87882cc2b" resname="mb.query.builder.sql.saved">
+        <source>mb.query.builder.sql.saved</source>
+        <target>SQL запрос сохранён.</target>
+      </trans-unit>
+      <trans-unit id="7f6e35899b489b9f56d5d16750c17259" resname="mb.query.builder.sql.removed">
+        <source>mb.query.builder.sql.removed</source>
+        <target>SQL запрос удалён.</target>
+      </trans-unit>
+      <trans-unit id="668cac1762372bc0f68e787283745a6c" resname="mb.query.builder.Export">
+        <source>mb.query.builder.Export</source>
+        <target>Экспорт</target>
+      </trans-unit>
+      <trans-unit id="eb7caa3f38d8168119a31d0fc5ab73d6" resname="mb.query.builder.Results">
+        <source>mb.query.builder.Results</source>
+        <target>Результат</target>
+      </trans-unit>
+      <trans-unit id="4a6a3a3ffb4e97b0f4028dfdbc2c1ebd" resname="mb.query.builder.HTML-Export">
+        <source>mb.query.builder.HTML-Export</source>
+        <target>HTML Экспорт</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
