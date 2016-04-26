@@ -1,7 +1,5 @@
 @startuml
 
-!include styles.puml
-
 package Mapbender <<Frame>> {
 
   package QueryBuild <<Frame>>{
