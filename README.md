@@ -1,26 +1,17 @@
-# Mapbender data source module
+# Mapbender query builder element
 
-## Features
-* Handling data sources
+Handle, edit and run own SQL's within of mapbender3.
+
 
 ## Installation 
 * First you need installed mapbender3-starter https://github.com/mapbender/mapbender-starter#installation project
 * Add required module to mapbender
-```sh
-$ cd application/
-$ ../composer.phar require "mapbender/data-source"
-```
-
-## Update 
-
 
 ```sh
 $ cd application/
-$ ../composer.phar self-update
-$ ../composer.phar update
+$ ../composer.phar require "mapbender/query-builder"
 ```
 
-# Architecture
+## Contributing
 
-![Architecture](Documents/Schema.png)
-[Diagram](https://www.draw.io/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmapbender%2Fdata-source%2Fmaster%2FDocuments%2FSchema.xml)
+Please read official [contibuting documentation](https://github.com/mapbender/mapbender-starter/blob/feature/contributing-doc/CONTRIBUTING.md#modules)
