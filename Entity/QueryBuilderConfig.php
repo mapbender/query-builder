@@ -1,5 +1,7 @@
 <?php
-namespace Mapbender\DataSourceBundle\Entity;
+namespace Mapbender\QueryBuilderBundle\Entity;
+
+use Mapbender\DataSourceBundle\Entity\BaseConfiguration;
 
 /**
  * Class QueryBuilderConfig
@@ -7,8 +9,7 @@ namespace Mapbender\DataSourceBundle\Entity;
  * @package Mapbender\DataSourceBundle\Entity
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderConfig extends BaseConfiguration
-{
+class QueryBuilderConfig extends BaseConfiguration {
 
     /** @var string Data source id or name */
     public $source = "default";

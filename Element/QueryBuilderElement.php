@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\CoreBundle\Component\Application;
 use Mapbender\CoreBundle\Entity\Element;
+use Mapbender\DataSourceBundle\Element\BaseElement;
 use Mapbender\DataSourceBundle\Entity\DataItem;
 use Mapbender\QueryBuilderBundle\Entity\QueryBuilderConfig;
 use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
@@ -23,8 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Mapbender\DataSourceBundle\Element
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderElement extends BaseElement
-{
+class QueryBuilderElement extends BaseElement {
     /**
      * The constructor.
      *
