@@ -16,6 +16,5 @@
     },
     "autoload": {
         "psr-0": {"Mapbender\\QueryBuilderBundle": "."}
-    },
-    "target-dir": "Mapbender/QueryBuilderBundle"
+    }
 }
