@@ -1,0 +1,16 @@
+mb.query.builder.Cancel: Abbrechen
+mb.query.builder.Edit: Änderun
+mb.query.builder.Create: Erstellen
+mb.query.builder.Save: Speichern
+mb.query.builder.Remove: Löschen
+mb.query.builder.Execute: Ausführen
+mb.query.builder.sql.title: Titel
+mb.query.builder.sql.connection.name: Verbindungsname
+mb.query.builder.sql.publish: Anzeigen
+mb.query.builder.confirm.remove: 'Löschen bestätigen'
+mb.query.builder.OK: OK
+mb.query.builder.sql.saved: 'SQL erfolgreich gespeichert.'
+mb.query.builder.sql.removed: 'SQL erfolgreich gelöscht.'
+mb.query.builder.Export: Exportieren
+mb.query.builder.Results: Ergebnisse
+mb.query.builder.HTML-Export: HTML-Export
