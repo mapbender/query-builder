@@ -91,7 +91,7 @@ class QueryBuilderElement extends BaseElement {
      */
     public static function getFormTemplate()
     {
-        return 'QueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
+        //return 'QueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
     }
 
     /**
