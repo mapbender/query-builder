@@ -24,23 +24,13 @@ use Symfony\Component\HttpFoundation\Request;
  * @package Mapbender\DataSourceBundle\Element
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderElement extends BaseElement {
-    /**
-     * The constructor.
-     *
-     * @param Application        $application The application object
-     * @param ContainerInterface $container   The container object
-     * @param Element            $entity
-     */
-    public function __construct(Application $application, ContainerInterface $container, Element $entity)
-    {
-        parent::__construct($application, $container, $entity);
-    }
+class QueryBuilderElement extends BaseElement
+{
 
     /**
      * @inheritdoc
      */
-    static public function getClassTitle()
+    public static function getClassTitle()
     {
         return "Query builder";
     }
@@ -48,7 +38,7 @@ class QueryBuilderElement extends BaseElement {
     /**
      * @inheritdoc
      */
-    static public function getClassDescription()
+    public static function getClassDescription()
     {
         return "Build, list SQL queries and display result, which can be edited to.";
     }
@@ -59,14 +49,6 @@ class QueryBuilderElement extends BaseElement {
     public function getWidgetName()
     {
         return 'mapbender.mbQueryBuilderElement';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    static public function getTags()
-    {
-        return array();
     }
 
     /**
@@ -91,7 +73,7 @@ class QueryBuilderElement extends BaseElement {
      */
     public static function getFormTemplate()
     {
-        //return 'QueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
+        return 'QueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
     }
 
     /**
@@ -109,7 +91,7 @@ class QueryBuilderElement extends BaseElement {
     /**
      * @inheritdoc
      */
-    static public function listAssets()
+    public function getAssets()
     {
         return array(
             'css'   => array(
