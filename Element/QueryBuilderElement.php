@@ -76,16 +76,9 @@ class QueryBuilderElement extends BaseElement
         return 'QueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function render()
+    public function getFrontendTemplatePath($suffix = '.html.twig')
     {
-        return /** @lang XHTML */
-            '<div
-                id="' . $this->getId() . '"
-                class="mb-element mb-element-queryBuilder modal-body"
-                title="' . _($this->getTitle()) . '"></div>';
+        return "MapbenderQueryBuilderBundle:Element:queryBuilder{$suffix}";
     }
 
     /**
@@ -95,14 +88,14 @@ class QueryBuilderElement extends BaseElement
     {
         return array(
             'css'   => array(
-                '@MapbenderQueryBuilderBundle/Resources/styles/queryBuilder.element.scss'
+                '@MapbenderQueryBuilderBundle/Resources/styles/queryBuilder.element.scss',
             ),
             'js'    => array(
-                '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js'
+                '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
             ),
             'trans' => array(
-                'MapbenderQueryBuilderBundle:Element:queryBuilder.json.twig'
-            )
+                'MapbenderQueryBuilderBundle:Element:queryBuilder.json.twig',
+            ),
         );
     }
 
