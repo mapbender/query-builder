@@ -73,7 +73,7 @@ class QueryBuilderElement extends BaseElement
      */
     public static function getFormTemplate()
     {
-        return 'QueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
+        return 'MapbenderQueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
     }
 
     public function getFrontendTemplatePath($suffix = '.html.twig')
