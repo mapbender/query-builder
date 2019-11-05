@@ -2,15 +2,11 @@
 namespace Mapbender\QueryBuilderBundle\Element;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\DBAL\Connection;
 use FOM\CoreBundle\Component\ExportResponse;
-use Mapbender\CoreBundle\Component\Application;
-use Mapbender\CoreBundle\Entity\Element;
 use Mapbender\DataSourceBundle\Element\BaseElement;
 use Mapbender\DataSourceBundle\Entity\DataItem;
 use Mapbender\QueryBuilderBundle\Entity\QueryBuilderConfig;
 use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
