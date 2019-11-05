@@ -32,6 +32,7 @@ class QueryBuilderAdminType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $dataStoreSelectValues = array_combine($this->dataStoreNames, $this->dataStoreNames);
+        // @todo: add translatable field labels
 
         $builder
             ->add('source', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
@@ -51,6 +52,9 @@ class QueryBuilderAdminType extends AbstractType
             ->add('allowRemove', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('allowExecute', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('allowExport', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowSearch', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false));
+            ->add('allowSearch', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            // @todo: add field for implemented option 'tableColumns'? (can be set via yaml definition; check functionality)
+            // @todo: add field for implemented option 'allowHtmlExport'? (can be set via yaml definition; check functionality)
+        ;
     }
 }

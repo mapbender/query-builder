@@ -116,10 +116,8 @@ class QueryBuilderElement extends BaseElement
      */
     public function httpAction($action)
     {
-        /** @var DataItem $dataItem */
         /** @var $requestService Request */
         /** @var Registry $doctrine */
-        /** @var Connection $connection */
         $configuration   = $this->getConfig();
         $requestService  = $this->container->get('request');
         $defaultCriteria = array();
