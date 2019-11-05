@@ -30,7 +30,6 @@ class QueryBuilderAdminType extends AbstractType
     {
         $resolver->setDefaults(array(
             'application' => null,
-            'element'     => null,
         ));
     }
 
