@@ -18,13 +18,6 @@ class QueryBuilderAdminType extends AbstractType
         $this->dataStoreNames = array_keys($dataStores ?: array());
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return 'queryBuilder';
-    }
 
     public function configureOptions(OptionsResolver $resolver)
     {
