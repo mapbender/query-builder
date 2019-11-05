@@ -18,12 +18,6 @@ class QueryBuilderConfig extends BaseConfiguration {
      * Permissions
      */
 
-    /**
-     * @var array Allowed schema name list.
-     * If empty array then any allowed.
-     */
-    public $allowedSchemas = array();
-
     /** @var boolean Allow remove SQL */
     public $allowRemove = false;
 
@@ -46,20 +40,11 @@ class QueryBuilderConfig extends BaseConfiguration {
     public $allowHtmlExport = true;
 
     /** @var boolean Allow print */
-    public $allowPrint = true;
-
-    /** @var boolean Allow print */
     public $allowSearch = false;
-
-    /** @var boolean Allow execute */
-    public $allowUserPublishing = true;
 
     /**
      * Fields
      */
-
-    /** @var int ID */
-    public $idFieldName = "id";
 
     /** @var string SQL field name */
     public $sqlFieldName = "sql_definition";

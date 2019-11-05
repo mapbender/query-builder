@@ -64,13 +64,11 @@ package Mapbender <<Frame>> {
         # id:int
         # connection: name
         __ Permissions __
-        # allowedSchemas: string
         # allowRowSql: bool
         # allowSave: bool
         # allowRemove: bool
         # allowExport: bool
         # userOwnQueries: bool
-        # allowUserPublishing: bool
         __ Defaults __
         # defaultConnection = "default" :String
       }

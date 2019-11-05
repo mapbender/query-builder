@@ -50,7 +50,6 @@ class QueryBuilderAdminType extends AbstractType
             ->add('allowSave', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('allowRemove', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('allowExecute', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowPrint', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('allowExport', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
             ->add('allowSearch', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false));
     }
