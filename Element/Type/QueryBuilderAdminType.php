@@ -2,15 +2,21 @@
 
 namespace Mapbender\QueryBuilderBundle\Element\Type;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Mapbender\CoreBundle\Entity\Application;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class QueryBuilderAdminType extends AbstractType
 {
+    protected $dataStoreNames = array();
+
+    /**
+     * @param mixed[]|null $dataStores
+     */
+    public function __construct($dataStores)
+    {
+        $this->dataStoreNames = array_keys($dataStores ?: array());
+    }
 
     /**
      * @inheritdoc
@@ -33,15 +39,7 @@ class QueryBuilderAdminType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Application $application */
-        /** @var DataManagerAdminType $element */
-        /** @var FormBuilder $builder */
-        /** @var \AppKernel $kernel */
-        /** @var Registry $doctrine */
-        global $kernel;
-        $container             = $kernel->getContainer();
-        $dataStores            = $container->hasParameter("dataStores") ? array_keys($container->getParameter("dataStores")) : array();
-        $dataStoreSelectValues = array_combine(array_values($dataStores), array_values($dataStores));
+        $dataStoreSelectValues = array_combine($this->dataStoreNames, $this->dataStoreNames);
 
         $builder
             ->add('source', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
