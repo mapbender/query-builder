@@ -7,11 +7,8 @@ use Mapbender\CoreBundle\Entity\Application;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- *
- */
 class QueryBuilderAdminType extends AbstractType
 {
 
@@ -23,10 +20,7 @@ class QueryBuilderAdminType extends AbstractType
         return 'queryBuilder';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'application' => null,
@@ -50,24 +44,24 @@ class QueryBuilderAdminType extends AbstractType
         $dataStoreSelectValues = array_combine(array_values($dataStores), array_values($dataStores));
 
         $builder
-            ->add('source', 'choice', array(
+            ->add('source', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                     'choices'     => $dataStoreSelectValues,
                     'required'    => true,
                     'empty_value' => null
                 )
             )
-            ->add('sqlFieldName', 'text', array('required' => true))
-            ->add('orderByFieldName', 'text', array('required' => true))
-            ->add('titleFieldName', 'text', array('required' => true))
-            ->add('connectionFieldName', 'text', array('required' => true))
+            ->add('sqlFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
+            ->add('orderByFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
+            ->add('titleFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
+            ->add('connectionFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
 
-            ->add('allowCreate', 'checkbox', array('required' => false))
-            ->add('allowEdit', 'checkbox', array('required' => false))
-            ->add('allowSave', 'checkbox', array('required' => false))
-            ->add('allowRemove', 'checkbox', array('required' => false))
-            ->add('allowExecute', 'checkbox', array('required' => false))
-            ->add('allowPrint', 'checkbox', array('required' => false))
-            ->add('allowExport', 'checkbox', array('required' => false))
-            ->add('allowSearch', 'checkbox', array('required' => false));
+            ->add('allowCreate', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowEdit', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowSave', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowRemove', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowExecute', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowPrint', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowExport', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowSearch', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false));
     }
 }
