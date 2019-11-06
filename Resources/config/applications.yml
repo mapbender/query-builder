@@ -1,10 +1,9 @@
 parameters:
   applications:
     test-query-builder:
-      title: &title Mapbender query builder test application
+      title: Mapbender query builder test application
       excludeFromList: true
-      published: true
-      description: *title
+      description: Mapbender query builder test application
       published: true
       template:  Mapbender\CoreBundle\Template\Fullscreen
       regionProperties:
@@ -14,7 +13,7 @@ parameters:
             label: mb.manager.template.region.accordion.label
       layersets:
         main:
-          osm: &osm_layer
+          osm:
             class: Mapbender\WmsBundle\Entity\WmsInstance
             title: OSM Demo
             url: http://osm-demo.wheregroup.com/service
@@ -28,10 +27,6 @@ parameters:
             transparent: true
             tiled: true
             opacity: 100
-        overview:
-          osm_overview:
-            <<: *osm_layer
-            tiled: false
       elements:
         toolbar:
           about:
@@ -55,11 +50,9 @@ parameters:
             class: Mapbender\CoreBundle\Element\ZoomBar
             target: map
             components: [pan, history, zoom_box ,zoom_max, zoom_slider]
-            position: [15em, 3em]
-            stepsize: 50
-            stepbypixel: true
+            stepSize: 50
+            stepByPixel: true
             anchor: right-top
-            position: [200, 40]
             draggable: false
         sidepane:
 
