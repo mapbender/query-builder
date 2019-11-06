@@ -168,9 +168,6 @@ class QueryBuilderElement extends BaseElement
                 }
                 $dataStore = $this->getDataStore($configuration);
                 $dataItem = $dataStore->save($request["item"]);
-                if (!$dataItem) {
-                    throw new \Error("Can't get object by new ID. Wrong sequence setup?");
-                }
                 $results[] = $dataItem;
                 break;
 
