@@ -5,7 +5,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\CoreBundle\Component\Element;
 use Mapbender\DataSourceBundle\Entity\DataItem;
-use Mapbender\QueryBuilderBundle\Entity\QueryBuilderConfig;
 use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,8 +53,33 @@ class QueryBuilderElement extends Element
      */
     public static function getDefaultConfiguration()
     {
-        $queryBuilderConfig = new QueryBuilderConfig();
-        return $queryBuilderConfig->toArray();
+        return array(
+            'source' => 'default',
+            'allowRemove' => false,
+            'allowEdit' => false,
+            'allowExecute' => true,
+            'allowSave' => false,
+            'allowCreate' => false,
+            'allowExport' => true,
+            'allowHtmlExport' => true,
+            'allowSearch' => false,
+            'sqlFieldName' => 'sql_definition',
+            'orderByFieldName' => 'anzeigen_reihenfolge',
+            'connectionFieldName' => 'connection_name',
+            'titleFieldName' => 'name',
+            'publicFieldName' => 'anzeigen',
+            'tableColumns' => array(
+                0 => array(
+                    'data' => 'name',
+                    'title' => 'Title',
+                ),
+                1 => array(
+                    'data' => 'anzeigen_reihenfolge',
+                    'visible' => false,
+                    'title' => 'Sort',
+                ),
+            ),
+        );
     }
 
     /**
@@ -102,15 +126,20 @@ class QueryBuilderElement extends Element
      */
     public function getConfiguration()
     {
-        return $this->getConfig()->toArray();
-    }
+        $values = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
+        $values = $this->fixLegacyOptions($values);
 
-    /**
-     * @return QueryBuilderConfig
-     */
-    public function getConfig()
-    {
-        return new QueryBuilderConfig($this->entity->getConfiguration());
+        foreach ($values['tableColumns'] as $i => $tableColumn) {
+            switch ($tableColumn['title']) {
+                case 'Title':
+                    $values['tableColumns'][$i]['title'] = $values['titleFieldName'];
+                    break;
+                case 'Sort':
+                    $values['tableColumns'][$i]['title'] = $values['orderByFieldName'];
+                    break;
+            }
+        }
+        return $values;
     }
 
     /**
