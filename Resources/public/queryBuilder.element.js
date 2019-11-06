@@ -448,9 +448,9 @@
                 dataType:    "json",
                 data:        JSON.stringify(request)
             }).error(function(xhr) {
-                var errorMessage = trans("api.error") + ": ";// trans('api.query.error-message');
-                $.notify(errorMessage + JSON.stringify(xhr.responseText));
-                console.log(errorMessage, xhr);
+                var errorMessage = trans("api.error") + ": " + xhr.statusText;
+                $.notify(errorMessage);
+                console.error(errorMessage, xhr);
             });
         }
     });
