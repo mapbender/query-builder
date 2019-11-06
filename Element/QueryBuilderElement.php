@@ -121,15 +121,12 @@ class QueryBuilderElement extends BaseElement
         $action = $requestService->attributes->get('action');
         /** @var Registry $doctrine */
         $configuration   = $this->getConfig();
-        $defaultCriteria = array();
-        $payload         = json_decode($requestService->getContent(), true);
-        $request         = $requestService->getContent() ? array_merge($defaultCriteria, $payload ? $payload : $_REQUEST) : array();
 
         switch ($action) {
             case 'select':
                 $results   = array();
                 $dataStore = $this->getDataStore($configuration);
-                foreach ($dataStore->search($request) as $dataItem) {
+                foreach ($dataStore->search(array()) as $dataItem) {
                     $results[] = $dataItem->toArray();
                 }
                 break;
@@ -138,8 +135,7 @@ class QueryBuilderElement extends BaseElement
                 if (!$configuration->allowExport) {
                     throw new AccessDeniedHttpException();
                 }
-
-                $results = $this->executeQuery(intval($request["id"]));
+                $results = $this->executeQuery(intval($requestService->request->get('id')));
                 return new ExportResponse($results, 'export-list', ExportResponse::TYPE_XLS);
 
                 break;
@@ -148,7 +144,7 @@ class QueryBuilderElement extends BaseElement
                 if (!$configuration->allowExport) {
                     throw new AccessDeniedHttpException();
                 }
-                $id      = intval($_REQUEST["id"]);
+                $id = $requestService->query->get('id');
                 $results = $this->executeQuery($id);
                 $query   = $this->getQuery($id);
                 $title   = $query->getAttribute($configuration->titleFieldName);
@@ -160,7 +156,7 @@ class QueryBuilderElement extends BaseElement
                 if (!$configuration->allowExecute) {
                     throw new AccessDeniedHttpException();
                 }
-                $results = $this->executeQuery(intval($request["id"]));
+                $results = $this->executeQuery(intval($requestService->request->get('id')));
                 break;
 
             case 'save':
@@ -168,7 +164,7 @@ class QueryBuilderElement extends BaseElement
                     throw new AccessDeniedHttpException();
                 }
                 $dataStore = $this->getDataStore($configuration);
-                $dataItem = $dataStore->save($request["item"]);
+                $dataItem = $dataStore->save($requestService->request->get('item'));
                 $results[] = $dataItem;
                 break;
 
@@ -177,7 +173,7 @@ class QueryBuilderElement extends BaseElement
                     throw new AccessDeniedHttpException();
                 }
                 $dataStore = $this->getDataStore($configuration);
-                $results[] = $dataStore->remove($request["id"]);
+                $results[] = $dataStore->remove($requestService->request->get('id'));
                 break;
 
             case 'connections':

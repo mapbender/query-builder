@@ -444,9 +444,8 @@
             return $.ajax({
                 url:         widget.elementUrl + uri,
                 type:        'POST',
-                contentType: "application/json; charset=utf-8",
                 dataType:    "json",
-                data:        JSON.stringify(request)
+                data: request
             }).error(function(xhr) {
                 var errorMessage = trans("api.error") + ": " + xhr.statusText;
                 $.notify(errorMessage);
