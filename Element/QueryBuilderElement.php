@@ -3,7 +3,7 @@ namespace Mapbender\QueryBuilderBundle\Element;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOM\CoreBundle\Component\ExportResponse;
-use Mapbender\DataSourceBundle\Element\BaseElement;
+use Mapbender\CoreBundle\Component\Element;
 use Mapbender\DataSourceBundle\Entity\DataItem;
 use Mapbender\QueryBuilderBundle\Entity\QueryBuilderConfig;
 use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package Mapbender\DataSourceBundle\Element
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderElement extends BaseElement
+class QueryBuilderElement extends Element
 {
 
     /**
@@ -110,7 +110,7 @@ class QueryBuilderElement extends BaseElement
      */
     public function getConfig()
     {
-        return new QueryBuilderConfig(parent::getConfiguration());
+        return new QueryBuilderConfig($this->entity->getConfiguration());
     }
 
     /**
