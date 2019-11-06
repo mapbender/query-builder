@@ -9,6 +9,8 @@ use Mapbender\QueryBuilderBundle\Entity\QueryBuilderConfig;
 use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class QueryBuilderElement
@@ -134,7 +136,7 @@ class QueryBuilderElement extends BaseElement
 
             case 'export':
                 if (!$configuration->allowExport) {
-                    throw new \Error("Permission denied!");
+                    throw new AccessDeniedHttpException();
                 }
 
                 $results = $this->executeQuery(intval($request["id"]));
@@ -144,7 +146,7 @@ class QueryBuilderElement extends BaseElement
 
             case 'exportHtml':
                 if (!$configuration->allowExport) {
-                    throw new \Error("Permission denied!");
+                    throw new AccessDeniedHttpException();
                 }
                 $id      = intval($_REQUEST["id"]);
                 $results = $this->executeQuery($id);
@@ -155,16 +157,15 @@ class QueryBuilderElement extends BaseElement
                 break;
 
             case 'execute':
-
                 if (!$configuration->allowExecute) {
-                    throw new \Error("Permission denied!");
+                    throw new AccessDeniedHttpException();
                 }
                 $results = $this->executeQuery(intval($request["id"]));
                 break;
 
             case 'save':
                 if (!$configuration->allowCreate && !$configuration->allowSave) {
-                    throw new \Error("Permission denied!");
+                    throw new AccessDeniedHttpException();
                 }
                 $dataStore = $this->getDataStore($configuration);
                 $dataItem = $dataStore->save($request["item"]);
@@ -173,7 +174,7 @@ class QueryBuilderElement extends BaseElement
 
             case 'remove':
                 if (!$configuration->allowRemove) {
-                    throw new \Error("Permission denied!");
+                    throw new AccessDeniedHttpException();
                 }
                 $dataStore = $this->getDataStore($configuration);
                 $results[] = $dataStore->remove($request["id"]);
@@ -187,11 +188,7 @@ class QueryBuilderElement extends BaseElement
                 break;
 
             default:
-                $results = array(
-                    array('errors' => array(
-                        array('message' => $action . " not defined!")
-                    ))
-                );
+                throw new NotFoundHttpException("No such action {$action}");
         }
 
         return new JsonResponse($results);
