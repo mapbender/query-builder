@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style media="all" type="text/css">
+        table {
+            width: 100%;
+        }
+
+        table, tbody, tr, td {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        th {
+            background-color: #c0c0c0;
+        }
+
+        td {
+            border: 1px solid #c0c0c0
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    {%- if rows -%}
+    <table>
+        <thead>
+            <tr>
+                {%- for column_name in rows | first | keys -%}
+                <th>{{ column_name }}</th>
+                {%- endfor -%}
+            </tr>
+        </thead>
+        <tbody>
+            {%- for row in rows -%}
+            <tr>
+                {%- for cell_data in row -%}
+                <td>{{ cell_data }}</td>
+                {%- endfor -%}
+            </tr>
+            {%- endfor -%}
+        </tbody>
+    </table>
+    {%- endif -%}
+</body>
+</html>

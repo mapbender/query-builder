@@ -8,6 +8,7 @@ use Mapbender\DataSourceBundle\Entity\DataItem;
 use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -201,9 +202,11 @@ class QueryBuilderElement extends Element
                 $query = $this->getQuery($id, $configuration['source']);
                 $configuration = $this->fixLegacyOptions($configuration);
                 $title   = $query->getAttribute($configuration['titleFieldName']);
-                $htmlExportResponse = new HtmlExportResponse($results, $title);
-                die($htmlExportResponse->getContent());
-                break;
+                $content = $this->container->get('templating')->render('@MapbenderQueryBuilder/export.html.twig', array(
+                    'title' => $title,
+                    'rows' => $results,
+                ));
+                return new Response($content);
 
             case 'execute':
                 if (!$configuration['allowExecute']) {
