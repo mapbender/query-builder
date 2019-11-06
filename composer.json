@@ -11,6 +11,9 @@
         "php": ">=5.3.3",
         "mapbender/data-source": "0.x"
     },
+    "conflict": {
+        "symfony/symfony": "<2.4"
+    },
     "config": {
         "bin-dir": "bin"
     },

@@ -114,12 +114,11 @@ class QueryBuilderElement extends BaseElement
     /**
      * @inheritdoc
      */
-    public function httpAction($action)
+    public function handleHttpRequest(Request $requestService)
     {
-        /** @var $requestService Request */
+        $action = $requestService->attributes->get('action');
         /** @var Registry $doctrine */
         $configuration   = $this->getConfig();
-        $requestService  = $this->container->get('request');
         $defaultCriteria = array();
         $payload         = json_decode($requestService->getContent(), true);
         $request         = $requestService->getContent() ? array_merge($defaultCriteria, $payload ? $payload : $_REQUEST) : array();
@@ -199,6 +198,13 @@ class QueryBuilderElement extends BaseElement
         }
 
         return new JsonResponse($results);
+    }
+
+    public function httpAction($action)
+    {
+        // implementation adapter for old Mapbender < 3.0.8-beta1
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        return $this->handleHttpRequest($request);
     }
 
     /**
