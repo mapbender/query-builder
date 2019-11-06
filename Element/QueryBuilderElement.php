@@ -132,10 +132,10 @@ class QueryBuilderElement extends Element
         foreach ($values['tableColumns'] as $i => $tableColumn) {
             switch ($tableColumn['title']) {
                 case 'Title':
-                    $values['tableColumns'][$i]['title'] = $values['titleFieldName'];
+                    $values['tableColumns'][$i]['data'] = $values['titleFieldName'];
                     break;
                 case 'Sort':
-                    $values['tableColumns'][$i]['title'] = $values['orderByFieldName'];
+                    $values['tableColumns'][$i]['data'] = $values['orderByFieldName'];
                     break;
             }
         }
