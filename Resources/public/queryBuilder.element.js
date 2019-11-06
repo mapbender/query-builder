@@ -140,7 +140,7 @@
             var widget = this;
             confirmDialog({
                 title:     trans("Remove") + " #" + item.id,
-                html:      trans("confirm.remove") + ": " + item.name, // Please confirm remove SQL
+                html:      trans("confirm.remove") + ": " + item[this.options.titleFieldName],
                 onSuccess: function() {
                     widget.query("remove", {id: item.id}).done(function() {
                             $.each(widget.sqlList, function(i, _item) {
@@ -264,7 +264,7 @@
                     }]
                 })
                 .popupDialog({
-                    title:   item.name,
+                    title:   item[this.options.titleFieldName],
                     width: 500,
                     buttons: buttons
                 })
@@ -373,7 +373,7 @@
                     $.extend(tempItem, originData);
 
                     widget.displayResults(tempItem, {
-                        title:           trans('Results') + ": " + tempItem.name,
+                        title:           trans('Results') + ": " + tempItem[widget.options.titleFieldName],
                         pageResultCount: tempItem.pageResultCount
                     });
                 }
