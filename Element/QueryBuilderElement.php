@@ -146,7 +146,7 @@ class QueryBuilderElement extends Element
                 }
                 $id = $requestService->query->get('id');
                 $results = $this->executeQuery($id);
-                $query   = $this->getQuery($id);
+                $query = $this->getQuery($id, $configuration->source);
                 $title   = $query->getAttribute($configuration->titleFieldName);
                 $htmlExportResponse = new HtmlExportResponse($results, $title);
                 die($htmlExportResponse->getContent());
@@ -206,7 +206,7 @@ class QueryBuilderElement extends Element
     protected function executeQuery($id)
     {
         $configuration = $this->getConfig();
-        $query         = $this->getQuery($id);
+        $query = $this->getQuery($id, $configuration->source);
         $sql           = $query->getAttribute($configuration->sqlFieldName);
         $doctrine      = $this->container->get("doctrine");
         $connection    = $doctrine->getConnection($query->getAttribute($configuration->connectionFieldName));
@@ -215,23 +215,29 @@ class QueryBuilderElement extends Element
     }
 
     /**
-     * @param $configuration
+     * @param string $name
      * @return \Mapbender\DataSourceBundle\Component\DataStore
      */
-    protected function getDataStore($configuration)
+    protected function getDataStore($name)
     {
-        return $this->container->get("data.source")->get($configuration->source);
+        if (!is_string($name)) {
+            // @todo: warn or throw
+            $values = (array)$name;
+            $name = $values['source'];
+        }
+        return $this->container->get("data.source")->get($name);
     }
 
     /**
      * Get SQL query by id
      *
      * @param int $id
+     * @param string $dataStoreName
      * @return DataItem
      */
-    protected function getQuery($id)
+    protected function getQuery($id, $dataStoreName)
     {
-        return $this->getDataStore($this->getConfig())->getById($id);
+        return $this->getDataStore($dataStoreName)->getById($id);
     }
 
 }
