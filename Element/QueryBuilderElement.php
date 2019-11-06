@@ -114,25 +114,48 @@ class QueryBuilderElement extends Element
     }
 
     /**
+     * @param array $configuration
+     * @return array
+     */
+    protected static function fixLegacyOptions(array $configuration)
+    {
+        // @todo: warn or throw when encountering wrong option names
+        $legacyAliases = array(
+            'sqlField' => 'sqlFieldName',
+            'orderByField' => 'orderByFieldName',
+            'connectionField' => 'connectionFieldName',
+            'titleField' => 'titleFieldName',
+            'publicField' => 'publicFieldName',
+        );
+        foreach ($legacyAliases as $before => $after) {
+            if (array_key_exists($before, $configuration)) {
+                $configuration[$after] = $configuration[$before];
+                unset($configuration[$before]);
+            }
+        }
+        return $configuration;
+    }
+
+    /**
      * @inheritdoc
      */
     public function handleHttpRequest(Request $requestService)
     {
         $action = $requestService->attributes->get('action');
         /** @var Registry $doctrine */
-        $configuration   = $this->getConfig();
+        $configuration = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
 
         switch ($action) {
             case 'select':
                 $results   = array();
-                $dataStore = $this->getDataStore($configuration);
+                $dataStore = $this->getDataStore($configuration['source']);
                 foreach ($dataStore->search(array()) as $dataItem) {
                     $results[] = $dataItem->toArray();
                 }
                 break;
 
             case 'export':
-                if (!$configuration->allowExport) {
+                if (!$configuration['allowExport']) {
                     throw new AccessDeniedHttpException();
                 }
                 $results = $this->executeQuery(intval($requestService->request->get('id')));
@@ -141,38 +164,39 @@ class QueryBuilderElement extends Element
                 break;
 
             case 'exportHtml':
-                if (!$configuration->allowExport) {
+                if (!$configuration['allowExport']) {
                     throw new AccessDeniedHttpException();
                 }
                 $id = $requestService->query->get('id');
                 $results = $this->executeQuery($id);
-                $query = $this->getQuery($id, $configuration->source);
-                $title   = $query->getAttribute($configuration->titleFieldName);
+                $query = $this->getQuery($id, $configuration['source']);
+                $configuration = $this->fixLegacyOptions($configuration);
+                $title   = $query->getAttribute($configuration['titleFieldName']);
                 $htmlExportResponse = new HtmlExportResponse($results, $title);
                 die($htmlExportResponse->getContent());
                 break;
 
             case 'execute':
-                if (!$configuration->allowExecute) {
+                if (!$configuration['allowExecute']) {
                     throw new AccessDeniedHttpException();
                 }
                 $results = $this->executeQuery(intval($requestService->request->get('id')));
                 break;
 
             case 'save':
-                if (!$configuration->allowCreate && !$configuration->allowSave) {
+                if (!$configuration['allowCreate'] && !$configuration['allowSave']) {
                     throw new AccessDeniedHttpException();
                 }
-                $dataStore = $this->getDataStore($configuration);
+                $dataStore = $this->getDataStore($configuration['source']);
                 $dataItem = $dataStore->save($requestService->request->get('item'));
                 $results[] = $dataItem;
                 break;
 
             case 'remove':
-                if (!$configuration->allowRemove) {
+                if (!$configuration['allowRemove']) {
                     throw new AccessDeniedHttpException();
                 }
-                $dataStore = $this->getDataStore($configuration);
+                $dataStore = $this->getDataStore($configuration['source']);
                 $results[] = $dataStore->remove($requestService->request->get('id'));
                 break;
 
@@ -205,11 +229,11 @@ class QueryBuilderElement extends Element
      */
     protected function executeQuery($id)
     {
-        $configuration = $this->getConfig();
-        $query = $this->getQuery($id, $configuration->source);
-        $sql           = $query->getAttribute($configuration->sqlFieldName);
+        $configuration = $this->fixLegacyOptions($this->entity->getConfiguration() + $this->getDefaultConfiguration());
+        $query = $this->getQuery($id, $configuration['source']);
+        $sql = $query->getAttribute($configuration['sqlFieldName']);
         $doctrine      = $this->container->get("doctrine");
-        $connection    = $doctrine->getConnection($query->getAttribute($configuration->connectionFieldName));
+        $connection = $doctrine->getConnection($query->getAttribute($configuration['connectionFieldName']));
         $results       = $connection->fetchAll($sql);
         return $results;
     }
