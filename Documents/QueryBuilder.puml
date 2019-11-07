@@ -6,7 +6,7 @@ package Mapbender <<Frame>> {
     package Element <<Frame>>{
       class QueryBuilder <extends Element>{
          __ API __
-         + executeQuery(int queryId): GeoJSON
+         + executeQuery(int queryId): array
       }
     }
   }
