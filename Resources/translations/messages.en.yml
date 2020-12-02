@@ -1,16 +1,20 @@
-mb.query.builder.Cancel: Cancel
-mb.query.builder.Edit: Edit
-mb.query.builder.Create: Create
-mb.query.builder.Save: Save
-mb.query.builder.Remove: Remove
-mb.query.builder.Execute: Execute
-mb.query.builder.sql.title: Title
-mb.query.builder.sql.connection.name: Connection
-mb.query.builder.sql.publish: Public
-mb.query.builder.confirm.remove: 'Confirm remove'
-mb.query.builder.OK: OK
-mb.query.builder.sql.saved: 'SQL saved successfully.'
-mb.query.builder.sql.removed: 'SQL removed successfully.'
-mb.query.builder.Export: Export
-mb.query.builder.Results: Results
-mb.query.builder.HTML-Export: HTML-Export
+mb.query.builder:
+    Cancel: Cancel
+    Edit: Edit
+    Create: Create
+    Save: Save
+    Remove: Remove
+    Execute: Execute
+    sql:
+        title: Title
+        connection:
+            name: Connection
+        publish: Publish
+        saved: 'SQL saved successfully.'
+        removed: 'SQL removed successfully.'
+    confirm:
+        remove: 'Confirm remove'
+    OK: OK
+    Export: Export
+    Results: Results
+    HTML-Export: HTML-Export
