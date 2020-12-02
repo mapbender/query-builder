@@ -57,10 +57,8 @@ class QueryBuilderElement extends Element
         return array(
             'source' => 'default',
             'allowRemove' => false,
-            'allowEdit' => false,
             'allowExecute' => true,
             'allowSave' => false,
-            'allowCreate' => false,
             'allowExport' => true,
             'allowHtmlExport' => true,
             'allowSearch' => false,
@@ -221,7 +219,7 @@ class QueryBuilderElement extends Element
                 break;
 
             case 'save':
-                if (!$configuration['allowCreate'] && !$configuration['allowSave']) {
+                if (!$configuration['allowSave']) {
                     throw new AccessDeniedHttpException();
                 }
                 $dataStore = $this->getDataStore($configuration['source']);

@@ -206,76 +206,6 @@
             });
         },
 
-        /**
-         * Open SQL edit dialog
-         *
-         * @param item
-         */
-        openEditDialog: function(item) {
-            var widget = this;
-            var config = widget.options;
-            var buttons = [];
-
-            config.allowSave && buttons.push(widget.saveButton);
-            config.allowExecute && buttons.push(widget.executeButton);
-            config.allowExport && buttons.push(widget.exportButton);
-            config.allowExport && buttons.push(widget.exportHtmlButton);
-            config.allowRemove && buttons.push(widget.removeButton);
-
-            buttons.push(widget.closeButton);
-
-            var $form = $("<form class='queryBuilder-edit'>")
-                .data("item", item)
-                .generateElements({
-                    children: [{
-                        type:     "fieldSet",
-                        children: [{
-                            title:       trans("sql.title"), // "Name"
-                            type:        "input",
-                            css:         {"width": "45%"},
-                            name:        config.titleFieldName,
-                            placeholder: "Query name",
-                            options:     widget.connections
-                        }, {
-                            title:   trans("sql.connection.name"), //  "Connection name"
-                            type:    "select",
-                            name:    config.connectionFieldName,
-                            css:     {"width": "25%"},
-                            value:   item.connection_name,
-                            options: widget.connections
-                        }, {
-                            title:   "Order",
-                            type:    "input",
-                            name:    config.orderByFieldName,
-                            value:   item[config.orderByFieldName],
-                            css:     {"width": "15%"}
-                        }, {
-                            title: trans("sql.publish"), //  "Anzeigen"
-                            type:  "checkbox",
-                            css:   {"width": "15%"},
-                            value: 1,
-                            name:  config.publicFieldName
-                        }]
-                    }, {
-                        type:  "textArea",
-                        title: "SQL",
-                        name:  config.sqlFieldName,
-                        rows:  16
-                    }]
-                })
-                .popupDialog({
-                    title:   item[this.options.titleFieldName],
-                    width: 500,
-                    buttons: buttons
-                })
-                .formData(item);
-
-            if( !config.allowSave){
-                $form.disableForm();
-            }
-            return $form;
-        },
-
         _initialize: function() {
             var widget = this;
             var element = widget.element ;
@@ -302,25 +232,7 @@
                     $(this).popupDialog('close');
                 }
             };
-
-            var editButton = widget.editButton = {
-                text:      trans('Edit'),
-                className: 'fa-edit',
-                click:     function(e) {
-                    widget.openEditDialog($(this).data("item"));
-                }
-            };
-
-            var createButton = widget.createButton = {
-                type:      "button",
-                text:      trans('Create'),
-                title:     " ",
-                cssClass: 'fa-plus create',
-                click:     function(e) {
-                    widget.openEditDialog({connection_name:"default"});
-                }
-            };
-
+            
             var saveButton = widget.saveButton = {
                 text:      trans('Save'),
                 className: 'fa-floppy-o',
@@ -390,9 +302,7 @@
                     config.allowExport && buttons.push(exportButton);
                     config.allowExport && buttons.push(exportHtmlButton);
                     config.allowExecute && buttons.push(executeButton);
-                    config.allowEdit && buttons.push(editButton);
                     config.allowRemove && buttons.push(removeButton);
-                    config.allowCreate && toolBar.push(createButton);
 
                     if(toolBar.length){
                         pane.push({
