@@ -115,6 +115,11 @@ class QueryBuilderElement extends Element
             ),
             'js'    => array(
                 '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/jquery.form.generator.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/utils/fn.formData.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/elements/date.selector.js',    // only for legacy browsers
+                '../../vendor/mapbender/vis-ui.js/src/js/elements/popup.dialog.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/elements/data.result-table.js',
             ),
             'trans' => array(
                 'MapbenderQueryBuilderBundle:Element:queryBuilder.json.twig',

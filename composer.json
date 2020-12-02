@@ -9,7 +9,8 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "mapbender/data-source": "0.x"
+        "mapbender/data-source": "~0.1.15",
+        "mapbender/vis-ui.js": "^0.1.78 || ~0.2.0"
     },
     "conflict": {
         "symfony/symfony": "<2.4"
