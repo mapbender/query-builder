@@ -60,12 +60,6 @@ parameters:
             title: SQL Queries
             class: Mapbender\DataSourceBundle\Element\QueryBuilderElement
 
-            # Allow edit
-            allowEdit: true
-
-            # Allow edit
-            allowCreate: false
-
             # Allow save
             allowSave: true
 

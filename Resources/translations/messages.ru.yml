@@ -1,16 +1,20 @@
-mb.query.builder.Cancel: Отмена
-mb.query.builder.Edit: Редактировать
-mb.query.builder.Create: Создать
-mb.query.builder.Save: Сохранить
-mb.query.builder.Remove: Удалить
-mb.query.builder.Execute: Выполнить
-mb.query.builder.sql.title: Заголовок
-mb.query.builder.sql.connection.name: Соеденение
-mb.query.builder.sql.publish: Опубликовать
-mb.query.builder.confirm.remove: 'Потвердите удаление'
-mb.query.builder.OK: OK
-mb.query.builder.sql.saved: 'SQL запрос сохранён.'
-mb.query.builder.sql.removed: 'SQL запрос удалён.'
-mb.query.builder.Export: Экспорт
-mb.query.builder.Results: Результат
-mb.query.builder.HTML-Export: 'HTML Экспорт'
+mb.query.builder:
+    Cancel: Отмена
+    Edit: Редактировать
+    Create: Создать
+    Save: Сохранить
+    Remove: Удалить
+    Execute: Выполнить
+    sql:
+        title: Заголовок
+        connection:
+            name: Соеденение
+        publish: Опубликовать
+        saved: 'SQL запрос сохранён.'
+        removed: 'SQL запрос удалён.'
+    confirm:
+        remove: 'Потвердите удаление'
+    OK: OK
+    Export: Экспорт
+    Results: Результат
+    HTML-Export: 'HTML Экспорт'

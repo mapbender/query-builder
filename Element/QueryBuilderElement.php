@@ -57,10 +57,8 @@ class QueryBuilderElement extends Element
         return array(
             'source' => 'default',
             'allowRemove' => false,
-            'allowEdit' => false,
             'allowExecute' => true,
             'allowSave' => false,
-            'allowCreate' => false,
             'allowExport' => true,
             'allowHtmlExport' => true,
             'allowSearch' => false,
@@ -115,6 +113,11 @@ class QueryBuilderElement extends Element
             ),
             'js'    => array(
                 '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/jquery.form.generator.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/utils/fn.formData.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/elements/date.selector.js',    // only for legacy browsers
+                '../../vendor/mapbender/vis-ui.js/src/js/elements/popup.dialog.js',
+                '../../vendor/mapbender/vis-ui.js/src/js/elements/data.result-table.js',
             ),
             'trans' => array(
                 'MapbenderQueryBuilderBundle:Element:queryBuilder.json.twig',
@@ -216,7 +219,7 @@ class QueryBuilderElement extends Element
                 break;
 
             case 'save':
-                if (!$configuration['allowCreate'] && !$configuration['allowSave']) {
+                if (!$configuration['allowSave']) {
                     throw new AccessDeniedHttpException();
                 }
                 $dataStore = $this->getDataStore($configuration['source']);
