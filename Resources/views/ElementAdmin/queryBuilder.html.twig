@@ -1,10 +1,5 @@
 {# note: wideLabelForm is Mapbender >= 3.0.5.0; extraWideLabelForm is Mapbender >= 3.0.8 #}
 <div class="elementForm wideLabelForm extraWideLabelForm elementFormQueryBuilder">
-    {{ form_label(form.title) }}{{ form_widget(form.title) }}
-    <div class="clearContainer"></div>
-
-    {% for keyName, val in form.configuration %}
-        {{ form_label(val) }}{{ form_widget(val) }}
-        <div class="clearContainer"></div>
-    {% endfor %}
+    {{ form_row(form.title) }}
+    {{ form_rest(form.configuration) }}
 </div>
