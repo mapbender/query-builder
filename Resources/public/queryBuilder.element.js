@@ -247,6 +247,16 @@
             return $tableWrap;
         },
 
+        mergeDialogData: function($dialog) {
+            var formData = {};
+            $(':input[name]', $dialog).each(function() {
+                var $input = $(this);
+                formData[this.name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
+            });
+            // NOTE: original data item is modified
+            return Object.assign($dialog.data("item"), formData);
+        },
+
         /**
          * Open SQL edit dialog
          *
@@ -260,16 +270,12 @@
             if (config.allowSave) {
                 buttons.push({
                     text:      trans('Save'),
-                    'className': 'fa-floppy-o',
                     'class': 'button btn',
                     click:     function(e) {
-                        var dialog = $(this);
-                        var originData = dialog.data("item");
-                        $.extend(originData, dialog.formData())
+                        var $dialog = $(this);
+                        var mergedData = widget.mergeDialogData($dialog);
 
-                        dialog.disableForm();
-                        widget.saveData(originData).done(function() {
-                            dialog.enableForm();
+                        widget.saveData(mergedData).done(function() {
                             widget.redrawListTable();
                             $.notify(trans('sql.saved'),"notice");
                         });
@@ -281,18 +287,10 @@
                     text: Mapbender.trans('mb.query.builder.Execute'),
                     'class': 'button critical btn',
                     click: function() {
-                        var $form = $(this);
-                        var formData = {};
-                        $(':input[name]', $form).each(function() {
-                            var $input = $(this);
-                            formData[this.name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
-                        });
-                        var merged = Object.assign(formData, $form.data("item"));
-                        widget.displayResults(merged);
+                        widget.displayResults(widget.mergeDialogData($(this)));
                     }
                 });
             }
-
 
             config.allowExport && buttons.push(widget.exportButton);
             config.allowExport && buttons.push(widget.exportHtmlButton);
