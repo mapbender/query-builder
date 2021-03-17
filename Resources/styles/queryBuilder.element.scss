@@ -57,6 +57,9 @@
       display: inline-block;
       white-space: nowrap;
       float: right;
+      .close {
+        float: none;
+      }
     }
     &:after {
       // clearfix
