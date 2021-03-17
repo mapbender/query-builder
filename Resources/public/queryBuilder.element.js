@@ -148,9 +148,7 @@
          * @returns {*}
          */
         getListTableApi: function() {
-            var widget = this;
-            var element = widget.element;
-            return $(" > div > .mapbender-element-result-table", element).resultTable("getApi");
+            return $('table', this.element).dataTable().api();
         },
 
         /**
@@ -507,9 +505,7 @@
             }
             $('.toolbar', this.element.element).nextAll().remove();
 
-            this.element.generateElements({children: [{
-                type:         "resultTable",
-                name:         "queries",
+            this.element.append(this.initDataTable({
                 lengthChange: false,
                 info:       false,
                 searching:  this.options.allowSearch,
@@ -524,7 +520,7 @@
                 },
                 data: queries,
                 columns: columnsOption
-            }]});
+            }));
         },
 
         /**
