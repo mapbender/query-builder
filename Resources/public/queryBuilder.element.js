@@ -276,8 +276,24 @@
                     }
                 });
             }
+            if (this.options.allowExecute) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.Execute'),
+                    'class': 'button critical btn',
+                    click: function() {
+                        var $form = $(this);
+                        var formData = {};
+                        $(':input[name]', $form).each(function() {
+                            var $input = $(this);
+                            formData[this.name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
+                        });
+                        var merged = Object.assign(formData, $form.data("item"));
+                        widget.displayResults(merged);
+                    }
+                });
+            }
 
-            config.allowExecute && buttons.push(widget.executeButton);
+
             config.allowExport && buttons.push(widget.exportButton);
             config.allowExport && buttons.push(widget.exportHtmlButton);
             config.allowRemove && buttons.push(widget.removeButton);
@@ -404,20 +420,6 @@
                 widget.removeData($(this).closest('tr').data('item'));
             });
 
-            this.executeButton = {
-                text: Mapbender.trans('mb.query.builder.Execute'),
-                className: 'fa-play',
-                'class':   'button critical btn',
-                click: function() {
-                    var dialog = $(this);
-                    var originData = dialog.data("item");
-                    var tempItem = dialog.formData();
-
-                    $.extend(tempItem, originData);
-
-                    widget.displayResults(tempItem);
-                }
-            };
             this.element.on('click', 'table tbody tr .-fn-execute', function() {
                 widget.displayResults($(this).closest('tr').data('item'));
             });
@@ -449,8 +451,8 @@
             }
             if (this.options.allowExecute) {
                 buttons.push({
-                    iconClass: this.executeButton.className,
-                    title: this.executeButton.text,
+                    iconClass: 'fa-play',
+                    title: Mapbender.trans('mb.query.builder.Execute'),
                     fnClass: '-fn-execute'
                 });
             }
