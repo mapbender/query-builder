@@ -210,23 +210,14 @@
                     .data("item", item)
                     .addClass('queryBuilder-results')
                 ;
-                var $table = $(document.createElement('table'))
-                    .addClass('table table-striped table-hover')
-                ;
-                $table.DataTable({
+                $content.append(widget.initDataTable({
                     selectable: false,
                     paging: false,
                     data: results,
                     searching: false,
                     info: false,
                     columns: widget.getColumnNames(results)
-                });
-                var $tableWrap = $(document.createElement('div'))
-                    .addClass('mapbender-element-result-table')
-                    .append($table.closest('.dataTables_wrapper'))
-                ;
-                $table.css('width', '');    // Support auto-growth when resizing dialog
-                $content.append($tableWrap);
+                }));
 
                 var title = Mapbender.trans('mb.query.builder.Results') + ": " + item[widget.options.titleFieldName];
                 var $dialog = baseDialog(title, $content, {
@@ -244,6 +235,18 @@
                     });
                 }
             });
+        },
+        initDataTable: function(options) {
+            var $table = $(document.createElement('table'))
+                .addClass('table table-striped table-hover')
+            ;
+            $table.DataTable(options);
+            var $tableWrap = $(document.createElement('div'))
+                .addClass('mapbender-element-result-table')
+                .append($table.closest('.dataTables_wrapper'))
+            ;
+            $table.css('width', '');    // Support auto-growth when resizing dialog
+            return $tableWrap;
         },
 
         /**
