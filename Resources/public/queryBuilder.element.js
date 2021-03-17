@@ -330,10 +330,9 @@
 
         _initialize: function() {
             var widget = this;
-            var config = widget.options;
-            $('.toolbar', widget.element).toggleClass('hidden', !config.allowCreate);
-            var exportButton = widget.exportButton = {
-                text:  trans('Export'),
+            $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
+            this.exportButton = {
+                text: Mapbender.trans('mb.query.builder.Export'),
                 className: 'fa-download',
                 'class': 'button btn',
                 click: function() {
@@ -341,8 +340,8 @@
                 }
             };
 
-            var exportHtmlButton = widget.exportHtmlButton = {
-                text:  trans('HTML-Export'),
+            this.exportHtmlButton = {
+                text: Mapbender.trans('mb.query.builder.HTML-Export'),
                 className: 'fa-table',
                 'class': 'button btn',
                 click: function() {
@@ -350,16 +349,16 @@
                 }
             };
 
-            widget.closeButton = {
-                text:  trans('Cancel'),
+            this.closeButton = {
+                text: Mapbender.trans('mb.query.builder.Cancel'),
                 'class': 'button critical btn',
                 click: function() {
                     $(this).dialog('close');
                 }
             };
 
-            var editButton = widget.editButton = {
-                text:      trans('Edit'),
+            this.editButton = {
+                text: Mapbender.trans('mb.query.builder.Edit'),
                 className: 'fa-edit',
                 click:     function(e) {
                     widget.openEditDialog($(this).data("item"));
@@ -369,8 +368,8 @@
                 widget.openEditDialog({connection_name:"default"});
             });
 
-            var removeButton = widget.removeButton = {
-                text:      trans('Remove'),
+            this.removeButton = {
+                text: Mapbender.trans('mb.query.builder.Remove'),
                 className: 'fa-remove',
                 'class':   'button critical btn',
                 click:     function(e) {
@@ -388,8 +387,8 @@
                 }
             };
 
-            var executeButton = widget.executeButton = {
-                text:      trans('Execute'),
+            this.executeButton = {
+                text: Mapbender.trans('mb.query.builder.Execute'),
                 className: 'fa-play',
                 'class':   'button critical btn',
                 click: function() {
@@ -406,42 +405,53 @@
             widget.query("connections").done(function(connections) {
                 widget.connections = connections;
                 widget.query("select").done(function(results) {
-                    var buttons = [];
-                    var columns = config.tableColumns;
-
-                    config.allowExport && buttons.push(exportButton);
-                    config.allowExport && buttons.push(exportHtmlButton);
-                    config.allowExecute && buttons.push(executeButton);
-                    config.allowEdit && buttons.push(editButton);
-                    config.allowRemove && buttons.push(removeButton);
-
-                    _.each(columns, function(column) {
-                        if(column.title){
-                            var title = "sql."+column.title.toLowerCase();
-                            column.title = trans(title);
-                        }
-                    });
-                    $('.toolbar', widget.element).nextAll().remove();
-
-                    widget.element.generateElements({children: [{
-                        type:         "resultTable",
-                        name:         "queries",
-                        lengthChange: false,
-                        info:       false,
-                        searching:  config.allowSearch,
-                        processing: false,
-                        ordering:   true,
-                        paging:     false,
-                        selectable: false,
-                        autoWidth:  false,
-                        order:      [[1, "asc"]],
-                        buttons:    buttons,
-                        data:       results,
-                        columns:    columns
-                    }]});
                     widget.sqlList = results;
+                    widget.renderQueryList(results);
                 });
             });
+        },
+        renderQueryList: function(queries) {
+            var buttons = [];
+            var columns = this.options.tableColumns;
+
+            if (this.options.allowExport) {
+                buttons.push(this.exportButton);
+                buttons.push(this.exportHtmlButton);
+            }
+            if (this.options.allowExecute) {
+                buttons.push(this.executeButton);
+            }
+            if (this.options.allowEdit) {
+                buttons.push(this.editButton);
+            }
+            if (this.options.allowRemove) {
+                buttons.push(this.removeButton);
+            }
+
+            _.each(columns, function(column) {
+                if (column.title){
+                    var title = "sql."+column.title.toLowerCase();
+                    column.title = trans(title);
+                }
+            });
+            $('.toolbar', this.element.element).nextAll().remove();
+
+            this.element.generateElements({children: [{
+                type:         "resultTable",
+                name:         "queries",
+                lengthChange: false,
+                info:       false,
+                searching:  this.options.allowSearch,
+                processing: false,
+                ordering:   true,
+                paging:     false,
+                selectable: false,
+                autoWidth:  false,
+                order:      [[1, "asc"]],
+                buttons:    buttons,
+                data: queries,
+                columns:    columns
+            }]});
         },
 
         /**
