@@ -200,14 +200,14 @@
          * Executes SQL by ID and display results as popups
          *
          * @param item Item
-         * @param config Configuration
          * @return XHR Object this has "dialog" property to get the popup dialog.
          */
-        displayResults: function(item, config) {
+        displayResults: function(item) {
             var widget = this;
-            return widget.query("execute", {id: item.id}).done(function(results) {
-                this.dialog = $("<div class='queryBuilder-results'>")
+            return widget.query("execute", {id: item.id}).then(function(results) {
+                var $content = $(document.createElement('div'))
                     .data("item", item)
+                    .addClass('queryBuilder-results')
                     .generateElements({
                         type:       "resultTable", //searching:  true,
                         selectable: false, //paginate:   false,
@@ -218,12 +218,22 @@
                         info:       false,
                         columns:    widget.getColumnNames(results)
                     })
-                    .popupDialog({
-                        title:   config.title ? config.title : trans("Results") + " : " + results.length,
-                        width:   1000,
-                        height:  400,
-                        buttons: [widget.exportButton, widget.exportHtmlButton, widget.closeButton]
+                ;
+                var title = Mapbender.trans('mb.query.builder.Results') + ": " + item[widget.options.titleFieldName];
+                var $dialog = baseDialog(title, $content, {
+                    width: 1000,
+                    height: 400,
+                    resizable: true,
+                    buttons: [widget.exportButton, widget.exportHtmlButton, widget.closeButton]
+                });
+                if (typeof ($dialog.dialogExtend) === 'function') {
+                    $dialog.dialogExtend({
+                        maximizable: true,
+                        collapsable: true,
+                        closable: true,
+                        dblclick: 'maximize'
                     });
+                }
             });
         },
 
@@ -304,6 +314,7 @@
             var exportButton = widget.exportButton = {
                 text:  trans('Export'),
                 className: 'fa-download',
+                'class': 'button btn',
                 click: function() {
                     widget.exportData ($(this).data("item"));
                 }
@@ -312,6 +323,7 @@
             var exportHtmlButton = widget.exportHtmlButton = {
                 text:  trans('HTML-Export'),
                 className: 'fa-table',
+                'class': 'button btn',
                 click: function() {
                     widget.exportHtml($(this).data("item"));
                 }
@@ -319,8 +331,9 @@
 
             var closeButton =  widget.closeButton = {
                 text:  trans('Cancel'),
+                'class': 'button critical btn',
                 click: function() {
-                    $(this).popupDialog('close');
+                    $(this).dialog('close');
                 }
             };
 
@@ -388,10 +401,7 @@
 
                     $.extend(tempItem, originData);
 
-                    widget.displayResults(tempItem, {
-                        title:           trans('Results') + ": " + tempItem[widget.options.titleFieldName],
-                        pageResultCount: tempItem.pageResultCount
-                    });
+                    widget.displayResults(tempItem);
                 }
             };
 

@@ -44,6 +44,32 @@
   }
 }
 
+.qb-dialog {
+  // for jqueryDialogExtend
+  .ui-dialog-titlebar {
+    .ui-dialog-titlebar-buttonpane {
+      display: inline-block;
+      white-space: nowrap;
+      float: right;
+    }
+    &:after {
+      // clearfix
+      content: ' ';
+      clear:both;
+      display: table-cell;
+    }
+  }
+
+  .ui-dialog-content {
+    padding: 10px;
+    &.queryBuilder-results {
+      padding: 0;
+    }
+  }
+
+}
+
+
 // Pop-up dialogs
 .ui-dialog {
 
