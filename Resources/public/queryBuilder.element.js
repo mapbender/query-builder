@@ -309,8 +309,8 @@
 
         _initialize: function() {
             var widget = this;
-            var element = widget.element ;
             var config = widget.options;
+            $('.toolbar', widget.element).toggleClass('hidden', !config.allowCreate);
             var exportButton = widget.exportButton = {
                 text:  trans('Export'),
                 className: 'fa-download',
@@ -344,16 +344,9 @@
                     widget.openEditDialog($(this).data("item"));
                 }
             };
-
-            var createButton = widget.createButton = {
-                type:      "button",
-                text:      trans('Create'),
-                title:     " ",
-                cssClass: 'fa-plus create',
-                click:     function(e) {
-                    widget.openEditDialog({connection_name:"default"});
-                }
-            };
+            this.element.on('click', '.-fn-create', function() {
+                widget.openEditDialog({connection_name:"default"});
+            });
 
             var saveButton = widget.saveButton = {
                 text:      trans('Save'),
@@ -409,8 +402,6 @@
                 widget.connections = connections;
                 widget.query("select").done(function(results) {
                     var buttons = [];
-                    var toolBar = [];
-                    var pane = [];
                     var columns = config.tableColumns;
 
                     config.allowExport && buttons.push(exportButton);
@@ -418,14 +409,6 @@
                     config.allowExecute && buttons.push(executeButton);
                     config.allowEdit && buttons.push(editButton);
                     config.allowRemove && buttons.push(removeButton);
-                    config.allowCreate && toolBar.push(createButton);
-
-                    if(toolBar.length){
-                        pane.push({
-                            type:     "fieldSet",
-                            children: toolBar
-                        });
-                    }
 
                     _.each(columns, function(column) {
                         if(column.title){
@@ -433,8 +416,9 @@
                             column.title = trans(title);
                         }
                     });
+                    $('.toolbar', widget.element).nextAll().remove();
 
-                    pane.push({
+                    widget.element.generateElements({children: [{
                         type:         "resultTable",
                         name:         "queries",
                         lengthChange: false,
@@ -449,9 +433,7 @@
                         buttons:    buttons,
                         data:       results,
                         columns:    columns
-                    });
-
-                    element.generateElements({children: pane});
+                    }]});
                     widget.sqlList = results;
                 });
             });
