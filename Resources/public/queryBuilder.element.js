@@ -310,8 +310,6 @@
                     $input.trigger('change');
                 }
             });
-            // Work around visui not initializing select value visuals properly
-            $('select', $form).trigger('change');
             baseDialog(item[this.options.titleFieldName], $form, {
                 width: 600,
                 buttons: buttons
