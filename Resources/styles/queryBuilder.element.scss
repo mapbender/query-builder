@@ -8,6 +8,7 @@
   table .button-navigation .button {
     padding: 0 3px;
     line-height: 2;
+    height: auto; // Defeat global fixed pixel height on .button
   }
 }
 
