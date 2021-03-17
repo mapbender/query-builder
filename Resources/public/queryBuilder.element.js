@@ -86,6 +86,12 @@
         _create: function() {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
             this.editTemplate = $('.-js-edit-template', this.element).remove().removeClass('hidden');
+            _.each(this.options.tableColumns, function(column) {
+                if (column.title){
+                    var translationKey = 'mb.query.builder.sql.' + column.title.toLowerCase();
+                    column.title = Mapbender.trans(translationKey);
+                }
+            });
             this._initialize();
         },
 
@@ -402,7 +408,6 @@
         },
         renderQueryList: function(queries) {
             var buttons = [];
-            var columns = this.options.tableColumns;
 
             if (this.options.allowExport) {
                 buttons.push({
@@ -438,13 +443,7 @@
                 });
             }
 
-            _.each(columns, function(column) {
-                if (column.title){
-                    var title = "sql."+column.title.toLowerCase();
-                    column.title = trans(title);
-                }
-            });
-            var columnsOption = columns.slice();
+            var columnsOption = this.options.tableColumns.slice();
             if (buttons.length) {
                 var buttonMarkup = buttons.map(function(buttonDef) {
                     var $icon = $(document.createElement('i'))
