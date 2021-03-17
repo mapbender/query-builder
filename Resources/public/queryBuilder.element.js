@@ -247,7 +247,26 @@
             var config = widget.options;
             var buttons = [];
 
-            config.allowSave && buttons.push(widget.saveButton);
+            if (config.allowSave) {
+                buttons.push({
+                    text:      trans('Save'),
+                    'className': 'fa-floppy-o',
+                    'class': 'button btn',
+                    click:     function(e) {
+                        var dialog = $(this);
+                        var originData = dialog.data("item");
+                        $.extend(originData, dialog.formData())
+
+                        dialog.disableForm();
+                        widget.saveData(originData).done(function() {
+                            dialog.enableForm();
+                            widget.redrawListTable();
+                            $.notify(trans('sql.saved'),"notice");
+                        });
+                    }
+                });
+            }
+
             config.allowExecute && buttons.push(widget.executeButton);
             config.allowExport && buttons.push(widget.exportButton);
             config.allowExport && buttons.push(widget.exportHtmlButton);
@@ -294,12 +313,14 @@
                         rows:  16
                     }]
                 })
-                .popupDialog({
-                    title:   item[this.options.titleFieldName],
-                    width: 500,
-                    buttons: buttons
-                })
-                .formData(item);
+                .formData(item)
+            ;
+            // Work around visui not initializing select value visuals properly
+            $('select', $form).trigger('change');
+            baseDialog(item[this.options.titleFieldName], $form, {
+                width: 600,
+                buttons: buttons
+            });
 
             if( !config.allowSave){
                 $form.disableForm();
@@ -329,7 +350,7 @@
                 }
             };
 
-            var closeButton =  widget.closeButton = {
+            widget.closeButton = {
                 text:  trans('Cancel'),
                 'class': 'button critical btn',
                 click: function() {
@@ -348,26 +369,10 @@
                 widget.openEditDialog({connection_name:"default"});
             });
 
-            var saveButton = widget.saveButton = {
-                text:      trans('Save'),
-                className: 'fa-floppy-o',
-                click:     function(e) {
-                    var dialog = $(this);
-                    var originData = dialog.data("item");
-                    $.extend(originData, dialog.formData())
-
-                    dialog.disableForm();
-                    widget.saveData(originData).done(function() {
-                        dialog.enableForm();
-                        widget.redrawListTable();
-                        $.notify(trans('sql.saved'),"notice");
-                    });
-                }
-            };
             var removeButton = widget.removeButton = {
                 text:      trans('Remove'),
                 className: 'fa-remove',
-                'class':   'critical',
+                'class':   'button critical btn',
                 click:     function(e) {
                     var target = $(this);
                     var item = target.data("item");
@@ -386,7 +391,7 @@
             var executeButton = widget.executeButton = {
                 text:      trans('Execute'),
                 className: 'fa-play',
-                'class':   'critical',
+                'class':   'button critical btn',
                 click: function() {
                     var dialog = $(this);
                     var originData = dialog.data("item");
