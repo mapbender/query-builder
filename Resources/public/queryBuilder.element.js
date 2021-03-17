@@ -171,9 +171,10 @@
                             widget.sqlList.splice(i, 1);
                             return false;
                         }
-                        });
-                    })
-                ;
+                    });
+                    widget.redrawListTable();
+                    $.notify(trans('sql.removed'), "notice");
+                });
             });
         },
 
@@ -339,6 +340,11 @@
         _initialize: function() {
             var widget = this;
             $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
+
+            this.element.on('click', '.-fn-create', function() {
+                widget.openEditDialog({connection_name:"default"});
+            });
+
             this.exportButton = {
                 text: Mapbender.trans('mb.query.builder.Export'),
                 className: 'fa-download',
@@ -347,6 +353,9 @@
                     widget.exportData ($(this).data("item"));
                 }
             };
+            this.element.on('click', 'table tbody tr .-fn-export', function() {
+                widget.exportData($(this).closest('tr').data('item'));
+            });
 
             this.exportHtmlButton = {
                 text: Mapbender.trans('mb.query.builder.HTML-Export'),
@@ -356,6 +365,9 @@
                     widget.exportHtml($(this).data("item"));
                 }
             };
+            this.element.on('click', 'table tbody tr .-fn-export-html', function() {
+                widget.exportHtml($(this).closest('tr').data('item'));
+            });
 
             this.closeButton = {
                 text: Mapbender.trans('mb.query.builder.Cancel'),
@@ -372,28 +384,24 @@
                     widget.openEditDialog($(this).data("item"));
                 }
             };
-            this.element.on('click', '.-fn-create', function() {
-                widget.openEditDialog({connection_name:"default"});
+            this.element.on('click', 'table tbody tr .-fn-edit', function() {
+                widget.openEditDialog($(this).closest('tr').data('item'));
             });
 
             this.removeButton = {
                 text: Mapbender.trans('mb.query.builder.Remove'),
                 className: 'fa-remove',
                 'class':   'button critical btn',
-                click:     function(e) {
-                    var target = $(this);
-                    var item = target.data("item");
-                    var isDialog = target.hasClass('ui-dialog-content');
-
-                    widget.removeData(item).then(function() {
-                        widget.redrawListTable();
-                        if(isDialog) {
-                            target.popupDialog('close');
-                        }
-                        $.notify(trans('sql.removed'), "notice");
+                click:     function() {
+                    var $dialog = $(this);
+                    widget.removeData($dialog.data('item')).then(function() {
+                        $dialog.dialog('close');
                     });
                 }
             };
+            this.element.on('click', 'table tbody tr .-fn-delete', function() {
+                widget.removeData($(this).closest('tr').data('item'));
+            });
 
             this.executeButton = {
                 text: Mapbender.trans('mb.query.builder.Execute'),
@@ -409,6 +417,9 @@
                     widget.displayResults(tempItem);
                 }
             };
+            this.element.on('click', 'table tbody tr .-fn-execute', function() {
+                widget.displayResults($(this).closest('tr').data('item'));
+            });
 
             widget.query("connections").done(function(connections) {
                 widget.connections = connections;
@@ -417,23 +428,44 @@
                     widget.renderQueryList(results);
                 });
             });
+
         },
         renderQueryList: function(queries) {
             var buttons = [];
             var columns = this.options.tableColumns;
 
             if (this.options.allowExport) {
-                buttons.push(this.exportButton);
-                buttons.push(this.exportHtmlButton);
+                buttons.push({
+                    iconClass: this.exportButton.className,
+                    title: this.exportButton.text,
+                    fnClass: '-fn-export'
+                });
+                buttons.push({
+                    iconClass: this.exportHtmlButton.className,
+                    title: this.exportHtmlButton.text,
+                    fnClass: '-fn-export-html'
+                });
             }
             if (this.options.allowExecute) {
-                buttons.push(this.executeButton);
+                buttons.push({
+                    iconClass: this.executeButton.className,
+                    title: this.executeButton.text,
+                    fnClass: '-fn-execute'
+                });
             }
             if (this.options.allowEdit) {
-                buttons.push(this.editButton);
+                buttons.push({
+                    iconClass: this.editButton.className,
+                    title: this.editButton.text,
+                    fnClass: '-fn-edit'
+                });
             }
             if (this.options.allowRemove) {
-                buttons.push(this.removeButton);
+                buttons.push({
+                    iconClass: this.removeButton.className,
+                    title: this.removeButton.text,
+                    fnClass: '-fn-delete'
+                });
             }
 
             _.each(columns, function(column) {
@@ -442,6 +474,34 @@
                     column.title = trans(title);
                 }
             });
+            var columnsOption = columns.slice();
+            if (buttons.length) {
+                var buttonMarkup = buttons.map(function(buttonDef) {
+                    var $icon = $(document.createElement('i'))
+                        .addClass('fa fas')
+                        .addClass(buttonDef.iconClass)
+                    ;
+                    var $button = $(document.createElement('span'))
+                        .addClass('button')
+                        .addClass(buttonDef.fnClass)
+                        .attr('title', buttonDef.title)
+                        .append($icon)
+                    ;
+                    return $button.get(0).outerHTML;
+                });
+                var navMarkup = ['<div class="button-navigation">', buttonMarkup.join(''), '</div>'].join('');
+                columnsOption.push({
+                    data: null,
+                    title: '',
+                    render: function(val, type) {
+                        return type === 'display' && navMarkup || null;
+                    },
+                    width: '1%',
+                    orderable: false,
+                    searchable: false,
+                    className: 'buttons'
+                });
+            }
             $('.toolbar', this.element.element).nextAll().remove();
 
             this.element.generateElements({children: [{
@@ -456,9 +516,11 @@
                 selectable: false,
                 autoWidth:  false,
                 order:      [[1, "asc"]],
-                buttons:    buttons,
+                createdRow: function(tr, item) {
+                    $(tr).data({item: item})
+                },
                 data: queries,
-                columns:    columns
+                columns: columnsOption
             }]});
         },
 
