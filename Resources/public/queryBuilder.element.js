@@ -337,8 +337,19 @@
                         rows:  16
                     }]
                 })
-                .formData(item)
             ;
+            $(':input[name]', $form).each(function() {
+                var name = this.name;
+                var $input = $(this);
+                if (typeof (item[name]) !== 'undefined') {
+                    if ($input.is(':checkbox')) {
+                        $input.prop('checked', !!item[name] && item[name] !== 'false');
+                    } else {
+                        $input.val(item[name]);
+                    }
+                    $input.trigger('change');
+                }
+            });
             // Work around visui not initializing select value visuals properly
             $('select', $form).trigger('change');
             baseDialog(item[this.options.titleFieldName], $form, {
