@@ -317,8 +317,8 @@
                 buttons: buttons
             });
 
-            if( !config.allowSave){
-                $form.disableForm();
+            if (!this.options.allowSave) {
+                $(':input', $form).prop('disabled', true).prop('readonly', true);
             }
             return $form;
         },
