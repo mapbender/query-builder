@@ -1,15 +1,5 @@
 (function($) {
 
-    /**
-     * Translate digitizer keywords
-     * @param title
-     * @returns {*}
-     */
-    function trans(title) {
-        var key = "mb.query.builder." + title;
-        return Mapbender.trans(key);
-    }
-
     function baseDialog(title, content, options) {
         var $content = $((typeof content === 'string') ? $.parseHTML(content) : content);
         var defaults = {
@@ -177,7 +167,7 @@
                         }
                     });
                     widget.redrawListTable();
-                    $.notify(trans('sql.removed'), "notice");
+                    $.notify(Mapbender.trans('mb.query.builder.sql.removed'), 'notice');
                 });
             });
         },
@@ -275,7 +265,7 @@
 
             if (config.allowSave) {
                 buttons.push({
-                    text:      trans('Save'),
+                    text: Mapbender.trans('mb.query.builder.Save'),
                     'class': 'button btn',
                     click:     function(e) {
                         var $dialog = $(this);
@@ -283,7 +273,7 @@
 
                         widget.saveData(mergedData).done(function() {
                             widget.redrawListTable();
-                            $.notify(trans('sql.saved'),"notice");
+                            $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
                         });
                     }
                 });
@@ -340,7 +330,7 @@
                 className: 'fa-download',
                 'class': 'button btn',
                 click: function() {
-                    widget.exportData ($(this).data("item"));
+                    widget.exportData($(this).data("item"));
                 }
             };
             this.element.on('click', 'table tbody tr .-fn-export', function() {
@@ -507,7 +497,7 @@
                 dataType:    "json",
                 data: request
             }).error(function(xhr) {
-                var errorMessage = trans("api.error") + ": " + xhr.statusText;
+                var errorMessage = Mapbender.trans('mb.query.builder.api.error') + ": " + xhr.statusText;
                 $.notify(errorMessage);
                 console.error(errorMessage, xhr);
             });
