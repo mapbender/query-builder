@@ -38,7 +38,6 @@ class QueryBuilderAdminType extends AbstractType
             ->add('source', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
                     'choices'     => $dataStoreSelectValues,
                     'required'    => true,
-                    'empty_value' => null
                 )
             )
             ->add('sqlFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
