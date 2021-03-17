@@ -5,7 +5,6 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\CoreBundle\Component\Element;
 use Mapbender\DataSourceBundle\Entity\DataItem;
-use Mapbender\QueryBuilderBundle\Util\HtmlExportResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
