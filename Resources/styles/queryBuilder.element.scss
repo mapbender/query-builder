@@ -2,6 +2,9 @@
   .toolbar {
     margin-bottom: 10px;
   }
+  &.modal-body {
+    padding: 0;
+  }
 }
 
 .mb-element-queryBuilder.modal-body {
