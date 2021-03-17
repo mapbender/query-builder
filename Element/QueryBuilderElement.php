@@ -104,6 +104,16 @@ class QueryBuilderElement extends Element
         return "MapbenderQueryBuilderBundle:Element:queryBuilder{$suffix}";
     }
 
+    public function getFrontendTemplateVars()
+    {
+        $config = $this->fixLegacyOptions($this->entity->getConfiguration() + $this->getDefaultConfiguration());
+        return array(
+            'id' => $this->entity->getId(),
+            'configuration' => $config,
+            'connectionNames' => $this->getConnectionNames(),
+        );
+    }
+
     /**
      * @inheritdoc
      */
@@ -233,9 +243,7 @@ class QueryBuilderElement extends Element
                 break;
 
             case 'connections':
-                $doctrine        = $this->container->get("doctrine");
-                $connectionNames = $doctrine->getConnectionNames();
-                $names           = array_keys($connectionNames);
+                $names = $this->getConnectionNames();
                 $results         = array_combine($names, $names);
                 break;
 
@@ -251,6 +259,13 @@ class QueryBuilderElement extends Element
         // implementation adapter for old Mapbender < 3.0.8-beta1
         $request = $this->container->get('request_stack')->getCurrentRequest();
         return $this->handleHttpRequest($request);
+    }
+
+    protected function getConnectionNames()
+    {
+        /** @var Registry $doctrine */
+        $doctrine = $this->container->get("doctrine");
+        return array_keys($doctrine->getConnectionNames());
     }
 
     /**

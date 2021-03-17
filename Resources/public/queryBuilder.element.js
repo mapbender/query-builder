@@ -81,12 +81,12 @@
         options:     {
             maxResults: 100
         },
+        editTemplate: null,
 
         _create: function() {
-            var widget = this;
-            var element = $(widget.element);
-            widget.elementUrl = Mapbender.configuration.application.urls.element + '/' + element.attr('id') + '/';
-            widget._initialize();
+            this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
+            this.editTemplate = $('.-js-edit-template', this.element).remove().removeClass('hidden');
+            this._initialize();
         },
 
         /**
@@ -297,47 +297,7 @@
             config.allowRemove && buttons.push(widget.removeButton);
 
             buttons.push(widget.closeButton);
-
-            var $form = $("<form class='queryBuilder-edit'>")
-                .data("item", item)
-                .generateElements({
-                    children: [{
-                        type:     "fieldSet",
-                        children: [{
-                            title:       trans("sql.title"), // "Name"
-                            type:        "input",
-                            css:         {"width": "45%"},
-                            name:        config.titleFieldName,
-                            placeholder: "Query name",
-                            options:     widget.connections
-                        }, {
-                            title:   trans("sql.connection.name"), //  "Connection name"
-                            type:    "select",
-                            name:    config.connectionFieldName,
-                            css:     {"width": "25%"},
-                            value:   item.connection_name,
-                            options: widget.connections
-                        }, {
-                            title:   "Order",
-                            type:    "input",
-                            name:    config.orderByFieldName,
-                            value:   item[config.orderByFieldName],
-                            css:     {"width": "15%"}
-                        }, {
-                            title: trans("sql.publish"), //  "Anzeigen"
-                            type:  "checkbox",
-                            css:   {"width": "15%"},
-                            value: 1,
-                            name:  config.publicFieldName
-                        }]
-                    }, {
-                        type:  "textArea",
-                        title: "SQL",
-                        name:  config.sqlFieldName,
-                        rows:  16
-                    }]
-                })
-            ;
+            var $form = this.editTemplate.clone().addClass('queryBuilder-edit').data("item", item);
             $(':input[name]', $form).each(function() {
                 var name = this.name;
                 var $input = $(this);
