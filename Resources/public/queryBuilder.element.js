@@ -8,46 +8,69 @@
     function trans(title) {
         var key = "mb.query.builder." + title;
         return Mapbender.trans(key);
+    }
 
+    function baseDialog(title, content, options) {
+        var $content = $((typeof content === 'string') ? $.parseHTML(content) : content);
+        var defaults = {
+            classes: {
+                'ui-dialog': 'ui-dialog mb-element-popup-dialog modal-content qb-dialog',
+                'ui-dialog-titlebar': 'ui-dialog-titlebar modal-header',
+                'ui-dialog-titlebar-close': 'ui-dialog-titlebar-close close',
+                'ui-dialog-content': 'ui-dialog-content modal-body',
+                'ui-dialog-buttonpane': 'ui-dialog-buttonpane modal-footer',
+                'ui-button': 'ui-button button btn'
+            },
+            resizable: false,
+            hide: {
+                effect: 'fadeOut',
+                duration: 200
+            }
+        };
+        var options_ = Object.assign({}, defaults, {title: title}, options || {});
+        $content.dialog(options_);
+        // Hide text labels on .ui-button-icon-only, with or without jqueryui css
+        $('.ui-dialog-titlebar .ui-button-icon-only', $content.closest('.ui-dialog')).each(function() {
+            var $button = $(this);
+            var $icon = $('.ui-button-icon', this);
+            $button.empty().append($icon);
+        });
+
+        return $content;
     }
 
     /**
      * Example:
-     *     confirmDialog({html: "Feature löschen?", title: "Bitte bestätigen!", onSuccess:function(){
-                  return false;
-           }});
-     * @param options
-     * @returns {*}
+     *     confirmDialog('Dialog title', '<p>Really show this dialog?'</p>')
+     * @param {String} title
+     * @param {string|Element|jQuery} content
+     * @returns {Promise}
      */
-    function confirmDialog(options) {
-        var dialog = $("<div class='confirm-dialog'>" + (options.hasOwnProperty('html') ? options.html : "") + "</div>").popupDialog({
-            title:       options.hasOwnProperty('title') ? options.title : "",
-            maximizable: false,
-            dblclick:    false,
-            minimizable: false,
-            resizable:   false,
-            collapsable: false,
-            modal:       true,
-            buttons:     [{
-                text:  trans('OK'),
-                click: function(e) {
-                    if(!options.hasOwnProperty('onSuccess') || options.onSuccess(e) !== false) {
-                        dialog.popupDialog('close');
+    function confirmDialog(title, content) {
+        var deferred = $.Deferred();
+        baseDialog(title, content, {
+            modal: true,
+            buttons:[
+                {
+                    text: Mapbender.trans('mb.query.builder.OK'),
+                    'class': 'button success btn',
+                    click: function() {
+                        deferred.resolve();
+                        $(this).dialog('close');
+                        return false;
                     }
-                    return false;
-                }
-            }, {
-                text:    trans('Cancel'),
-                'class': 'critical',
-                click:   function(e) {
-                    if(!options.hasOwnProperty('onCancel') || options.onCancel(e) !== false) {
-                        dialog.popupDialog('close');
+                }, {
+                    text: Mapbender.trans('mb.query.builder.Cancel'),
+                    'class': 'button critical btn',
+                    click:   function() {
+                        deferred.reject();
+                        $(this).dialog('close');
+                        return false;
                     }
-                    return false;
                 }
-            }]
+            ]
         });
-        return dialog;
+        return deferred.promise();
     }
 
 
@@ -136,23 +159,21 @@
          * @param item
          * @returns {*}
          */
-        removeData: function(item, onDone, onError) {
+        removeData: function(item) {
             var widget = this;
-            confirmDialog({
-                title:     trans("Remove") + " #" + item.id,
-                html:      trans("confirm.remove") + ": " + item[this.options.titleFieldName],
-                onSuccess: function() {
-                    widget.query("remove", {id: item.id}).done(function() {
-                            $.each(widget.sqlList, function(i, _item) {
-                                if(_item === item) {
-                                    widget.sqlList.splice(i, 1);
-                                    return false;
-                                }
-                            });
-                        })
-                        .done(onDone)
-                        .error(onError);
-                }
+            var message = [Mapbender.trans('mb.query.builder.confirm.remove'), ': ', item[this.options.titleFieldName]].join('');
+            var title = [Mapbender.trans('mb.query.builder.Remove'), ' #', item.id].join('');
+            var content = $(document.createElement('div')).text(message);
+            return confirmDialog(title, content).then(function() {
+                return widget.query("remove", {id: item.id}).done(function() {
+                    $.each(widget.sqlList, function(i, _item) {
+                        if(_item === item) {
+                            widget.sqlList.splice(i, 1);
+                            return false;
+                        }
+                        });
+                    })
+                ;
             });
         },
 
@@ -344,19 +365,14 @@
                 click:     function(e) {
                     var target = $(this);
                     var item = target.data("item");
-                    var isDialog = target.hasClass("popup-dialog");
+                    var isDialog = target.hasClass('ui-dialog-content');
 
-                    if(isDialog) {
-                        target.disableForm();
-                    }
-                    widget.removeData(item, function(result) {
+                    widget.removeData(item).then(function() {
                         widget.redrawListTable();
                         if(isDialog) {
                             target.popupDialog('close');
                         }
                         $.notify(trans('sql.removed'), "notice");
-                    }, function() {
-                        target.enableForm();
                     });
                 }
             };
