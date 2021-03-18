@@ -293,7 +293,7 @@
             config.allowRemove && buttons.push(widget.removeButton);
 
             buttons.push(widget.closeButton);
-            var $form = this.editTemplate.clone().addClass('queryBuilder-edit').data("item", item);
+            var $form = this.editTemplate.clone().data("item", item);
             $(':input[name]', $form).each(function() {
                 var name = this.name;
                 var $input = $(this);
