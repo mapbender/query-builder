@@ -66,7 +66,6 @@
 
     $.widget("mapbender.mbQueryBuilderElement", {
 
-        connections: [],
         options:     {
             maxResults: 100
         },
@@ -404,13 +403,9 @@
                 widget.displayResults($(this).closest('tr').data('item'));
             });
 
-            widget.query("connections").done(function(connections) {
-                widget.connections = connections;
-                widget.query("select").done(function(results) {
-                    widget.renderQueryList(results);
-                });
+            widget.query("select").done(function(results) {
+                widget.renderQueryList(results);
             });
-
         },
         renderQueryList: function(queries) {
             var buttons = [];

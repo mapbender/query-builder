@@ -241,11 +241,6 @@ class QueryBuilderElement extends Element
                 $results[] = $dataStore->remove($requestService->request->get('id'));
                 break;
 
-            case 'connections':
-                $names = $this->getConnectionNames();
-                $results         = array_combine($names, $names);
-                break;
-
             default:
                 throw new NotFoundHttpException("No such action {$action}");
         }
