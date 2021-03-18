@@ -2,6 +2,23 @@
   .toolbar {
     margin-bottom: 10px;
   }
+  table td.interactions {
+    white-space: nowrap;
+    border-top: none;
+    .button {
+      padding: 0 3px;
+      font-size: inherit;
+      line-height: 2;
+      height: auto;
+    }
+    .button + .button {
+      border-left: none;
+    }
+  }
+  // Defeat super specific td padding rule from Mapbender
+  table td.interactions, .mapbender-element-result-table > .dataTables_wrapper > table[role="grid"] > tbody > tr > td.interactions {
+    padding: 0;
+  }
   table .button-navigation .button {
     padding: 0 3px;
     line-height: 2;

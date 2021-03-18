@@ -448,7 +448,7 @@
                     ;
                     return $button.get(0).outerHTML;
                 });
-                var navMarkup = ['<div class="button-navigation">', buttonMarkup.join(''), '</div>'].join('');
+                var navMarkup = buttonMarkup.join('');
                 columnsOption.push({
                     data: null,
                     title: '',
@@ -458,7 +458,7 @@
                     width: '1%',
                     orderable: false,
                     searchable: false,
-                    className: 'buttons'
+                    className: 'interactions'
                 });
             }
             $('.toolbar', this.element.element).nextAll().remove();
