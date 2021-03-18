@@ -355,7 +355,7 @@
                 self.saveData(mergedData).done(function(savedItem) {
                     Object.assign(mergedData, savedItem);
                     if (isNew) {
-                        self.addQueryRow(savedItem);
+                        self.addQueryRow(mergedData);
                     } else {
                         self.redrawListTable();
                     }
