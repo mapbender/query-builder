@@ -13,16 +13,6 @@
 }
 
 .mb-element-queryBuilder.modal-body {
-
-  [class^="fa-"]:before, [class*=" fa-"]:before {
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
   > .mapbender-element-result-table {
 
     > .dataTables_wrapper {
@@ -39,15 +29,6 @@
           height: 29px;
           padding: 2px 24px 2px 7px;
           line-height: 1.42857143;
-        }
-      }
-      tr[role='row'] > td > div.button-navigation {
-        > button {
-          &.fa-remove {
-          }
-          &:before {
-            font-family: FontAwesome;
-          }
         }
       }
     }
