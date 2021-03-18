@@ -85,6 +85,16 @@
             });
             this._initialize();
         },
+        _initialize: function() {
+            var widget = this;
+            $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
+            this.interactionButtons_ = this._initInteractionButtons();
+            this._initElementEvents();
+
+            widget.query("select").done(function(results) {
+                widget.renderQueryList(results);
+            });
+        },
 
         /**
          * Execute SQL and export als excel or data.
@@ -383,16 +393,6 @@
                 }
             });
             return buttons;
-        },
-        _initialize: function() {
-            var widget = this;
-            $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
-            this.interactionButtons_ = this._initInteractionButtons();
-            this._initElementEvents();
-
-            widget.query("select").done(function(results) {
-                widget.renderQueryList(results);
-            });
         },
         _initInteractionButtons: function() {
             var defs = {};
