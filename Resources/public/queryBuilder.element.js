@@ -66,7 +66,6 @@
 
     $.widget("mapbender.mbQueryBuilderElement", {
 
-        sqlList:     [],
         connections: [],
         options:     {
             maxResults: 100
@@ -133,7 +132,16 @@
             dt.rows().every(function() { this.data(this.data()); })
             dt.draw(true);
         },
-
+        addQueryRow: function(item) {
+            var dt = this.getListTableApi();
+            var tr = dt.row.add(item).node();
+            // NOTE: current dataTables versions could just do dt.row(tr).show().draw(false)
+            var rowIndex = dt.rows({order: 'current'}).nodes().indexOf(tr);
+            var pageLength = dt.page.len();
+            var rowPage = Math.floor(rowIndex / pageLength);
+            dt.page(rowPage);
+            dt.draw(false);
+        },
         /**
          * Get list table API
          *
@@ -260,7 +268,8 @@
             var config = widget.options;
             var buttons = [];
 
-            if (config.allowSave) {
+            if (this.options.allowSave) {
+                var isNew = !item || !item.id;
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.Save'),
                     'class': 'button btn',
@@ -269,7 +278,11 @@
                         var mergedData = widget.mergeDialogData($dialog);
 
                         widget.saveData(mergedData).done(function() {
-                            widget.redrawListTable();
+                            if (isNew) {
+                                widget.addQueryRow(mergedData);
+                            } else {
+                                widget.redrawListTable();
+                            }
                             $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
                         });
                     }
@@ -319,7 +332,7 @@
             $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
 
             this.element.on('click', '.-fn-create', function() {
-                widget.openEditDialog({connection_name:"default"});
+                widget.openEditDialog({});
             });
 
             this.exportButton = {
@@ -387,7 +400,6 @@
             widget.query("connections").done(function(connections) {
                 widget.connections = connections;
                 widget.query("select").done(function(results) {
-                    widget.sqlList = results;
                     widget.renderQueryList(results);
                 });
             });
