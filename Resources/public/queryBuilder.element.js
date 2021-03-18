@@ -391,7 +391,13 @@
                 }
             };
             this.element.on('click', 'table tbody tr .-fn-delete', function() {
-                widget.removeData($(this).closest('tr').data('item'));
+                var item = $(this).closest('tr').data('item');
+                widget.removeData(item).then(function() {
+                    var $dialog = $('.qb-dialog .ui-dialog-content').filter(function() {
+                        return $(this).data('item') === item;
+                    });
+                    $dialog.dialog('destroy');
+                });
             });
 
             this.element.on('click', 'table tbody tr .-fn-execute', function() {
