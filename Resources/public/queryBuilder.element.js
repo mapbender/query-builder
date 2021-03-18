@@ -128,14 +128,10 @@
         /**
          * Redraw list table
          */
-        redrawListTable: function(){
-            var widget = this;
-            var tableApi = widget.getListTableApi();
-            return;
-            // TODO: get this work!
-            tableApi.clear();
-            tableApi.rows.add(widget.sqlList);
-            tableApi.draw();
+        redrawListTable: function() {
+            var dt = this.getListTableApi();
+            dt.rows().every(function() { this.data(this.data()); })
+            dt.draw(true);
         },
 
         /**
