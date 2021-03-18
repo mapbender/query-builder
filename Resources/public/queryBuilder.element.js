@@ -25,6 +25,9 @@
             var $icon = $('.ui-button-icon', this);
             $button.empty().append($icon);
         });
+        $content.on('dialogclose', function() {
+            window.setTimeout(function() { $content.dialog('destroy') }, 500);
+        });
 
         return $content;
     }
