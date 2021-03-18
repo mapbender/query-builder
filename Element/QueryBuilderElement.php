@@ -4,6 +4,8 @@ namespace Mapbender\QueryBuilderBundle\Element;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\CoreBundle\Component\Element;
+use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
+use Mapbender\CoreBundle\Entity;
 use Mapbender\DataSourceBundle\Entity\DataItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @package Mapbender\DataSourceBundle\Element
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderElement extends Element
+class QueryBuilderElement extends Element implements ConfigMigrationInterface
 {
 
     /**
@@ -105,7 +107,7 @@ class QueryBuilderElement extends Element
 
     public function getFrontendTemplateVars()
     {
-        $config = $this->fixLegacyOptions($this->entity->getConfiguration() + $this->getDefaultConfiguration());
+        $config = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
         return array(
             'id' => $this->entity->getId(),
             'configuration' => $config,
@@ -131,13 +133,9 @@ class QueryBuilderElement extends Element
         );
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getConfiguration()
+    public function getPublicConfiguration()
     {
         $values = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
-        $values = $this->fixLegacyOptions($values);
 
         foreach ($values['tableColumns'] as $i => $tableColumn) {
             switch ($tableColumn['title']) {
@@ -152,12 +150,10 @@ class QueryBuilderElement extends Element
         return $values;
     }
 
-    /**
-     * @param array $configuration
-     * @return array
-     */
-    protected static function fixLegacyOptions(array $configuration)
+
+    public static function updateEntityConfig(Entity\Element $entity)
     {
+        $configuration = $entity->getConfiguration() ?: array();
         // @todo: warn or throw when encountering wrong option names
         $legacyAliases = array(
             'sqlField' => 'sqlFieldName',
@@ -172,7 +168,7 @@ class QueryBuilderElement extends Element
                 unset($configuration[$before]);
             }
         }
-        return $configuration;
+        $entity->setConfiguration($configuration);
     }
 
     /**
@@ -209,7 +205,6 @@ class QueryBuilderElement extends Element
                 $id = $requestService->query->get('id');
                 $results = $this->executeQuery($id);
                 $query = $this->getQuery($id, $configuration['source']);
-                $configuration = $this->fixLegacyOptions($configuration);
                 $title   = $query->getAttribute($configuration['titleFieldName']);
                 $content = $this->container->get('templating')->render('@MapbenderQueryBuilder/export.html.twig', array(
                     'title' => $title,
@@ -248,13 +243,6 @@ class QueryBuilderElement extends Element
         return new JsonResponse($results);
     }
 
-    public function httpAction($action)
-    {
-        // implementation adapter for old Mapbender < 3.0.8-beta1
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        return $this->handleHttpRequest($request);
-    }
-
     /**
      * @return Registry
      */
@@ -281,7 +269,7 @@ class QueryBuilderElement extends Element
      */
     protected function executeQuery($id)
     {
-        $configuration = $this->fixLegacyOptions($this->entity->getConfiguration() + $this->getDefaultConfiguration());
+        $configuration = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
         $query = $this->getQuery($id, $configuration['source']);
         $sql = $query->getAttribute($configuration['sqlFieldName']);
         $connectionName = $query->getAttribute($configuration['connectionFieldName']);
