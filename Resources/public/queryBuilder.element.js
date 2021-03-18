@@ -156,13 +156,14 @@
             var content = $(document.createElement('div')).text(message);
             return confirmDialog(title, content).then(function() {
                 return widget.query("remove", {id: item.id}).done(function() {
-                    $.each(widget.sqlList, function(i, _item) {
-                        if(_item === item) {
-                            widget.sqlList.splice(i, 1);
-                            return false;
-                        }
+                    var dt = widget.getListTableApi();
+                    var dtRow = dt.row(function(_, data) {
+                        return data === item;
                     });
-                    widget.redrawListTable();
+                    if (dtRow) {
+                        dtRow.remove();
+                        dt.draw(false);
+                    }
                     $.notify(Mapbender.trans('mb.query.builder.sql.removed'), 'notice');
                 });
             });
