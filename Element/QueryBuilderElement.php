@@ -255,11 +255,22 @@ class QueryBuilderElement extends Element
         return $this->handleHttpRequest($request);
     }
 
+    /**
+     * @return Registry
+     */
+    protected function getDoctrine()
+    {
+        /** @var Registry $registry */
+        $registry = $this->container->get("doctrine");
+        return $registry;
+    }
+
+    /**
+     * @return string[]
+     */
     protected function getConnectionNames()
     {
-        /** @var Registry $doctrine */
-        $doctrine = $this->container->get("doctrine");
-        return array_keys($doctrine->getConnectionNames());
+        return array_keys($this->getDoctrine()->getConnectionNames());
     }
 
     /**
@@ -273,8 +284,8 @@ class QueryBuilderElement extends Element
         $configuration = $this->fixLegacyOptions($this->entity->getConfiguration() + $this->getDefaultConfiguration());
         $query = $this->getQuery($id, $configuration['source']);
         $sql = $query->getAttribute($configuration['sqlFieldName']);
-        $doctrine      = $this->container->get("doctrine");
-        $connection = $doctrine->getConnection($query->getAttribute($configuration['connectionFieldName']));
+        $connectionName = $query->getAttribute($configuration['connectionFieldName']);
+        $connection = $this->getDoctrine()->getConnection($connectionName);
         $results       = $connection->fetchAll($sql);
         return $results;
     }
@@ -290,6 +301,7 @@ class QueryBuilderElement extends Element
             $values = (array)$name;
             $name = $values['source'];
         }
+        /** @see \Mapbender\DataSourceBundle\Component\DataStoreService::get() */
         return $this->container->get("data.source")->get($name);
     }
 
@@ -302,6 +314,7 @@ class QueryBuilderElement extends Element
      */
     protected function getQuery($id, $dataStoreName)
     {
+        /** @see \Mapbender\DataSourceBundle\Component\DataStore::getById() */
         return $this->getDataStore($dataStoreName)->getById($id);
     }
 
