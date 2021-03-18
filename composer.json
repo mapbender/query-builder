@@ -15,9 +15,6 @@
         "mapbender/mapbender": "<3.0.5.4",
         "symfony/symfony": "<2.4"
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "autoload": {
         "psr-0": {"Mapbender\\QueryBuilderBundle": "."}
     }
