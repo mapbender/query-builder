@@ -235,6 +235,7 @@
                         dblclick: 'maximize'
                     });
                 }
+                widget._addDialogEvents($dialog);
             });
         },
         initDataTable: function(options) {
@@ -285,11 +286,73 @@
                 width: 600,
                 buttons: buttons
             });
+            this._addDialogEvents($form);
 
             if (!this.options.allowSave) {
                 $(':input', $form).prop('disabled', true).prop('readonly', true);
             }
             return $form;
+        },
+        _initInteractionEventsCommon: function($scope, dataFn, livePrefix) {
+            var self = this;
+            var prefix_ = (livePrefix && livePrefix.replace(/\s*$/, ' ')) || '';
+            $scope.on('click', prefix_ + '.-fn-export', function() {
+                self.exportData(dataFn(this));
+            });
+            $scope.on('click', prefix_ + '.-fn-export-html', function() {
+                self.exportHtml(dataFn(this));
+            });
+            $scope.on('click', prefix_ + '.-fn-execute', function() {
+                self.displayResults(dataFn(this));
+            });
+            $scope.on('click', prefix_ + '.-fn-delete', function() {
+                var item = dataFn(this);
+                self.removeData(item).then(function() {
+                    var $dialog = $('.qb-dialog .ui-dialog-content').filter(function() {
+                        return $(this).data('item') === item;
+                    });
+                    $dialog.dialog('destroy');
+                });
+            });
+        },
+        _initElementEvents: function() {
+            var self = this;
+            var tableDataFn = function(target) {
+                return $(target).closest('tr').data('item');
+            };
+            this.element.on('click', '.-fn-create', function() {
+                self.openEditDialog({});
+            });
+            this.element.on('click', 'table tbody tr .-fn-edit', function() {
+                self.openEditDialog($(this).closest('tr').data('item'));
+            });
+            this._initInteractionEventsCommon(this.element, tableDataFn, 'table tbody tr');
+        },
+        _addDialogEvents: function($dialog) {
+            var self = this;
+            var dataFn = function(clickTarget) {
+                if (/-fn-execute(\s|$)/.test(clickTarget.className)) {
+                    return self.mergeDialogData($dialog)
+                } else {
+                    return $dialog.data('item');
+                }
+            };
+            $dialog.closest('.ui-dialog').on('click', '.-fn-save', function() {
+                var item = $dialog.data('item');
+                var isNew = !item || !item.id;
+                var mergedData = self.mergeDialogData($dialog);
+
+                self.saveData(mergedData).done(function(savedItem) {
+                    Object.assign(mergedData, savedItem);
+                    if (isNew) {
+                        self.addQueryRow(savedItem);
+                    } else {
+                        self.redrawListTable();
+                    }
+                    $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
+                });
+            });
+            this._initInteractionEventsCommon($dialog.closest('.ui-dialog'), dataFn);
         },
         /**
          * @param {Array<string>} functions
@@ -298,65 +361,35 @@
          */
         _getDialogButtonsOption: function(functions) {
             var buttons = [];
-            var self = this;
             if (this.options.allowSave && -1 !== functions.indexOf('save')) {
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.Save'),
-                    'class': 'button btn',
-                    click: function() {
-                        var $dialog = $(this);
-                        var item = $dialog.data('item');
-                        var isNew = !item || !item.id;
-                        var mergedData = self.mergeDialogData($dialog);
-
-                        self.saveData(mergedData).done(function(savedItem) {
-                            Object.assign(mergedData, savedItem);
-                            if (isNew) {
-                                self.addQueryRow(savedItem);
-                            } else {
-                                self.redrawListTable();
-                            }
-                            $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
-                        });
-                    }
+                    'class': '-fn-save'
                 });
             }
             if (this.options.allowExecute && -1 !== functions.indexOf('execute')) {
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.Execute'),
-                    'class': 'critical',
-                    click: function() {
-                        self.displayResults(self.mergeDialogData($(this)));
-                    }
+                    'class': '-fn-execute critical'
                 });
             }
 
             if (this.options.allowExport && -1 !== functions.indexOf('export')) {
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.Export'),
-                    click: function() {
-                        self.exportData($(this).data("item"));
-                    }
+                    'class': '-fn-export'
                 });
             }
             if (this.options.allowExport && -1 !== functions.indexOf('export-html')) {
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.HTML-Export'),
-                    click: function() {
-                        self.exportHtml($(this).data("item"));
-                    }
+                    'class': '-fn-export-html'
                 });
             }
             if (this.options.allowRemove && -1 !== functions.indexOf('delete')) {
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.Remove'),
-                    'class': 'critical',
-                    click: function() {
-                        var $dialog = $(this);
-                        self.removeData($dialog.data('item')).then(function() {
-                            $dialog.dialog('close');
-                        });
-                    }
+                    'class': 'critical -fn-delete'
                 });
             }
 
@@ -367,8 +400,10 @@
                     $(this).dialog('close');
                 }
             });
+            var noop = function() {};
             for (var i = 0; i < buttons.length; ++i) {
                 buttons[i]['class'] = ['button btn', buttons[i]['class'] || ''].join(' ').replace(/\s+$/, '');
+                buttons[i]['click'] = buttons[i].click || noop;
             }
             return buttons;
         },
@@ -376,35 +411,7 @@
             var widget = this;
             $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
 
-            this.element.on('click', '.-fn-create', function() {
-                widget.openEditDialog({});
-            });
-
-            this.element.on('click', 'table tbody tr .-fn-export', function() {
-                widget.exportData($(this).closest('tr').data('item'));
-            });
-
-            this.element.on('click', 'table tbody tr .-fn-export-html', function() {
-                widget.exportHtml($(this).closest('tr').data('item'));
-            });
-
-            this.element.on('click', 'table tbody tr .-fn-edit', function() {
-                widget.openEditDialog($(this).closest('tr').data('item'));
-            });
-
-            this.element.on('click', 'table tbody tr .-fn-delete', function() {
-                var item = $(this).closest('tr').data('item');
-                widget.removeData(item).then(function() {
-                    var $dialog = $('.qb-dialog .ui-dialog-content').filter(function() {
-                        return $(this).data('item') === item;
-                    });
-                    $dialog.dialog('destroy');
-                });
-            });
-
-            this.element.on('click', 'table tbody tr .-fn-execute', function() {
-                widget.displayResults($(this).closest('tr').data('item'));
-            });
+            this._initElementEvents();
 
             widget.query("select").done(function(results) {
                 widget.renderQueryList(results);
