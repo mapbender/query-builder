@@ -225,7 +225,7 @@
                     width: 1000,
                     height: 400,
                     resizable: true,
-                    buttons: [widget.exportButton, widget.exportHtmlButton, widget.closeButton]
+                    buttons: widget._getDialogButtonsOption(['export', 'export-html'])
                 });
                 if (typeof ($dialog.dialogExtend) === 'function') {
                     $dialog.dialogExtend({
@@ -266,57 +266,8 @@
          * @param item
          */
         openEditDialog: function(item) {
-            var widget = this;
-            var config = widget.options;
-            var buttons = [];
+            var buttons = this._getDialogButtonsOption(['save', 'execute', 'export', 'export-html', 'delete']);
 
-            if (this.options.allowSave) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Save'),
-                    'class': 'button btn',
-                    click:     function(e) {
-                        var isNew = !item || !item.id;
-                        var $dialog = $(this);
-                        var mergedData = widget.mergeDialogData($dialog);
-
-                        widget.saveData(mergedData).done(function(savedItem) {
-                            Object.assign(mergedData, savedItem);
-                            if (isNew) {
-                                widget.addQueryRow(savedItem);
-                            } else {
-                                widget.redrawListTable();
-                            }
-                            $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
-                        });
-                    }
-                });
-            }
-            if (this.options.allowExecute) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Execute'),
-                    'class': 'button critical btn',
-                    click: function() {
-                        widget.displayResults(widget.mergeDialogData($(this)));
-                    }
-                });
-            }
-
-            config.allowExport && buttons.push(widget.exportButton);
-            config.allowExport && buttons.push(widget.exportHtmlButton);
-            if (this.options.allowRemove) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Remove'),
-                    'class': 'button critical btn',
-                    click: function() {
-                        var $dialog = $(this);
-                        widget.removeData($dialog.data('item')).then(function() {
-                            $dialog.dialog('close');
-                        });
-                    }
-                });
-            }
-
-            buttons.push(widget.closeButton);
             var $form = this.editTemplate.clone().data("item", item);
             $(':input[name]', $form).each(function() {
                 var name = this.name;
@@ -340,7 +291,87 @@
             }
             return $form;
         },
+        /**
+         * @param {Array<string>} functions
+         * @return {Array<Object>}
+         * @private
+         */
+        _getDialogButtonsOption: function(functions) {
+            var buttons = [];
+            var self = this;
+            if (this.options.allowSave && -1 !== functions.indexOf('save')) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.Save'),
+                    'class': 'button btn',
+                    click: function() {
+                        var $dialog = $(this);
+                        var item = $dialog.data('item');
+                        var isNew = !item || !item.id;
+                        var mergedData = self.mergeDialogData($dialog);
 
+                        self.saveData(mergedData).done(function(savedItem) {
+                            Object.assign(mergedData, savedItem);
+                            if (isNew) {
+                                self.addQueryRow(savedItem);
+                            } else {
+                                self.redrawListTable();
+                            }
+                            $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
+                        });
+                    }
+                });
+            }
+            if (this.options.allowExecute && -1 !== functions.indexOf('execute')) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.Execute'),
+                    'class': 'critical',
+                    click: function() {
+                        self.displayResults(self.mergeDialogData($(this)));
+                    }
+                });
+            }
+
+            if (this.options.allowExport && -1 !== functions.indexOf('export')) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.Export'),
+                    click: function() {
+                        self.exportData($(this).data("item"));
+                    }
+                });
+            }
+            if (this.options.allowExport && -1 !== functions.indexOf('export-html')) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.HTML-Export'),
+                    click: function() {
+                        self.exportHtml($(this).data("item"));
+                    }
+                });
+            }
+            if (this.options.allowRemove && -1 !== functions.indexOf('delete')) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.Remove'),
+                    'class': 'critical',
+                    click: function() {
+                        var $dialog = $(this);
+                        self.removeData($dialog.data('item')).then(function() {
+                            $dialog.dialog('close');
+                        });
+                    }
+                });
+            }
+
+            buttons.push({
+                text: Mapbender.trans('mb.query.builder.Cancel'),
+                'class': 'critical',
+                click: function() {
+                    $(this).dialog('close');
+                }
+            });
+            for (var i = 0; i < buttons.length; ++i) {
+                buttons[i]['class'] = ['button btn', buttons[i]['class'] || ''].join(' ').replace(/\s+$/, '');
+            }
+            return buttons;
+        },
         _initialize: function() {
             var widget = this;
             $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
@@ -349,45 +380,14 @@
                 widget.openEditDialog({});
             });
 
-            this.exportButton = {
-                text: Mapbender.trans('mb.query.builder.Export'),
-                className: 'fa-download',
-                'class': 'button btn',
-                click: function() {
-                    widget.exportData($(this).data("item"));
-                }
-            };
             this.element.on('click', 'table tbody tr .-fn-export', function() {
                 widget.exportData($(this).closest('tr').data('item'));
             });
 
-            this.exportHtmlButton = {
-                text: Mapbender.trans('mb.query.builder.HTML-Export'),
-                className: 'fa-table',
-                'class': 'button btn',
-                click: function() {
-                    widget.exportHtml($(this).data("item"));
-                }
-            };
             this.element.on('click', 'table tbody tr .-fn-export-html', function() {
                 widget.exportHtml($(this).closest('tr').data('item'));
             });
 
-            this.closeButton = {
-                text: Mapbender.trans('mb.query.builder.Cancel'),
-                'class': 'button critical btn',
-                click: function() {
-                    $(this).dialog('close');
-                }
-            };
-
-            this.editButton = {
-                text: Mapbender.trans('mb.query.builder.Edit'),
-                className: 'fa-edit',
-                click:     function(e) {
-                    widget.openEditDialog($(this).data("item"));
-                }
-            };
             this.element.on('click', 'table tbody tr .-fn-edit', function() {
                 widget.openEditDialog($(this).closest('tr').data('item'));
             });
@@ -415,13 +415,13 @@
 
             if (this.options.allowExport) {
                 buttons.push({
-                    iconClass: this.exportButton.className,
-                    title: this.exportButton.text,
+                    title: Mapbender.trans('mb.query.builder.Export'),
+                    iconClass: 'fa-download',
                     fnClass: '-fn-export'
                 });
                 buttons.push({
-                    iconClass: this.exportHtmlButton.className,
-                    title: this.exportHtmlButton.text,
+                    title: Mapbender.trans('mb.query.builder.HTML-Export'),
+                    iconClass: 'fa-table',
                     fnClass: '-fn-export-html'
                 });
             }
@@ -434,8 +434,8 @@
             }
             if (this.options.allowEdit) {
                 buttons.push({
-                    iconClass: this.editButton.className,
-                    title: this.editButton.text,
+                    title: Mapbender.trans('mb.query.builder.Edit'),
+                    iconClass: 'fa-edit',
                     fnClass: '-fn-edit'
                 });
             }
