@@ -269,17 +269,18 @@
             var buttons = [];
 
             if (this.options.allowSave) {
-                var isNew = !item || !item.id;
                 buttons.push({
                     text: Mapbender.trans('mb.query.builder.Save'),
                     'class': 'button btn',
                     click:     function(e) {
+                        var isNew = !item || !item.id;
                         var $dialog = $(this);
                         var mergedData = widget.mergeDialogData($dialog);
 
-                        widget.saveData(mergedData).done(function() {
+                        widget.saveData(mergedData).done(function(savedItem) {
+                            Object.assign(mergedData, savedItem);
                             if (isNew) {
-                                widget.addQueryRow(mergedData);
+                                widget.addQueryRow(savedItem);
                             } else {
                                 widget.redrawListTable();
                             }

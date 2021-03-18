@@ -230,7 +230,7 @@ class QueryBuilderElement extends Element
                 }
                 $dataStore = $this->getDataStore($configuration['source']);
                 $dataItem = $dataStore->save($requestService->request->get('item'));
-                $results[] = $dataItem;
+                $results = $dataItem->toArray();
                 break;
 
             case 'remove':
