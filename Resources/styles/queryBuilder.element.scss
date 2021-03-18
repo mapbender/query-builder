@@ -43,8 +43,14 @@
 }
 
 .qb-dialog {
-  // for jqueryDialogExtend
   .ui-dialog-titlebar {
+    .close {
+      line-height: inherit;
+      margin-top: 0;
+    }
+
+
+  // for jqueryDialogExtend
     .ui-dialog-titlebar-buttonpane {
       display: inline-block;
       white-space: nowrap;
