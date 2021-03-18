@@ -8,5 +8,6 @@
 * Fix edit dialog staying open for Query deleted via table interaction
 * Fix broken text messages after successful Query save and delete
 * Fix memory leaks when opening / closing dialogs
+* Add explanatory tooltips to Query listing table
 * Mark table-embedded delete button in red
 * Remove all usages of (undeclared dependency) vis-ui.js
