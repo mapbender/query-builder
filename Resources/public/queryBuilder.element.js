@@ -301,7 +301,18 @@
 
             config.allowExport && buttons.push(widget.exportButton);
             config.allowExport && buttons.push(widget.exportHtmlButton);
-            config.allowRemove && buttons.push(widget.removeButton);
+            if (this.options.allowRemove) {
+                buttons.push({
+                    text: Mapbender.trans('mb.query.builder.Remove'),
+                    'class': 'button critical btn',
+                    click: function() {
+                        var $dialog = $(this);
+                        widget.removeData($dialog.data('item')).then(function() {
+                            $dialog.dialog('close');
+                        });
+                    }
+                });
+            }
 
             buttons.push(widget.closeButton);
             var $form = this.editTemplate.clone().data("item", item);
@@ -379,17 +390,6 @@
                 widget.openEditDialog($(this).closest('tr').data('item'));
             });
 
-            this.removeButton = {
-                text: Mapbender.trans('mb.query.builder.Remove'),
-                className: 'fa-remove',
-                'class':   'button critical btn',
-                click:     function() {
-                    var $dialog = $(this);
-                    widget.removeData($dialog.data('item')).then(function() {
-                        $dialog.dialog('close');
-                    });
-                }
-            };
             this.element.on('click', 'table tbody tr .-fn-delete', function() {
                 var item = $(this).closest('tr').data('item');
                 widget.removeData(item).then(function() {
@@ -443,9 +443,9 @@
             }
             if (this.options.allowRemove) {
                 buttons.push({
-                    iconClass: this.removeButton.className,
-                    title: this.removeButton.text,
-                    fnClass: '-fn-delete'
+                    title: Mapbender.trans('mb.query.builder.Remove'),
+                    iconClass: 'fa-remove',
+                    fnClass: '-fn-delete critical'
                 });
             }
 
