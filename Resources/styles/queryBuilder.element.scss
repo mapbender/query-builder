@@ -17,19 +17,13 @@
 
     > .dataTables_wrapper {
       > .dataTables_filter > label {
-        width: 100%;
-        line-height: 14px;
-        > input[type="search"] {
+        display: block;
+        input {
           display: block;
           width: 100%;
-          margin-bottom: 8px;
           border: 1px solid #c0c0c0;
-          color: #555;
-          font-weight: normal;
-          height: 29px;
-          padding: 2px 24px 2px 7px;
-          line-height: 1.42857143;
         }
+        margin-bottom: 8px;
       }
     }
   }
