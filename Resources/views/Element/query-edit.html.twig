@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-xs-5 col-sm-5">
+        <div class="form-group">
+            <label for="{{ configuration.titleFieldName }}">{{ 'mb.query.builder.sql.title' | trans }}</label>
+            <input name="{{ configuration.titleFieldName }}" type="text" class="form-control" placeholder={# @todo: translate #}"Query name">
+        </div>
+    </div>
+    <div class="col-xs-3 col-sm-3">
+        <div class="form-group">
+            <label for="{{ configuration.connectionFieldName }}">{{ 'mb.query.builder.sql.connection.name' | trans }}</label>
+            <select name="{{ configuration.connectionFieldName }}" class="form-control">
+                {%- for choice in connectionNames -%}
+                <option value="{{ choice }}">{{ choice }}</option>
+                {%- endfor -%}
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-2 col-sm-2">
+        <div class="form-group">
+            <label for="{{ configuration.orderByFieldName }}">{# @todo: translate #}Order</label>
+            <input name="{{ configuration.orderByFieldName }}" type="text" class="form-control">
+        </div>
+    </div>
+    <div class="col-xs-2 col-sm-2">
+        <div class="form-group checkbox">
+            <label for="{{ configuration.publicFieldName }}">
+                <input type="checkbox" name="{{ configuration.publicFieldName }}" value="1">
+                {{ 'mb.query.builder.sql.publish' | trans }}
+            </label>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label for="{{ configuration.sqlFieldName }}">SQL</label>
+    <textarea name="{{ configuration.sqlFieldName }}" class="form-control" rows="16"></textarea>
+</div>
