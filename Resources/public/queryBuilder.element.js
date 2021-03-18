@@ -361,99 +361,93 @@
          */
         _getDialogButtonsOption: function(functions) {
             var buttons = [];
-            if (this.options.allowSave && -1 !== functions.indexOf('save')) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Save'),
-                    'class': '-fn-save'
-                });
-            }
-            if (this.options.allowExecute && -1 !== functions.indexOf('execute')) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Execute'),
-                    'class': '-fn-execute critical'
-                });
-            }
-
-            if (this.options.allowExport && -1 !== functions.indexOf('export')) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Export'),
-                    'class': '-fn-export'
-                });
-            }
-            if (this.options.allowExport && -1 !== functions.indexOf('export-html')) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.HTML-Export'),
-                    'class': '-fn-export-html'
-                });
-            }
-            if (this.options.allowRemove && -1 !== functions.indexOf('delete')) {
-                buttons.push({
-                    text: Mapbender.trans('mb.query.builder.Remove'),
-                    'class': 'critical -fn-delete'
-                });
+            var noop = function() {};
+            var notEmpty = function(x) { return !!x; };
+            for (var i = 0; i < functions.length; ++i) {
+                var buttonDef = this.interactionButtons_[functions[i]];
+                if (buttonDef) {
+                    var className = ['button btn', buttonDef.fnClass, buttonDef.colorClass].filter(notEmpty).join(' ');
+                    buttons.push({
+                        text: buttonDef.label,
+                        'class': className,
+                        click: noop
+                    });
+                }
             }
 
             buttons.push({
                 text: Mapbender.trans('mb.query.builder.Cancel'),
-                'class': 'critical',
+                'class': 'button btn critical',
                 click: function() {
                     $(this).dialog('close');
                 }
             });
-            var noop = function() {};
-            for (var i = 0; i < buttons.length; ++i) {
-                buttons[i]['class'] = ['button btn', buttons[i]['class'] || ''].join(' ').replace(/\s+$/, '');
-                buttons[i]['click'] = buttons[i].click || noop;
-            }
             return buttons;
         },
         _initialize: function() {
             var widget = this;
             $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
-
+            this.interactionButtons_ = this._initInteractionButtons();
             this._initElementEvents();
 
             widget.query("select").done(function(results) {
                 widget.renderQueryList(results);
             });
         },
-        renderQueryList: function(queries) {
-            var buttons = [];
-
+        _initInteractionButtons: function() {
+            var defs = {};
             if (this.options.allowExport) {
-                buttons.push({
-                    title: Mapbender.trans('mb.query.builder.Export'),
+                defs['export'] = {
+                    label: Mapbender.trans('mb.query.builder.Export'),
                     iconClass: 'fa-download',
                     fnClass: '-fn-export'
-                });
-                buttons.push({
-                    title: Mapbender.trans('mb.query.builder.HTML-Export'),
+                };
+                defs['export-html'] = {
+                    label: Mapbender.trans('mb.query.builder.HTML-Export'),
                     iconClass: 'fa-table',
                     fnClass: '-fn-export-html'
-                });
+                };
             }
             if (this.options.allowExecute) {
-                buttons.push({
+                defs['execute'] = {
+                    label: Mapbender.trans('mb.query.builder.Execute'),
                     iconClass: 'fa-play',
-                    title: Mapbender.trans('mb.query.builder.Execute'),
                     fnClass: '-fn-execute'
-                });
+                };
             }
             if (this.options.allowEdit) {
-                buttons.push({
-                    title: Mapbender.trans('mb.query.builder.Edit'),
+                defs['edit'] = {
+                    label: Mapbender.trans('mb.query.builder.Edit'),
                     iconClass: 'fa-edit',
                     fnClass: '-fn-edit'
-                });
+                };
             }
             if (this.options.allowRemove) {
-                buttons.push({
-                    title: Mapbender.trans('mb.query.builder.Remove'),
+                defs['delete'] = {
+                    label: Mapbender.trans('mb.query.builder.Remove'),
                     iconClass: 'fa-remove',
-                    fnClass: '-fn-delete critical'
-                });
+                    fnClass: '-fn-delete',
+                    colorClass: 'critical'
+                };
+            }
+            if (this.options.allowSave) {
+                defs['save'] = {
+                    label: Mapbender.trans('mb.query.builder.Save'),
+                    fnClass: '-fn-save'
+                };
             }
 
+            return defs;
+        },
+        renderQueryList: function(queries) {
+            var interactions = ['export', 'export-html', 'execute', 'edit', 'delete'];
+            var buttons =[];
+            for (var i = 0; i < interactions.length; ++i) {
+                var buttonDef = this.interactionButtons_[interactions[i]];
+                if (buttonDef) {
+                    buttons.push(buttonDef);
+                }
+            }
             var columnsOption = this.options.tableColumns.slice();
             if (buttons.length) {
                 var buttonMarkup = buttons.map(function(buttonDef) {
@@ -464,7 +458,8 @@
                     var $button = $(document.createElement('span'))
                         .addClass('button')
                         .addClass(buttonDef.fnClass)
-                        .attr('title', buttonDef.title)
+                        .addClass(buttonDef.colorClass || '')
+                        .attr('title', buttonDef.label)
                         .append($icon)
                     ;
                     return $button.get(0).outerHTML;
