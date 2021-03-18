@@ -216,7 +216,7 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
                 if (!$configuration['allowExecute']) {
                     throw new AccessDeniedHttpException();
                 }
-                $results = $this->executeQuery(intval($requestService->request->get('id')));
+                $results = $this->executeQuery(intval($requestService->query->get('id')));
                 break;
 
             case 'save':

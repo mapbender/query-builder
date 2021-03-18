@@ -91,7 +91,7 @@
             this.interactionButtons_ = this._initInteractionButtons();
             this._initElementEvents();
 
-            widget.query("select").done(function(results) {
+            widget.query("select", null, 'GET').done(function(results) {
                 widget.renderQueryList(results);
             });
         },
@@ -216,7 +216,7 @@
          */
         displayResults: function(item) {
             var widget = this;
-            return widget.query("execute", {id: item.id}).then(function(results) {
+            return widget.query("execute", {id: item.id}, 'GET').then(function(results) {
                 var $content = $(document.createElement('div'))
                     .data("item", item)
                     .addClass('queryBuilder-results')
@@ -505,11 +505,11 @@
          * @return xhr jQuery XHR object
          * @version 0.2
          */
-        query: function(uri, request) {
+        query: function(uri, request, method) {
             var widget = this;
             return $.ajax({
                 url:         widget.elementUrl + uri,
-                type:        'POST',
+                type: method || 'POST',
                 dataType:    "json",
                 data: request
             }).error(function(xhr) {
