@@ -2,9 +2,6 @@
   .toolbar {
     margin-bottom: 10px;
   }
-  &.modal-body {
-    padding: 0;
-  }
   table .button-navigation .button {
     padding: 0 3px;
     line-height: 2;
@@ -12,9 +9,8 @@
   }
 }
 
-.mb-element-queryBuilder.modal-body {
-  > .mapbender-element-result-table {
-
+.mb-element-queryBuilder {
+  .mapbender-element-result-table {
     > .dataTables_wrapper {
       > .dataTables_filter > label {
         display: block;
