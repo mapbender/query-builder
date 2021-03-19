@@ -189,25 +189,15 @@
             });
         },
 
-        /**
-         * Get column names
-         *
-         * @param items
-         * @returns {Array}
-         */
-        getColumnNames: function(items) {
-            var columns = [];
-            if(items.length) {
-                for (var key in items[0]) {
-                    columns.push({
-                        data:  key,
-                        title: key
-                    });
-                }
-            }
-            return columns;
+        _escapeHtml: function(value) {
+            'use strict';
+            return ('' + (value || '')).replace(/["&'\/<>]/g, function (a) {
+                return {
+                    '"': '&quot;', '&': '&amp;', "'": '&#39;',
+                    '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+                }[a];
+            });
         },
-
         /**
          * Executes SQL by ID and display results as popups
          *
@@ -221,13 +211,34 @@
                     .data("item", item)
                     .addClass('queryBuilder-results')
                 ;
+                var columnsOption;
+                if (!results || !results.length) {
+                    columnsOption = [{data: null, title: ''}];
+                } else {
+                    var columnNames = Object.keys(results[0]);
+                    columnsOption = columnNames.map(function(name) {
+                        return {
+                            title: name,
+                            render: function(data, type, row) {
+                                switch (type) {
+                                    case 'display':
+                                        return widget._escapeHtml(row[name]);
+                                    case 'filter':
+                                        return ('' + row[name]) || undefined;
+                                    default:
+                                        return row[name];
+                                }
+                            }
+                         };
+                    });
+                }
                 $content.append(widget.initDataTable({
                     selectable: false,
                     paging: false,
                     data: results,
                     searching: false,
                     info: false,
-                    columns: widget.getColumnNames(results)
+                    columns: columnsOption
                 }));
 
                 var title = Mapbender.trans('mb.query.builder.Results') + ": " + item[widget.options.titleFieldName];

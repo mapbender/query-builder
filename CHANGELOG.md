@@ -2,6 +2,8 @@
 * Fix functional incompatibility with Mapbender 3.2
 * Fix styling conflicts with / styling dependencies on specific Mapbender versions
 * Fix backend form type incompatibility with Symfony 3+
+* Fix unescaped HTML / XSS vulnerability in Query results
+* Fix error displaying empty Query result
 * Fix outdated table state after editing existing Query
 * Fix table not showing row for newly created Query until reload
 * Fix no working interactions with newly created item until reload
