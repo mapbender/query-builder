@@ -221,13 +221,19 @@
                     .data("item", item)
                     .addClass('queryBuilder-results')
                 ;
+                var columnsOption;
+                if (!results || !results.length) {
+                    columnsOption = [{data: null, title: ''}];
+                } else {
+                    columnsOption = widget.getColumnNames(results)
+                }
                 $content.append(widget.initDataTable({
                     selectable: false,
                     paging: false,
                     data: results,
                     searching: false,
                     info: false,
-                    columns: widget.getColumnNames(results)
+                    columns: columnsOption
                 }));
 
                 var title = Mapbender.trans('mb.query.builder.Results') + ": " + item[widget.options.titleFieldName];
