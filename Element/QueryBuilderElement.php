@@ -2,15 +2,11 @@
 namespace Mapbender\QueryBuilderBundle\Element;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\CoreBundle\Component\Element;
 use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
 use Mapbender\CoreBundle\Entity;
-use Mapbender\DataSourceBundle\Component\RepositoryRegistry;
-use Mapbender\DataSourceBundle\Entity\DataItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -176,48 +172,23 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
 
         switch ($action) {
             case 'select':
-                $results   = array();
-                $dataStore = $this->getDataStore($configuration['source']);
-                foreach ($dataStore->search(array()) as $dataItem) {
-                    $results[] = $dataItem->toArray();
-                }
-                break;
-
+                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
             case 'export':
-                if (!$configuration['allowExport']) {
-                    throw new AccessDeniedHttpException();
-                }
-                $results = $this->executeQuery(intval($requestService->request->get('id')));
-                return new ExportResponse($results, 'export-list', ExportResponse::TYPE_XLS);
-
-                break;
-
             case 'exportHtml':
                 if (!$configuration['allowExport']) {
                     throw new AccessDeniedHttpException();
                 }
-                $id = $requestService->query->get('id');
-                $results = $this->executeQuery($id);
-                $query = $this->getQuery($id, $configuration['source']);
-                $title   = $query->getAttribute($configuration['titleFieldName']);
-                $content = $this->container->get('templating')->render('@MapbenderQueryBuilder/export.html.twig', array(
-                    'title' => $title,
-                    'rows' => $results,
-                ));
-                return new Response($content);
-
+                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
             case 'execute':
                 if (!$configuration['allowExecute']) {
                     throw new AccessDeniedHttpException();
                 }
-                $results = $this->executeQuery(intval($requestService->query->get('id')));
-                break;
-
+                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
             case 'save':
                 if (!$configuration['allowCreate'] && !$configuration['allowSave']) {
                     throw new AccessDeniedHttpException();
                 }
-                $dataStore = $this->getDataStore($configuration['source']);
+                $dataStore = $this->getHttpHandler()->getDataStore($this->entity);
                 $dataItem = $dataStore->save($requestService->request->get('item'));
                 $results = $dataItem->toArray();
                 break;
@@ -226,10 +197,7 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
                 if (!$configuration['allowRemove']) {
                     throw new AccessDeniedHttpException();
                 }
-                $dataStore = $this->getDataStore($configuration['source']);
-                $results[] = $dataStore->remove($requestService->request->get('id'));
-                break;
-
+                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
             default:
                 throw new NotFoundHttpException("No such action {$action}");
         }
@@ -238,68 +206,21 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
     }
 
     /**
-     * @return Registry
-     */
-    protected function getDoctrine()
-    {
-        /** @var Registry $registry */
-        $registry = $this->container->get("doctrine");
-        return $registry;
-    }
-
-    /**
      * @return string[]
      */
     protected function getConnectionNames()
     {
-        return array_keys($this->getDoctrine()->getConnectionNames());
+        /** @var Registry $registry */
+        $registry = $this->container->get("doctrine");
+        return array_keys($registry->getConnectionNames());
     }
 
     /**
-     * Execute query by ID
-     *
-     * @param $id
-     * @return array
+     * @return HttpHandler
      */
-    protected function executeQuery($id)
+    private function getHttpHandler()
     {
-        $configuration = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
-        $query = $this->getQuery($id, $configuration['source']);
-        $sql = $query->getAttribute($configuration['sqlFieldName']);
-        $connectionName = $query->getAttribute($configuration['connectionFieldName']);
-        $connection = $this->getDoctrine()->getConnection($connectionName);
-        $results       = $connection->fetchAll($sql);
-        return $results;
-    }
-
-    /**
-     * @param string $name
-     * @return \Mapbender\DataSourceBundle\Component\DataStore
-     */
-    protected function getDataStore($name)
-    {
-        if (!is_string($name)) {
-            // @todo: warn or throw
-            $values = (array)$name;
-            $name = $values['source'];
-        }
-        /** @var RepositoryRegistry $registry */
-        $registry = $this->container->get('mb.querybuilder.registry');
-        $config = $registry->getDataStoreDeclarations()[$name];
-        return $registry->dataStoreFactory($config);
-    }
-
-    /**
-     * Get SQL query by id
-     *
-     * @param int $id
-     * @param string $dataStoreName
-     * @return DataItem
-     */
-    protected function getQuery($id, $dataStoreName)
-    {
-        /** @see \Mapbender\DataSourceBundle\Component\DataStore::getById() */
-        return $this->getDataStore($dataStoreName)->getById($id);
+        return $this->container->get('mb.querybuilder.http_handler');
     }
 
 }
