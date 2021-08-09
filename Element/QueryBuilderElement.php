@@ -128,7 +128,7 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
                 '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
             ),
             'trans' => array(
-                'MapbenderQueryBuilderBundle:Element:queryBuilder.json.twig',
+                'mb.query.builder.*',
             ),
         );
     }

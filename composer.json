@@ -9,10 +9,10 @@
     ],
     "require": {
         "php": ">=5.3.3",
+        "mapbender/mapbender": "^3.0.8.6",
         "mapbender/data-source": "0.x"
     },
     "conflict": {
-        "mapbender/mapbender": "<3.0.8",
         "symfony/symfony": "<2.4"
     },
     "autoload": {
