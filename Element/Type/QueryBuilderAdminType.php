@@ -13,9 +13,9 @@ class QueryBuilderAdminType extends AbstractType
     /**
      * @param mixed[]|null $dataStores
      */
-    public function __construct($dataStores)
+    public function __construct(array $dataStores)
     {
-        $this->dataStoreNames = array_keys($dataStores ?: array());
+        $this->dataStoreNames = array_keys($dataStores);
     }
 
 
