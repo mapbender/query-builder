@@ -6,6 +6,7 @@ use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\CoreBundle\Component\Element;
 use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
 use Mapbender\CoreBundle\Entity;
+use Mapbender\DataSourceBundle\Component\RepositoryRegistry;
 use Mapbender\DataSourceBundle\Entity\DataItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -282,8 +283,10 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
             $values = (array)$name;
             $name = $values['source'];
         }
-        /** @see \Mapbender\DataSourceBundle\Component\DataStoreService::get() */
-        return $this->container->get("data.source")->get($name);
+        /** @var RepositoryRegistry $registry */
+        $registry = $this->container->get('mb.querybuilder.registry');
+        $config = $registry->getDataStoreDeclarations()[$name];
+        return $registry->dataStoreFactory($config);
     }
 
     /**

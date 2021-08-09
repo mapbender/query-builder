@@ -7,6 +7,10 @@
         <parameter key="dataStores" type="collection" />
     </parameters>
     <services>
+        <service id="mb.querybuilder.registry" class="Mapbender\DataSourceBundle\Component\RepositoryRegistry">
+            <argument type="service" id="mbds.default_datastore_factory"/>
+            <argument>%dataStores%</argument>
+        </service>
         <service id="mapbender.form_type.element.query_builder" class="Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType">
             <tag name="form.type" />
             <argument>%dataStores%</argument>

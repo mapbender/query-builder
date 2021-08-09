@@ -8,9 +8,9 @@
         {"name": "Andriy Oblivantsev",  "email": "andriy.oblivantsev@wheregroup.com"}
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.4",
         "mapbender/mapbender": "^3.0.8.6",
-        "mapbender/data-source": "0.x"
+        "mapbender/data-source": "~0.1.22 || ^0.2"
     },
     "conflict": {
         "symfony/symfony": "<2.4"
