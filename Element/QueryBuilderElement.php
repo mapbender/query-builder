@@ -14,13 +14,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class QueryBuilderElement
- *
- * TODO:
- *  * Syntax check with EXPLAIN
- *  *
- *
- * @package Mapbender\DataSourceBundle\Element
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
 class QueryBuilderElement extends Element implements ConfigMigrationInterface
