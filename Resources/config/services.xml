@@ -2,10 +2,14 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <!-- ensure required parameter is defined (parameters.yml will win this) -->
+        <parameter key="dataStores" type="collection" />
+    </parameters>
     <services>
         <service id="mapbender.form_type.element.query_builder" class="Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType">
             <tag name="form.type" />
-            <argument on-invalid="null">%dataStores%</argument>
+            <argument>%dataStores%</argument>
         </service>
     </services>
 </container>
