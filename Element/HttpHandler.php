@@ -43,16 +43,12 @@ class HttpHandler
             case 'select':
                 return $this->selectAction($element);
             case 'execute':
-                // @todo: integrate "allowExecute" check
                 return $this->executeAction($element, $request);
             case 'remove':
-                // @todo: integrate "allowRemove" check
                 return $this->removeAction($element, $request);
             case 'export':
-                // @todo: integrate "allowExport" check
                 return $this->exportAction($element, $request);
             case 'exportHtml':
-                // @todo: integrate "allowExport" check
                 return $this->exportHtmlAction($element, $request);
             case 'save':
                 return $this->saveAction($element, $request);
