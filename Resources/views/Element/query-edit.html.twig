@@ -1,28 +1,18 @@
+{%- form_theme form 'bootstrap_3_layout.html.twig' -%}
+
 <div class="row">
     <div class="col-xs-6 col-sm-6">
-        <div class="form-group">
-            <label for="{{ configuration.titleFieldName }}">{{ 'mb.query.builder.sql.title' | trans }}</label>
-            <input name="{{ configuration.titleFieldName }}" type="text" class="form-control" placeholder={# @todo: translate #}"Query name">
-        </div>
+        {{- form_row(form.title) -}}
     </div>
     <div class="col-xs-3 col-sm-3">
-        <div class="form-group">
-            <label for="{{ configuration.connectionFieldName }}">{{ 'mb.query.builder.sql.connection.name' | trans }}</label>
-            <select name="{{ configuration.connectionFieldName }}" class="form-control">
-                {%- for choice in connectionNames -%}
-                <option value="{{ choice }}">{{ choice }}</option>
-                {%- endfor -%}
-            </select>
-        </div>
+        {{- form_row(form.connection) -}}
     </div>
     <div class="col-xs-3 col-sm-3">
-        <div class="form-group">
-            <label for="{{ configuration.orderByFieldName }}">{# @todo: translate #}Order</label>
-            <input name="{{ configuration.orderByFieldName }}" type="text" class="form-control">
-        </div>
+        {{- form_row(form.order) -}}
     </div>
 </div>
-<div class="form-group">
-    <label for="{{ configuration.sqlFieldName }}">SQL</label>
-    <textarea name="{{ configuration.sqlFieldName }}" class="form-control" rows="16"></textarea>
+<div class="row">
+    <div class="col-12 col-xs-12">
+        {{- form_row(form.sql) -}}
+    </div>
 </div>

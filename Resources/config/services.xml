@@ -20,5 +20,9 @@
             <tag name="form.type" />
             <argument>%dataStores%</argument>
         </service>
+        <service id="mb.querybuilder.form_type.ConnectionChoiceType" class="Mapbender\QueryBuilderBundle\Form\ConnectionChoiceType">
+            <tag name="form.type" />
+            <argument type="service" id="doctrine" />
+        </service>
     </services>
 </container>

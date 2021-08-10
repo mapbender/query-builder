@@ -1,10 +1,10 @@
 <?php
 namespace Mapbender\QueryBuilderBundle\Element;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Mapbender\CoreBundle\Component\Element;
 use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
 use Mapbender\CoreBundle\Entity;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -93,10 +93,13 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
     public function getFrontendTemplateVars()
     {
         $config = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
+        /** @var FormFactoryInterface $formFactory */
+        $formFactory = $this->container->get('form.factory');
+        $form = $formFactory->createNamed(null, 'Mapbender\QueryBuilderBundle\Form\QueryType');
         return array(
             'id' => $this->entity->getId(),
+            'form' => $form->createView(),
             'configuration' => $config,
-            'connectionNames' => $this->getConnectionNames(),
         );
     }
 
@@ -166,15 +169,5 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
         /** @ŧodo 1.2: remove config merging (no longer needed on MB >= 3.2.6) */
         $this->entity->setConfiguration($this->entity->getConfiguration() + $this->getDefaultConfiguration());
         return $handler->handleRequest($this->entity, $request);
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getConnectionNames()
-    {
-        /** @var Registry $registry */
-        $registry = $this->container->get("doctrine");
-        return array_keys($registry->getConnectionNames());
     }
 }

@@ -73,6 +73,7 @@
             maxResults: 100
         },
         editTemplate: null,
+        editFieldMap_: null,
 
         _create: function() {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
@@ -83,6 +84,12 @@
                     column.title = Mapbender.trans(translationKey);
                 }
             });
+            this.editFieldMap_ = {
+                title: this.options.titleFieldName,
+                connection: this.options.connectionFieldName,
+                sql: this.options.sqlFieldName,
+                order: this.options.orderByFieldName
+            };
             this._initialize();
         },
         _initialize: function() {
@@ -274,9 +281,11 @@
 
         mergeDialogData: function($dialog) {
             var formData = {};
+            var nameMap = this.editFieldMap_;
             $(':input[name]', $dialog).each(function() {
                 var $input = $(this);
-                formData[this.name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
+                var name = nameMap[this.name] || this.name;
+                formData[name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
             });
             // NOTE: original data item is modified
             return Object.assign($dialog.data("item"), formData);
@@ -291,8 +300,9 @@
             var buttons = this._getDialogButtonsOption(['save', 'execute', 'export', 'export-html', 'delete']);
 
             var $form = this.editTemplate.clone().data("item", item);
+            var nameMap = this.editFieldMap_;
             $(':input[name]', $form).each(function() {
-                var name = this.name;
+                var name = nameMap[this.name] || this.name;
                 var $input = $(this);
                 if (typeof (item[name]) !== 'undefined') {
                     if ($input.is(':checkbox')) {
