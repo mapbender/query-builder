@@ -12,10 +12,6 @@ $ cd application/
 $ ../composer.phar require "mapbender/query-builder"
 ```
 
-## Architecture
-
-![Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/mapbender/query-builder/master/Documents/QueryBuilder.puml)
-
 ## Contributing
 
 Please read official [contibuting documentation](https://github.com/mapbender/mapbender-starter/blob/feature/contributing-doc/CONTRIBUTING.md#modules)
