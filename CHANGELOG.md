@@ -1,3 +1,6 @@
+## 1.0.6
+* Fix initialization errors if MapbenderDataSourceBundle is not registered in kernel
+
 ## 1.0.5
 * Fix functional incompatibility with Mapbender 3.2
 * Fix styling conflicts with / styling dependencies on specific Mapbender versions
