@@ -150,7 +150,7 @@ class HttpHandler
      */
     protected function checkAccess(Element $element, Request $request)
     {
-        $config = \array_replace($this->getDefaults(), $element->getConfiguration() ?: array());
+        $config = $element->getConfiguration();
         switch ($request->attributes->get('action')) {
             default:
                 return true;
@@ -164,10 +164,5 @@ class HttpHandler
             case 'exportHtml':
                 return $config['allowExport'];
         }
-    }
-
-    protected function getConfig(Element $element)
-    {
-        return \array_replace($this->getDefaults(), $element->getConfiguration() ?: array());
     }
 }

@@ -162,6 +162,9 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
     {
         /** @var HttpHandler $handler */
         $handler = $this->container->get('mb.querybuilder.http_handler');
+        // Ensure config is merged with defaults
+        /** @ŧodo 1.2: remove config merging (no longer needed on MB >= 3.2.6) */
+        $this->entity->setConfiguration($this->entity->getConfiguration() + $this->getDefaultConfiguration());
         return $handler->handleRequest($this->entity, $request);
     }
 
