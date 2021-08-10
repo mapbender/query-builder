@@ -59,7 +59,6 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
             'orderByFieldName' => 'anzeigen_reihenfolge',
             'connectionFieldName' => 'connection_name',
             'titleFieldName' => 'name',
-            'publicFieldName' => 'anzeigen',
             'tableColumns' => array(
                 0 => array(
                     'data' => 'name',
@@ -150,7 +149,6 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
             'orderByField' => 'orderByFieldName',
             'connectionField' => 'connectionFieldName',
             'titleField' => 'titleFieldName',
-            'publicField' => 'publicFieldName',
         );
         foreach ($legacyAliases as $before => $after) {
             if (array_key_exists($before, $configuration)) {
