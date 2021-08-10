@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HttpHandler
@@ -47,6 +48,10 @@ class HttpHandler
 
     public function handleRequest(Element $element, Request $request)
     {
+        if (!$this->checkAccess($element, $request)) {
+            throw new AccessDeniedHttpException();
+        }
+
         switch ($request->attributes->get('action')) {
             case 'select':
                 return $this->selectAction($element);
@@ -62,6 +67,8 @@ class HttpHandler
             case 'exportHtml':
                 // @todo: integrate "allowExport" check
                 return $this->exportHtmlAction($element, $request);
+            case 'save':
+                return $this->saveAction($element, $request);
             default:
                 throw new NotFoundHttpException();
         }
@@ -81,6 +88,13 @@ class HttpHandler
         $query = $this->getDataStore($element)->getById($request->query->get('id'));
         // @todo: throw not found as appropriate
         return new JsonResponse($this->executeQuery($element, $query));
+    }
+
+    protected function saveAction(Element $element, Request $request)
+    {
+        $values = $request->request->get('item');
+        $item = $this->getDataStore($element)->save($values);
+        return new JsonResponse($item->toArray());
     }
 
     protected function exportAction(Element $element, Request $request)
@@ -140,5 +154,33 @@ class HttpHandler
             $dsName = QueryBuilderElement::getDefaultConfiguration()['source'];
         }
         return $this->registry->getDataStoreDeclarations()[$dsName];
+    }
+
+    /**
+     * @param Element $element
+     * @param Request $request
+     * @return bool
+     */
+    protected function checkAccess(Element $element, Request $request)
+    {
+        $config = \array_replace($this->getDefaults(), $element->getConfiguration() ?: array());
+        switch ($request->attributes->get('action')) {
+            default:
+                return true;
+            case 'execute':
+                return $config['allowExecute'];
+            case 'save':
+                return $config['allowCreate'] || $config['allowSave'];
+            case 'remove':
+                return $config['allowRemove'];
+            case 'export':
+            case 'exportHtml':
+                return $config['allowExport'];
+        }
+    }
+
+    protected function getConfig(Element $element)
+    {
+        return \array_replace($this->getDefaults(), $element->getConfiguration() ?: array());
     }
 }

@@ -5,10 +5,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Mapbender\CoreBundle\Component\Element;
 use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
 use Mapbender\CoreBundle\Entity;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author  Andriy Oblivantsev <eslider@gmail.com>
@@ -154,45 +151,11 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
     /**
      * @inheritdoc
      */
-    public function handleHttpRequest(Request $requestService)
+    public function handleHttpRequest(Request $request)
     {
-        $action = $requestService->attributes->get('action');
-        /** @var Registry $doctrine */
-        $configuration = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
-
-        switch ($action) {
-            case 'select':
-                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
-            case 'export':
-            case 'exportHtml':
-                if (!$configuration['allowExport']) {
-                    throw new AccessDeniedHttpException();
-                }
-                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
-            case 'execute':
-                if (!$configuration['allowExecute']) {
-                    throw new AccessDeniedHttpException();
-                }
-                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
-            case 'save':
-                if (!$configuration['allowCreate'] && !$configuration['allowSave']) {
-                    throw new AccessDeniedHttpException();
-                }
-                $dataStore = $this->getHttpHandler()->getDataStore($this->entity);
-                $dataItem = $dataStore->save($requestService->request->get('item'));
-                $results = $dataItem->toArray();
-                break;
-
-            case 'remove':
-                if (!$configuration['allowRemove']) {
-                    throw new AccessDeniedHttpException();
-                }
-                return $this->getHttpHandler()->handleRequest($this->entity, $requestService);
-            default:
-                throw new NotFoundHttpException("No such action {$action}");
-        }
-
-        return new JsonResponse($results);
+        /** @var HttpHandler $handler */
+        $handler = $this->container->get('mb.querybuilder.http_handler');
+        return $handler->handleRequest($this->entity, $request);
     }
 
     /**
@@ -204,13 +167,4 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
         $registry = $this->container->get("doctrine");
         return array_keys($registry->getConnectionNames());
     }
-
-    /**
-     * @return HttpHandler
-     */
-    private function getHttpHandler()
-    {
-        return $this->container->get('mb.querybuilder.http_handler');
-    }
-
 }
