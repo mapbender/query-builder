@@ -32,6 +32,19 @@ class HttpHandler
         $this->registry = $registry;
     }
 
+    public static function getDefaults()
+    {
+        return array(
+            'source' => 'default',
+            'allowRemove' => false,
+            'allowEdit' => false,
+            'allowExecute' => true,
+            'allowSave' => false,
+            'allowCreate' => false,
+            'allowExport' => true,
+        );
+    }
+
     public function handleRequest(Element $element, Request $request)
     {
         switch ($request->attributes->get('action')) {
