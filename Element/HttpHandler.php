@@ -68,8 +68,7 @@ class HttpHandler
 
     protected function executeAction(Element $element, Request $request)
     {
-        $query = $this->getDataStore($element)->getById($request->query->get('id'));
-        // @todo: throw not found as appropriate
+        $query = $this->requireQuery($element, $request->query->get('id'));
         return new JsonResponse($this->executeQuery($element, $query));
     }
 
@@ -83,17 +82,15 @@ class HttpHandler
     protected function exportAction(Element $element, Request $request)
     {
         /** @todo: fix post data usage, should be query parameter */
-        $query = $this->getDataStore($element)->getById($request->request->get('id'));
+        $query = $this->requireQuery($element, $request->request->get('id'));
         $rows = $this->executeQuery($element, $query);
-        // @todo: throw not found as appropriate
         return new ExportResponse($rows, 'export-list', ExportResponse::TYPE_XLS);
     }
 
     protected function exportHtmlAction(Element $element, Request $request)
     {
         $titleFieldName = ($element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration())['titleFieldName'];
-        $query = $this->getDataStore($element)->getById($request->query->get('id'));
-        // @todo: throw not found as appropriate
+        $query = $this->requireQuery($element, $request->query->get('id'));
         return $this->templateEngine->renderResponse('@MapbenderQueryBuilder/export.html.twig', array(
             'title' => $query->getAttribute($titleFieldName),
             'rows' => $this->executeQuery($element, $query),
@@ -159,6 +156,22 @@ class HttpHandler
             case 'export':
             case 'exportHtml':
                 return $config['allowExport'];
+        }
+    }
+
+    /**
+     * @param Element $element
+     * @param mixed $id
+     * @return DataItem
+     * @throws NotFoundHttpException
+     */
+    protected function requireQuery(Element $element, $id)
+    {
+        $query = $this->getDataStore($element)->getById($id);
+        if ($query) {
+            return $query;
+        } else {
+            throw new NotFoundHttpException();
         }
     }
 }
