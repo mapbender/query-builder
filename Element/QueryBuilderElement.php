@@ -42,7 +42,14 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
      */
     public static function getDefaultConfiguration()
     {
-        return HttpHandler::getDefaults() + array(
+        return array(
+            'source' => 'default',
+            'allowRemove' => false,
+            'allowEdit' => false,
+            'allowExecute' => true,
+            'allowSave' => false,
+            'allowCreate' => false,
+            'allowExport' => true,
             'allowSearch' => false,
             'sqlFieldName' => 'sql_definition',
             'orderByFieldName' => 'anzeigen_reihenfolge',
