@@ -53,7 +53,6 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
             'allowSave' => false,
             'allowCreate' => false,
             'allowExport' => true,
-            'allowHtmlExport' => true,
             'allowSearch' => false,
             'sqlFieldName' => 'sql_definition',
             'orderByFieldName' => 'anzeigen_reihenfolge',
