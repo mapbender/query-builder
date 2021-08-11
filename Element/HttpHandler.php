@@ -5,6 +5,7 @@ namespace Mapbender\QueryBuilderBundle\Element;
 
 
 use FOM\CoreBundle\Component\ExportResponse;
+use Mapbender\Component\Element\ElementHttpHandlerInterface;
 use Mapbender\CoreBundle\Entity\Element;
 use Mapbender\DataSourceBundle\Component\RepositoryRegistry;
 use Mapbender\DataSourceBundle\Entity\DataItem;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class HttpHandler
+class HttpHandler implements ElementHttpHandlerInterface
 {
     /** @var RegistryInterface */
     protected $doctrineRegistry;
