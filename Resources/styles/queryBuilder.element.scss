@@ -69,18 +69,31 @@
 
   .ui-dialog-content {
     padding: 10px;
+    width: auto;
+    outline: none;
+    // Fix horizontal scroll weirdness on non-resizable height: auto dialog
+    overflow: visible;
     &.queryBuilder-results {
       padding: 0;
+      overflow-y: auto;
     }
-  }
-  .row {
-    // Fix dialog horizontal overflow weirdness
-    margin-right: 0;
-    :last-child {
-      padding-right: 0;
+    .form-group {
+      font-size: 0.85rem;
+    }
+    .form-control {
+      font-size: inherit;
+    }
+    .control-label {
+      color: #707070;
     }
   }
   textarea {
     resize: none;
+  }
+  .ui-dialog-buttonpane {
+    text-align: right;
+    .ui-dialog-buttonset > * {
+      margin-left: 0.5em;
+    }
   }
 }

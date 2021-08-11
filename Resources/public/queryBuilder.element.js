@@ -7,8 +7,6 @@
                 'ui-dialog': 'ui-dialog mb-element-popup-dialog modal-content qb-dialog',
                 'ui-dialog-titlebar': 'ui-dialog-titlebar modal-header',
                 'ui-dialog-titlebar-close': 'ui-dialog-titlebar-close close',
-                'ui-dialog-content': 'ui-dialog-content modal-body',
-                'ui-dialog-buttonpane': 'ui-dialog-buttonpane modal-footer',
                 'ui-button': 'ui-button button btn'
             },
             resizable: false,
