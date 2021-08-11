@@ -24,5 +24,10 @@
             <tag name="form.type" />
             <argument type="service" id="doctrine" />
         </service>
+        <service id="mapbender.element.QueryBuilder" class="Mapbender\QueryBuilderBundle\Element\QueryBuilderElement">
+            <tag name="mapbender.element" />
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="mb.querybuilder.http_handler" />
+        </service>
     </services>
 </container>

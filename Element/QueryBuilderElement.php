@@ -1,17 +1,28 @@
 <?php
 namespace Mapbender\QueryBuilderBundle\Element;
 
-use Mapbender\CoreBundle\Component\Element;
+use Mapbender\Component\Element\AbstractElementService;
+use Mapbender\Component\Element\TemplateView;
 use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
-use Mapbender\CoreBundle\Entity;
+use Mapbender\CoreBundle\Entity\Element;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderElement extends Element implements ConfigMigrationInterface
+class QueryBuilderElement extends AbstractElementService implements ConfigMigrationInterface
 {
+    /** @var FormFactoryInterface */
+    protected $formFactory;
+    /** @var HttpHandler */
+    protected $httpHandler;
+
+    public function __construct(FormFactoryInterface $formFactory,
+                                HttpHandler $httpHandler)
+    {
+        $this->formFactory = $formFactory;
+        $this->httpHandler = $httpHandler;
+    }
 
     /**
      * @inheritdoc
@@ -32,7 +43,7 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
     /**
      * @inheritdoc
      */
-    public function getWidgetName()
+    public function getWidgetName(Element $element)
     {
         return 'mapbender.mbQueryBuilderElement';
     }
@@ -85,28 +96,19 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
         return 'MapbenderQueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
     }
 
-    public function getFrontendTemplatePath($suffix = '.html.twig')
+    public function getView(Element $element)
     {
-        return "MapbenderQueryBuilderBundle:Element:queryBuilder{$suffix}";
-    }
-
-    public function getFrontendTemplateVars()
-    {
-        $config = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
-        /** @var FormFactoryInterface $formFactory */
-        $formFactory = $this->container->get('form.factory');
-        $form = $formFactory->createNamed(null, 'Mapbender\QueryBuilderBundle\Form\QueryType');
-        return array(
-            'id' => $this->entity->getId(),
-            'form' => $form->createView(),
-            'configuration' => $config,
-        );
+        $view = new TemplateView('MapbenderQueryBuilderBundle:Element:queryBuilder.html.twig');
+        $view->attributes['class'] = 'mb-element-queryBuilder';
+        $form = $this->formFactory->createNamed(null, 'Mapbender\QueryBuilderBundle\Form\QueryType');
+        $view->variables['form'] = $form->createView();
+        return $view;
     }
 
     /**
      * @inheritdoc
      */
-    public function getAssets()
+    public function getRequiredAssets(Element $element)
     {
         return array(
             'css'   => array(
@@ -121,9 +123,9 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
         );
     }
 
-    public function getPublicConfiguration()
+    public function getClientConfiguration(Element $element)
     {
-        $values = $this->entity->getConfiguration() + $this->getDefaultConfiguration();
+        $values = $element->getConfiguration() + $this->getDefaultConfiguration();
 
         foreach ($values['tableColumns'] as $i => $tableColumn) {
             switch ($tableColumn['title']) {
@@ -139,7 +141,7 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
     }
 
 
-    public static function updateEntityConfig(Entity\Element $entity)
+    public static function updateEntityConfig(Element $entity)
     {
         $configuration = $entity->getConfiguration() ?: array();
         // @todo: warn or throw when encountering wrong option names
@@ -158,16 +160,8 @@ class QueryBuilderElement extends Element implements ConfigMigrationInterface
         $entity->setConfiguration($configuration);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function handleHttpRequest(Request $request)
+    public function getHttpHandler(Element $element)
     {
-        /** @var HttpHandler $handler */
-        $handler = $this->container->get('mb.querybuilder.http_handler');
-        // Ensure config is merged with defaults
-        /** @ŧodo 1.2: remove config merging (no longer needed on MB >= 3.2.6) */
-        $this->entity->setConfiguration($this->entity->getConfiguration() + $this->getDefaultConfiguration());
-        return $handler->handleRequest($this->entity, $request);
+        return $this->httpHandler;
     }
 }

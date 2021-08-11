@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "mapbender/mapbender": "^3.0.8.6",
+        "mapbender/mapbender": "^3.2.6",
         "mapbender/data-source": "~0.1.22 || ^0.2"
     },
     "conflict": {
