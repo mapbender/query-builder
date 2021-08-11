@@ -3,18 +3,9 @@
 Handle, edit and run own SQL's within of mapbender3.
 
 
-## Installation 
-* First you need installed mapbender3-starter https://github.com/mapbender/mapbender-starter#installation project
-* Add required module to mapbender
+## Installation
+Use `composer require mapbender/query-builder` and register MapbenderQueryBuilderBundle with the Symfony application kernel.
 
-```sh
-$ cd application/
-$ ../composer.phar require "mapbender/query-builder"
-```
-
-## Architecture
-
-![Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/mapbender/query-builder/master/Documents/QueryBuilder.puml)
 
 ## Contributing
 
