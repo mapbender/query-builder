@@ -1,3 +1,7 @@
+## 1.2.0
+* Rebase on Mapbender 3.2.6+ service element API for Symfony 4 compatibility
+* Resolve legacy CSS hacks
+
 ## 1.1.0
 * Fix internal server error executing / manipulating non-existant query (use http 404)
 * Use http GET method for read-only requests
