@@ -1,3 +1,10 @@
+## 1.1.0
+* Fix internal server error executing / manipulating non-existant query (use http 404)
+* Use http GET method for read-only requests
+* Update internal Element APIs for Mapbender 3.0.8
+* Fix misc Symfony 4 conformance violations
+* Remove "public" form field (no associated function)
+
 ## 1.0.6
 * Fix initialization errors if MapbenderDataSourceBundle is not registered in kernel
 
