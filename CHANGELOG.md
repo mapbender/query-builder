@@ -1,3 +1,6 @@
+## 1.2.1
+* Fix Composer 2 autoloading errors
+
 ## 1.2.0
 * Rebase on Mapbender 3.2.6+ service element API for Symfony 4 compatibility
 * Resolve legacy CSS hacks
