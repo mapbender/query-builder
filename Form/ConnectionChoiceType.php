@@ -4,17 +4,17 @@
 namespace Mapbender\QueryBuilderBundle\Form;
 
 
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ConnectionRegistry;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ConnectionChoiceType extends AbstractType
 {
-    /** @var RegistryInterface */
+    /** @var ConnectionRegistry */
     protected $connectionRegistry;
 
-    public function __construct(RegistryInterface $connectionRegistry)
+    public function __construct(ConnectionRegistry $connectionRegistry)
     {
         $this->connectionRegistry = $connectionRegistry;
     }
