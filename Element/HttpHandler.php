@@ -10,7 +10,8 @@ use Mapbender\Component\Element\ElementHttpHandlerInterface;
 use Mapbender\CoreBundle\Entity\Element;
 use Mapbender\DataSourceBundle\Component\RepositoryRegistry;
 use Mapbender\DataSourceBundle\Entity\DataItem;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Twig;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -20,13 +21,13 @@ class HttpHandler implements ElementHttpHandlerInterface
 {
     /** @var ConnectionRegistry */
     protected $doctrineRegistry;
-    /** @var EngineInterface */
+    /** @var Twig\Environment */
     protected $templateEngine;
     /** @var RepositoryRegistry */
     protected $registry;
 
     public function __construct(ConnectionRegistry $doctrineRegistry,
-                                EngineInterface $templateEngine,
+                                Twig\Environment $templateEngine,
                                 RepositoryRegistry $registry)
     {
         $this->doctrineRegistry = $doctrineRegistry;
@@ -92,10 +93,11 @@ class HttpHandler implements ElementHttpHandlerInterface
     {
         $titleFieldName = ($element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration())['titleFieldName'];
         $query = $this->requireQuery($element, $request->query->get('id'));
-        return $this->templateEngine->renderResponse('@MapbenderQueryBuilder/export.html.twig', array(
+        $content = $this->templateEngine->render('@MapbenderQueryBuilder/export.html.twig', array(
             'title' => $query->getAttribute($titleFieldName),
             'rows' => $this->executeQuery($element, $query),
         ));
+        return new Response($content);
     }
 
     protected function removeAction(Element $element, Request $request)
