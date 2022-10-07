@@ -1,3 +1,7 @@
+## 1.2.2
+* Fix incompatibility with current doctrine versions
+* Resolve Symfony 4.2 templating deprecation
+
 ## 1.2.1
 * Fix Composer 2 autoloading errors
 
