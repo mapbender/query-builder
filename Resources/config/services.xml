@@ -13,7 +13,7 @@
         </service>
         <service id="mb.querybuilder.http_handler" class="Mapbender\QueryBuilderBundle\Element\HttpHandler">
             <argument type="service" id="doctrine" />
-            <argument type="service" id="templating" />
+            <argument type="service" id="twig" />
             <argument type="service" id="mb.querybuilder.registry" />
         </service>
         <service id="mapbender.form_type.element.query_builder" class="Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType">
