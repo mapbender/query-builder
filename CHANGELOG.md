@@ -1,3 +1,6 @@
+## 1.2.3
+* Fix randomly missing table(s) with multiple QueryBuilder elements in the same application
+
 ## 1.2.2
 * Fix incompatibility with current doctrine versions
 * Resolve Symfony 4.2 templating deprecation
