@@ -269,12 +269,8 @@
                 .addClass('table table-striped table-hover')
             ;
             $table.DataTable(options);
-            var $tableWrap = $(document.createElement('div'))
-                .addClass('mapbender-element-result-table')
-                .append($table.closest('.dataTables_wrapper'))
-            ;
             $table.css('width', '');    // Support auto-growth when resizing dialog
-            return $tableWrap;
+            return $table.closest('.dataTables_wrapper');
         },
 
         mergeDialogData: function($dialog) {
@@ -496,9 +492,10 @@
                     className: 'interactions'
                 });
             }
-            $('.toolbar', this.element.element).nextAll().remove();
 
-            this.element.append(this.initDataTable({
+            var $tableWrap = $('.-js-table-wrap', this.element);
+            $tableWrap.empty();
+            $tableWrap.append(this.initDataTable({
                 lengthChange: false,
                 info:       false,
                 searching:  this.options.allowSearch,
