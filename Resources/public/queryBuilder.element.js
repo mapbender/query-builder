@@ -264,7 +264,7 @@
         },
         initDataTable: function(options) {
             var $table = $(document.createElement('table'))
-                .addClass('table table-striped table-hover')
+                .addClass('table table-striped table-condensed table-hover')
             ;
             $table.DataTable(options);
             $table.css('width', '');    // Support auto-growth when resizing dialog

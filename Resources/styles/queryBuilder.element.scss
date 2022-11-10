@@ -54,6 +54,7 @@ $buttonActiveTextColor: $buttonTextColor !default;
   display: flex;
   flex-direction: column;
   max-height: 100vh;
+  font-size: 11px;
 
   .ui-dialog-content {
     flex: 1 1 auto;   // Grow to fill (resizable) space
@@ -99,13 +100,9 @@ $buttonActiveTextColor: $buttonTextColor !default;
     // Fix horizontal scroll weirdness on non-resizable height: auto dialog
     overflow: visible;
     &.queryBuilder-results {
-      padding: 0;
       overflow-y: auto;
     }
-    .form-group {
-      font-size: 0.85rem;
-    }
-    .form-control {
+    label, .form-control {
       font-size: inherit;
     }
     .control-label {
@@ -119,6 +116,43 @@ $buttonActiveTextColor: $buttonTextColor !default;
     text-align: right;
     .ui-dialog-buttonset > * {
       margin-left: 0.5em;
+    }
+  }
+}
+.qb-dialog, .mb-element-queryBuilder {
+  thead {
+    background-color: $buttonFirstColor;
+    color: $buttonTextColor;
+  }
+  th {
+    border-bottom: none !important; // Defeat highly specific Bootstrap 3 rule
+    white-space: nowrap;
+  }
+  .sorting, .sorting_asc, .sorting_desc {
+    cursor: pointer;
+  }
+  .sorting_asc, .sorting_desc {
+    background-color: $buttonFirstActiveColor;
+  }
+  .sorting:before, .sorting_asc:before, .sorting_desc:before {
+    display: inline-block;
+    min-width: 1.4em; // Prevent width change on sorting state change
+    font-family: "FontAwesome", "Font Awesome 5 Free", "Font Awesome 5 Pro";
+  }
+  .sorting:before {
+    content: "\f0dc";   // = .fa-sort / .fa-unsorted
+  }
+  .sorting_asc:before {
+    content: "\f160";   // = .fa-sort-amount-asc
+  }
+  .sorting_desc:before {
+    content: "\f161";   // = .fa-sort-amount-desc
+  }
+  .mapbender-element-result-table {
+    .sorting, .sorting_asc, .sorting_desc {
+      &:before {
+        margin: 0;  // Undo margin rule (we have fixed width instead)
+      }
     }
   }
 }
