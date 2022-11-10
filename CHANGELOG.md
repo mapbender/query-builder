@@ -1,3 +1,6 @@
+## 1.2.4
+* Fix query result dialog table styling
+
 ## 1.2.3
 * Fix randomly missing table(s) with multiple QueryBuilder elements in the same application
 
