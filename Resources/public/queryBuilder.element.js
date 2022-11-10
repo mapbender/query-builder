@@ -4,9 +4,7 @@
         var $content = $((typeof content === 'string') ? $.parseHTML(content) : content);
         var defaults = {
             classes: {
-                'ui-dialog': 'ui-dialog mb-element-popup-dialog modal-content qb-dialog',
-                'ui-dialog-titlebar': 'ui-dialog-titlebar modal-header',
-                'ui-dialog-titlebar-close': 'ui-dialog-titlebar-close close',
+                'ui-dialog': 'ui-dialog qb-dialog',
                 'ui-button': 'ui-button button btn'
             },
             resizable: false,
