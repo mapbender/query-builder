@@ -3,27 +3,34 @@
 namespace Mapbender\QueryBuilderBundle\Element\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class QueryBuilderAdminType extends AbstractType
 {
     protected $dataStoreNames = array();
 
+    use MapbenderTypeTrait;
+
+    private TranslatorInterface $trans;
+
+    #public function __construct(TranslatorInterface $trans)
+    #{
+    #    $this->trans = $trans;
+    #}
+
     /**
      * @param mixed[]|null $dataStores
      */
-    public function __construct(array $dataStores)
+    public function __construct(array $dataStores, TranslatorInterface $trans)
     {
+        $this->trans = $trans;  
         $this->dataStoreNames = array_keys($dataStores);
-    }
-
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(array(
-            'application' => null,
-        ));
     }
 
     /**
@@ -35,23 +42,57 @@ class QueryBuilderAdminType extends AbstractType
         // @todo: add translatable field labels
 
         $builder
-            ->add('source', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', array(
-                    'choices'     => $dataStoreSelectValues,
-                    'required'    => true,
+            ->add('source', ChoiceType::class, array(
+                    'choices' => $dataStoreSelectValues,
+                    'required' => true,
+                    'label' => 'mb.querybuilder.admin.source'
                 )
             )
-            ->add('sqlFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
-            ->add('orderByFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
-            ->add('titleFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
-            ->add('connectionFieldName', 'Symfony\Component\Form\Extension\Core\Type\TextType', array('required' => true))
+            ->add('sqlFieldName', TextType::class, array(
+                 'required' => true,
+                 'label' => 'mb.querybuilder.admin.sqlFieldName'
+            ))
+            ->add('orderByFieldName', TextType::class, array(
+                 'required' => true,
+                 'label' => 'mb.querybuilder.admin.orderByFieldName'
+            ))
+            ->add('titleFieldName', TextType::class, array(
+                 'required' => true,
+                 'label' => 'mb.querybuilder.admin.titleFieldName'
+            ))
+            ->add('connectionFieldName', TextType::class, array(
+                 'required' => true,
+                 'label' => 'mb.querybuilder.admin.connectionFieldName'
+            ))
 
-            ->add('allowCreate', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowEdit', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowSave', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowRemove', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowExecute', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowExport', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
-            ->add('allowSearch', 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', array('required' => false))
+            ->add('allowCreate', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowCreate'
+            ))
+            ->add('allowEdit', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowEdit'
+            ))
+            ->add('allowSave', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowSave'
+            ))
+            ->add('allowRemove', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowRemove'
+            ))
+            ->add('allowExecute', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowExecute'
+            ))
+            ->add('allowExport', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowExport'
+            ))            
+            ->add('allowSearch', CheckboxType::class, array(
+                 'required' => false,
+                 'label' => 'mb.querybuilder.admin.allowSearch'
+            ))
             // @todo: add field for implemented option 'tableColumns'? (can be set via yaml definition; check functionality)
             // @todo: add field for implemented option 'allowHtmlExport'? (can be set via yaml definition; check functionality)
         ;

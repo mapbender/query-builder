@@ -1,3 +1,6 @@
+## next release
+* update to Mapbender 4
+
 ## 1.2.4
 * Fix query result dialog table styling
 

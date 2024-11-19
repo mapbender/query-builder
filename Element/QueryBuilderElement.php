@@ -3,14 +3,13 @@ namespace Mapbender\QueryBuilderBundle\Element;
 
 use Mapbender\Component\Element\AbstractElementService;
 use Mapbender\Component\Element\TemplateView;
-use Mapbender\CoreBundle\Component\ElementBase\ConfigMigrationInterface;
 use Mapbender\CoreBundle\Entity\Element;
 use Symfony\Component\Form\FormFactoryInterface;
 
 /**
  * @author  Andriy Oblivantsev <eslider@gmail.com>
  */
-class QueryBuilderElement extends AbstractElementService implements ConfigMigrationInterface
+class QueryBuilderElement extends AbstractElementService
 {
     /** @var FormFactoryInterface */
     protected $formFactory;
@@ -29,7 +28,7 @@ class QueryBuilderElement extends AbstractElementService implements ConfigMigrat
      */
     public static function getClassTitle()
     {
-        return "Query builder";
+        return  'mb.querybuilder.class.title';
     }
 
     /**
@@ -37,7 +36,7 @@ class QueryBuilderElement extends AbstractElementService implements ConfigMigrat
      */
     public static function getClassDescription()
     {
-        return "Build, list SQL queries and display result, which can be edited to.";
+        return 'mb.querybuilder.class.description';
     }
 
     /**
@@ -93,12 +92,12 @@ class QueryBuilderElement extends AbstractElementService implements ConfigMigrat
      */
     public static function getFormTemplate()
     {
-        return 'MapbenderQueryBuilderBundle:ElementAdmin:queryBuilder.html.twig';
+        return '@MapbenderQueryBuilderBundle/ElementAdmin/queryBuilder.html.twig';
     }
 
     public function getView(Element $element)
     {
-        $view = new TemplateView('MapbenderQueryBuilderBundle:Element:queryBuilder.html.twig');
+        $view = new TemplateView('@MapbenderQueryBuilderBundle/Element/queryBuilder.html.twig');
         $view->attributes['class'] = 'mb-element-queryBuilder';
         $form = $this->formFactory->createNamed(null, 'Mapbender\QueryBuilderBundle\Form\QueryType');
         $view->variables['form'] = $form->createView();
