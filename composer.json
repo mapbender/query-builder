@@ -8,7 +8,8 @@
         {"name": "Andriy Oblivantsev"},
         {"name": "Rolf Neuberger"},
         {"name": "Robert Klemm"},
-        {"name": "Astrid Emde"}
+        {"name": "Astrid Emde"},
+        {"name": "Thorsten Hack"},
     ],
     "require": {
         "php": ">=8.1",
@@ -18,10 +19,11 @@
         "mapbender/mapbender": "^4"
     },
     "conflict": {
+        "symfony/symfony": "<5.4",
     },
     "autoload": {
         "psr-4": {
-            "Mapbender\\QueryBuilderBundle\\": "src/Mapbender/QueryBuilderBundle"
+            "Mapbender\\QueryBuilderBundle\\": "."
         }
     }
 }
