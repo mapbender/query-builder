@@ -3,36 +3,26 @@
 
 namespace Mapbender\QueryBuilderBundle\Element;
 
-
 use Doctrine\Persistence\ConnectionRegistry;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\Component\Element\ElementHttpHandlerInterface;
 use Mapbender\CoreBundle\Entity\Element;
 use Mapbender\DataSourceBundle\Component\RepositoryRegistry;
 use Mapbender\DataSourceBundle\Entity\DataItem;
-use Symfony\Component\HttpFoundation\Response;
-use Twig;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Twig;
 
 class HttpHandler implements ElementHttpHandlerInterface
 {
-    /** @var ConnectionRegistry */
-    protected $doctrineRegistry;
-    /** @var Twig\Environment */
-    protected $templateEngine;
-    /** @var RepositoryRegistry */
-    protected $registry;
-
-    public function __construct(ConnectionRegistry $doctrineRegistry,
-                                Twig\Environment $templateEngine,
-                                RepositoryRegistry $registry)
+    public function __construct(
+        protected ConnectionRegistry $doctrineRegistry,
+        protected Twig\Environment   $templateEngine,
+        protected RepositoryRegistry $registry)
     {
-        $this->doctrineRegistry = $doctrineRegistry;
-        $this->templateEngine = $templateEngine;
-        $this->registry = $registry;
     }
 
     public function handleRequest(Element $element, Request $request)
@@ -41,22 +31,15 @@ class HttpHandler implements ElementHttpHandlerInterface
             throw new AccessDeniedHttpException();
         }
 
-        switch ($request->attributes->get('action')) {
-            case 'select':
-                return $this->selectAction($element);
-            case 'execute':
-                return $this->executeAction($element, $request);
-            case 'remove':
-                return $this->removeAction($element, $request);
-            case 'export':
-                return $this->exportAction($element, $request);
-            case 'exportHtml':
-                return $this->exportHtmlAction($element, $request);
-            case 'save':
-                return $this->saveAction($element, $request);
-            default:
-                throw new NotFoundHttpException();
-        }
+        return match ($request->attributes->get('action')) {
+            'select' => $this->selectAction($element),
+            'execute' => $this->executeAction($element, $request),
+            'remove' => $this->removeAction($element, $request),
+            'export' => $this->exportAction($element, $request),
+            'exportHtml' => $this->exportHtmlAction($element, $request),
+            'save' => $this->saveAction($element, $request),
+            default => throw new NotFoundHttpException(),
+        };
     }
 
     protected function selectAction(Element $element)
@@ -121,9 +104,7 @@ class HttpHandler implements ElementHttpHandlerInterface
         return $this->doctrineRegistry->getConnection($connectionName)->fetchAll($sql);
     }
 
-
-    // @todo: make protected
-    public function getDataStore(Element $element)
+    protected function getDataStore(Element $element)
     {
         return $this->registry->dataStoreFactory($this->getDatastoreConfig($element));
     }

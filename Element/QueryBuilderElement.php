@@ -1,26 +1,20 @@
 <?php
+
 namespace Mapbender\QueryBuilderBundle\Element;
 
 use Mapbender\Component\Element\AbstractElementService;
 use Mapbender\Component\Element\TemplateView;
 use Mapbender\CoreBundle\Entity\Element;
+use Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType;
+use Mapbender\QueryBuilderBundle\Form\QueryType;
 use Symfony\Component\Form\FormFactoryInterface;
 
-/**
- * @author  Andriy Oblivantsev <eslider@gmail.com>
- */
 class QueryBuilderElement extends AbstractElementService
 {
-    /** @var FormFactoryInterface */
-    protected $formFactory;
-    /** @var HttpHandler */
-    protected $httpHandler;
-
-    public function __construct(FormFactoryInterface $formFactory,
-                                HttpHandler $httpHandler)
+    public function __construct(
+        protected FormFactoryInterface $formFactory,
+        protected HttpHandler          $httpHandler)
     {
-        $this->formFactory = $formFactory;
-        $this->httpHandler = $httpHandler;
     }
 
     /**
@@ -28,7 +22,7 @@ class QueryBuilderElement extends AbstractElementService
      */
     public static function getClassTitle()
     {
-        return  'mb.querybuilder.class.title';
+        return 'mb.querybuilder.class.title';
     }
 
     /**
@@ -84,7 +78,7 @@ class QueryBuilderElement extends AbstractElementService
      */
     public static function getType()
     {
-        return 'Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType';
+        return QueryBuilderAdminType::class;
     }
 
     /**
@@ -92,14 +86,14 @@ class QueryBuilderElement extends AbstractElementService
      */
     public static function getFormTemplate()
     {
-        return '@MapbenderQueryBuilderBundle/ElementAdmin/queryBuilder.html.twig';
+        return '@MapbenderQueryBuilder/ElementAdmin/queryBuilder.html.twig';
     }
 
     public function getView(Element $element)
     {
-        $view = new TemplateView('@MapbenderQueryBuilderBundle/Element/queryBuilder.html.twig');
+        $view = new TemplateView('@MapbenderQueryBuilder/Element/queryBuilder.html.twig');
         $view->attributes['class'] = 'mb-element-queryBuilder';
-        $form = $this->formFactory->createNamed(null, 'Mapbender\QueryBuilderBundle\Form\QueryType');
+        $form = $this->formFactory->createNamed(null, QueryType::class);
         $view->variables['form'] = $form->createView();
         return $view;
     }
@@ -110,10 +104,10 @@ class QueryBuilderElement extends AbstractElementService
     public function getRequiredAssets(Element $element)
     {
         return array(
-            'css'   => array(
+            'css' => array(
                 '@MapbenderQueryBuilderBundle/Resources/styles/queryBuilder.element.scss',
             ),
-            'js'    => array(
+            'js' => array(
                 '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
             ),
             'trans' => array(
