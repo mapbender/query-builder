@@ -3,6 +3,7 @@
 
 namespace Mapbender\QueryBuilderBundle\Element;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ConnectionRegistry;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\Component\Element\ElementHttpHandlerInterface;
@@ -66,10 +67,11 @@ class HttpHandler implements ElementHttpHandlerInterface
 
     protected function exportAction(Element $element, Request $request)
     {
-        /** @todo: fix post data usage, should be query parameter */
         $query = $this->requireQuery($element, $request->request->get('id'));
         $rows = $this->executeQuery($element, $query);
-        return new ExportResponse($rows, 'export-list', ExportResponse::TYPE_XLS);
+        $useXls = ($element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration())['legacyXlsFormat'];
+        $exportFormat = $useXls ? ExportResponse::TYPE_XLS : ExportResponse::TYPE_XLSX;
+        return new ExportResponse($rows, 'export-list', $exportFormat);
     }
 
     protected function exportHtmlAction(Element $element, Request $request)
@@ -101,7 +103,9 @@ class HttpHandler implements ElementHttpHandlerInterface
         $config = $element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration();
         $sql = $query->getAttribute($config['sqlFieldName']);
         $connectionName = $query->getAttribute($config['connectionFieldName']);
-        return $this->doctrineRegistry->getConnection($connectionName)->fetchAll($sql);
+        /** @var Connection $connection */
+        $connection = $this->doctrineRegistry->getConnection($connectionName);
+        return $connection->fetchAllAssociative($sql);
     }
 
     protected function getDataStore(Element $element)

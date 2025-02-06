@@ -59,6 +59,7 @@ class QueryBuilderElement extends AbstractElementService
             'orderByFieldName' => 'anzeigen_reihenfolge',
             'connectionFieldName' => 'connection_name',
             'titleFieldName' => 'name',
+            'legacyXlsFormat' => false,
             'tableColumns' => array(
                 0 => array(
                     'data' => 'name',
@@ -93,7 +94,7 @@ class QueryBuilderElement extends AbstractElementService
     {
         $view = new TemplateView('@MapbenderQueryBuilder/Element/queryBuilder.html.twig');
         $view->attributes['class'] = 'mb-element-queryBuilder';
-        $form = $this->formFactory->createNamed(null, QueryType::class);
+        $form = $this->formFactory->createNamed('querybuilder', QueryType::class);
         $view->variables['form'] = $form->createView();
         return $view;
     }

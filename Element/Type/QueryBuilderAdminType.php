@@ -2,13 +2,12 @@
 
 namespace Mapbender\QueryBuilderBundle\Element\Type;
 
+use Mapbender\CoreBundle\Element\Type\MapbenderTypeTrait;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class QueryBuilderAdminType extends AbstractType
@@ -29,7 +28,7 @@ class QueryBuilderAdminType extends AbstractType
      */
     public function __construct(array $dataStores, TranslatorInterface $trans)
     {
-        $this->trans = $trans;  
+        $this->trans = $trans;
         $this->dataStoreNames = array_keys($dataStores);
     }
 
@@ -49,49 +48,48 @@ class QueryBuilderAdminType extends AbstractType
                 )
             )
             ->add('sqlFieldName', TextType::class, array(
-                 'required' => true,
-                 'label' => 'mb.querybuilder.admin.sqlFieldName'
+                'required' => true,
+                'label' => 'mb.querybuilder.admin.sqlFieldName'
             ))
             ->add('orderByFieldName', TextType::class, array(
-                 'required' => true,
-                 'label' => 'mb.querybuilder.admin.orderByFieldName'
+                'required' => true,
+                'label' => 'mb.querybuilder.admin.orderByFieldName'
             ))
             ->add('titleFieldName', TextType::class, array(
-                 'required' => true,
-                 'label' => 'mb.querybuilder.admin.titleFieldName'
+                'required' => true,
+                'label' => 'mb.querybuilder.admin.titleFieldName'
             ))
             ->add('connectionFieldName', TextType::class, array(
-                 'required' => true,
-                 'label' => 'mb.querybuilder.admin.connectionFieldName'
+                'required' => true,
+                'label' => 'mb.querybuilder.admin.connectionFieldName'
             ))
-
             ->add('allowCreate', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowCreate'
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowCreate'
             ))
             ->add('allowEdit', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowEdit'
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowEdit'
             ))
             ->add('allowSave', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowSave'
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowSave'
             ))
             ->add('allowRemove', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowRemove'
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowRemove'
             ))
             ->add('allowExecute', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowExecute'
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowExecute'
             ))
             ->add('allowExport', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowExport'
-            ))            
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowExport'
+            ))
             ->add('allowSearch', CheckboxType::class, array(
-                 'required' => false,
-                 'label' => 'mb.querybuilder.admin.allowSearch'
+                'required' => false,
+                'label' => 'mb.querybuilder.admin.allowSearch'
             ))
             // @todo: add field for implemented option 'tableColumns'? (can be set via yaml definition; check functionality)
             // @todo: add field for implemented option 'allowHtmlExport'? (can be set via yaml definition; check functionality)

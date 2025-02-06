@@ -74,12 +74,14 @@
         _create: function() {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
             this.editTemplate = $('.-js-edit-template', this.element).remove().removeClass('hidden');
-            _.each(this.options.tableColumns, function(column) {
-                if (column.title){
-                    var translationKey = 'mb.query.builder.sql.' + column.title.toLowerCase();
-                    column.title = Mapbender.trans(translationKey);
-                }
-            });
+            if (Array.isArray(this.options.tableColumns)) {
+                this.options.tableColumns.forEach(function(column) {
+                    if (column.title){
+                        var translationKey = 'mb.query.builder.sql.' + column.title.toLowerCase();
+                        column.title = Mapbender.trans(translationKey);
+                    }
+                });
+            }
             this.editFieldMap_ = {
                 title: this.options.titleFieldName,
                 connection: this.options.connectionFieldName,
@@ -526,7 +528,7 @@
                 type: method || 'POST',
                 dataType:    "json",
                 data: request
-            }).error(function(xhr) {
+            }).fail(function(xhr) {
                 var errorMessage = Mapbender.trans('mb.query.builder.api.error') + ": " + xhr.statusText;
                 $.notify(errorMessage);
                 console.error(errorMessage, xhr);
