@@ -8,7 +8,7 @@ use Doctrine\Persistence\ConnectionRegistry;
 use FOM\CoreBundle\Component\ExportResponse;
 use Mapbender\Component\Element\ElementHttpHandlerInterface;
 use Mapbender\CoreBundle\Entity\Element;
-use Mapbender\DataSourceBundle\Component\RepositoryRegistry;
+use Mapbender\DataSourceBundle\Component\Factory\DataStoreFactory;
 use Mapbender\DataSourceBundle\Entity\DataItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +22,7 @@ class HttpHandler implements ElementHttpHandlerInterface
     public function __construct(
         protected ConnectionRegistry $doctrineRegistry,
         protected Twig\Environment   $templateEngine,
-        protected RepositoryRegistry $registry)
+        protected DataStoreFactory $dataStoreFactory)
     {
     }
 
@@ -69,14 +69,17 @@ class HttpHandler implements ElementHttpHandlerInterface
     {
         $query = $this->requireQuery($element, $request->request->get('id'));
         $rows = $this->executeQuery($element, $query);
-        $useXls = ($element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration())['legacyXlsFormat'];
-        $exportFormat = $useXls ? ExportResponse::TYPE_XLS : ExportResponse::TYPE_XLSX;
+        $exportFormat = match($this->getSafeConfiguration($element)['export_format']) {
+            'csv' => ExportResponse::TYPE_CSV,
+            'xls' => ExportResponse::TYPE_XLS,
+            default => ExportResponse::TYPE_XLSX,
+        };
         return new ExportResponse($rows, 'export-list', $exportFormat);
     }
 
     protected function exportHtmlAction(Element $element, Request $request)
     {
-        $titleFieldName = ($element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration())['titleFieldName'];
+        $titleFieldName = $this->getSafeConfiguration($element)['titleFieldName'];
         $query = $this->requireQuery($element, $request->query->get('id'));
         $content = $this->templateEngine->render('@MapbenderQueryBuilder/export.html.twig', array(
             'title' => $query->getAttribute($titleFieldName),
@@ -100,9 +103,12 @@ class HttpHandler implements ElementHttpHandlerInterface
      */
     protected function executeQuery(Element $element, DataItem $query)
     {
-        $config = $element->getConfiguration() + QueryBuilderElement::getDefaultConfiguration();
+        $config = $this->getSafeConfiguration($element);
         $sql = $query->getAttribute($config['sqlFieldName']);
         $connectionName = $query->getAttribute($config['connectionFieldName']);
+        if (!$connectionName) {
+            $connectionName = $config['connection'];
+        }
         /** @var Connection $connection */
         $connection = $this->doctrineRegistry->getConnection($connectionName);
         return $connection->fetchAllAssociative($sql);
@@ -110,18 +116,7 @@ class HttpHandler implements ElementHttpHandlerInterface
 
     protected function getDataStore(Element $element)
     {
-        return $this->registry->dataStoreFactory($this->getDatastoreConfig($element));
-    }
-
-    protected function getDatastoreConfig(Element $element)
-    {
-        $config = $element->getConfiguration();
-        if (!empty($config['source'])) {
-            $dsName = $config['source'];
-        } else {
-            $dsName = QueryBuilderElement::getDefaultConfiguration()['source'];
-        }
-        return $this->registry->getDataStoreDeclarations()[$dsName];
+        return $this->dataStoreFactory->fromConfig($this->getSafeConfiguration($element));
     }
 
     /**
@@ -138,12 +133,14 @@ class HttpHandler implements ElementHttpHandlerInterface
             case 'execute':
                 return $config['allowExecute'];
             case 'save':
-                return $config['allowCreate'] || $config['allowSave'];
+                // TODO: genauer checken
+                return $config['allowCreate'] || $config['allowEdit'];
             case 'remove':
                 return $config['allowRemove'];
             case 'export':
+                return $config['allowFileExport'];
             case 'exportHtml':
-                return $config['allowExport'];
+                return $config['allowHtmlExport'];
         }
     }
 
@@ -161,5 +158,10 @@ class HttpHandler implements ElementHttpHandlerInterface
         } else {
             throw new NotFoundHttpException();
         }
+    }
+
+    private function getSafeConfiguration(Element $element)
+    {
+        return $element->getConfiguration()['configuration'] + QueryBuilderElement::getYamlConfigurationDefaults();
     }
 }

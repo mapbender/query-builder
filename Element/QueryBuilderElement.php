@@ -47,44 +47,48 @@ class QueryBuilderElement extends AbstractElementService
     public static function getDefaultConfiguration()
     {
         return array(
-            'source' => 'default',
             'allowRemove' => false,
             'allowEdit' => false,
             'allowExecute' => true,
-            'allowSave' => false,
             'allowCreate' => false,
-            'allowExport' => true,
+            'allowHtmlExport' => true,
+            'allowFileExport' => true,
             'allowSearch' => false,
-            'sqlFieldName' => 'sql_definition',
-            'orderByFieldName' => 'anzeigen_reihenfolge',
-            'connectionFieldName' => 'connection_name',
-            'titleFieldName' => 'name',
-            'legacyXlsFormat' => false,
-            'tableColumns' => array(
-                0 => array(
+            'configuration' => self::getYamlConfigurationDefaults(),
+            'tableColumns' => [
+                [
                     'data' => 'name',
                     'title' => 'Title',
-                ),
-                1 => array(
+                ],
+                [
                     'data' => 'anzeigen_reihenfolge',
                     'visible' => false,
                     'title' => 'Sort',
-                ),
-            ),
+                ],
+            ],
         );
     }
 
-    /**
-     * @inheritdoc
-     */
+    public static function getYamlConfigurationDefaults(): array
+    {
+        return [
+            'connection' => 'default',
+            'table' => null, // must be given by configuration
+            'uniqueId' => 'id',
+            'titleFieldName' => 'name',
+            'sqlFieldName' => 'sql_definition',
+            'orderByFieldName' => 'id',
+            'connectionFieldName' => null, // default is the connection given in 'connection'
+            'filter' => null,
+            'export_format' => 'xlsx',
+        ];
+    }
+
     public static function getType()
     {
         return QueryBuilderAdminType::class;
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function getFormTemplate()
     {
         return '@MapbenderQueryBuilder/ElementAdmin/queryBuilder.html.twig';
@@ -99,9 +103,7 @@ class QueryBuilderElement extends AbstractElementService
         return $view;
     }
 
-    /**
-     * @inheritdoc
-     */
+
     public function getRequiredAssets(Element $element)
     {
         return array(
@@ -112,7 +114,7 @@ class QueryBuilderElement extends AbstractElementService
                 '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
             ),
             'trans' => array(
-                'mb.query.builder.*',
+                'mb.querybuilder.frontend.*',
             ),
         );
     }
@@ -120,38 +122,19 @@ class QueryBuilderElement extends AbstractElementService
     public function getClientConfiguration(Element $element)
     {
         $values = $element->getConfiguration() + $this->getDefaultConfiguration();
+        $values['configuration'] = $values['configuration'] + self::getYamlConfigurationDefaults();
 
         foreach ($values['tableColumns'] as $i => $tableColumn) {
             switch ($tableColumn['title']) {
                 case 'Title':
-                    $values['tableColumns'][$i]['data'] = $values['titleFieldName'];
+                    $values['tableColumns'][$i]['data'] = $values['configuration']['titleFieldName'];
                     break;
                 case 'Sort':
-                    $values['tableColumns'][$i]['data'] = $values['orderByFieldName'];
+                    $values['tableColumns'][$i]['data'] = $values['configuration']['orderByFieldName'];
                     break;
             }
         }
         return $values;
-    }
-
-
-    public static function updateEntityConfig(Element $entity)
-    {
-        $configuration = $entity->getConfiguration() ?: array();
-        // @todo: warn or throw when encountering wrong option names
-        $legacyAliases = array(
-            'sqlField' => 'sqlFieldName',
-            'orderByField' => 'orderByFieldName',
-            'connectionField' => 'connectionFieldName',
-            'titleField' => 'titleFieldName',
-        );
-        foreach ($legacyAliases as $before => $after) {
-            if (array_key_exists($before, $configuration)) {
-                $configuration[$after] = $configuration[$before];
-                unset($configuration[$before]);
-            }
-        }
-        $entity->setConfiguration($configuration);
     }
 
     public function getHttpHandler(Element $element)

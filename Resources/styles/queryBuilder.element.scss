@@ -2,6 +2,16 @@ $buttonTextColor: #fff !default;
 $buttonActiveTextColor: $buttonTextColor !default;
 
 .mb-element-queryBuilder {
+    --qb-sidepane-header-background: #eeeeee;
+    --qb-sidepane-header-background-sorting-active: #cccccc;
+    --qb-sidepane-header-color: #000000;
+    --qb-sidepane-header-color-sorting-active: var(--qb-sidepane-header-color);
+
+    --qb-table-header-background: rgb(from var(--primary) r g b / 50%);
+    --qb-table-header-background-sorting-active: var(--primary);
+    --qb-table-header-color: #FFFFFF;
+    --qb-table-header-color-sorting-active: var(--qb-table-header-color);
+
   .toolbar {
     margin-bottom: 10px;
   }

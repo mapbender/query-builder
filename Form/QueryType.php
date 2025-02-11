@@ -15,10 +15,10 @@ class QueryType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, array(
-                'label' => 'mb.query.builder.sql.title',
+                'label' => 'mb.querybuilder.frontend.sql.title',
             ))
             ->add('connection', ConnectionChoiceType::class, array(
-                'label' => 'mb.query.builder.sql.connection.name',
+                'label' => 'mb.querybuilder.frontend.sql.connection.name',
             ))
             ->add('order', TextType::class, array(
                 'label' => 'Order', /** @todo: translate? */

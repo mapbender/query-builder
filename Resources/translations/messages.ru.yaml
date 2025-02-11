@@ -1,0 +1,19 @@
+mb.querybuilder:
+  frontend:
+    Cancel: Отмена
+    Edit: Редактировать
+    Create: Создать
+    Save: Сохранить
+    Remove: Удалить
+    Execute: Выполнить
+    OK: OK
+    Export: Экспорт
+    Results: Результат
+    HTML-Export: 'HTML Экспорт'
+    sql:
+      title: Заголовок
+      connection.name: Соеденение
+      publish: Опубликовать
+      saved: 'SQL запрос сохранён.'
+      removed: 'SQL запрос удалён.'
+    confirm.remove: 'Потвердите удаление'

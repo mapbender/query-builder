@@ -1,5 +1,9 @@
-## next release
-* update to Mapbender 4
+## 2.0.0
+* Update to Mapbender 4
+* Removed dataStores entry in `parameters.yaml`
+* Changed element configuration to YAML, see README.md for new configuration syntax
+* Added additional permission for edit, create and delete
+* Removed allowSave - use allowEdit
 
 ## 1.2.4
 * Fix query result dialog table styling

@@ -66,9 +66,6 @@ parameters:
             # Allow edit
             allowCreate: false
 
-            # Allow save
-            allowSave: true
-
             # Allow remove
             allowRemove: false
 
@@ -76,7 +73,8 @@ parameters:
             allowExecute: true
 
             # Allow data export as excel file
-            allowExport: true
+            allowFileExport: true
+            allowHtmlExport: true
 
             # Allow search
             #allowSearch: true

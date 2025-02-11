@@ -41,7 +41,7 @@
             modal: true,
             buttons:[
                 {
-                    text: Mapbender.trans('mb.query.builder.OK'),
+                    text: Mapbender.trans('mb.querybuilder.frontend.OK'),
                     'class': 'button success btn',
                     click: function() {
                         deferred.resolve();
@@ -49,7 +49,7 @@
                         return false;
                     }
                 }, {
-                    text: Mapbender.trans('mb.query.builder.Cancel'),
+                    text: Mapbender.trans('mb.querybuilder.frontend.Cancel'),
                     'class': 'button critical btn',
                     click:   function() {
                         deferred.reject();
@@ -77,16 +77,16 @@
             if (Array.isArray(this.options.tableColumns)) {
                 this.options.tableColumns.forEach(function(column) {
                     if (column.title){
-                        var translationKey = 'mb.query.builder.sql.' + column.title.toLowerCase();
+                        var translationKey = 'mb.querybuilder.frontend.sql.' + column.title.toLowerCase();
                         column.title = Mapbender.trans(translationKey);
                     }
                 });
             }
             this.editFieldMap_ = {
-                title: this.options.titleFieldName,
-                connection: this.options.connectionFieldName,
-                sql: this.options.sqlFieldName,
-                order: this.options.orderByFieldName
+                title: this.options.configuration.titleFieldName,
+                connection: this.options.configuration.connectionFieldName,
+                sql: this.options.configuration.sqlFieldName,
+                order: this.options.configuration.orderByFieldName
             };
             this._initialize();
         },
@@ -176,8 +176,8 @@
          */
         removeData: function(item) {
             var widget = this;
-            var message = [Mapbender.trans('mb.query.builder.confirm.remove'), ': ', item[this.options.titleFieldName]].join('');
-            var title = [Mapbender.trans('mb.query.builder.Remove'), ' #', item.id].join('');
+            var message = [Mapbender.trans('mb.querybuilder.frontend.confirm.remove'), ': ', item[this.options.configuration.titleFieldName]].join('');
+            var title = [Mapbender.trans('mb.querybuilder.frontend.Remove'), ' #', item.id].join('');
             var content = $(document.createElement('div')).text(message);
             return confirmDialog(title, content).then(function() {
                 return widget.query("remove", {id: item.id}).done(function() {
@@ -189,7 +189,7 @@
                         dtRow.remove();
                         dt.draw(false);
                     }
-                    $.notify(Mapbender.trans('mb.query.builder.sql.removed'), 'notice');
+                    $.notify(Mapbender.trans('mb.querybuilder.frontend.sql.removed'), 'notice');
                 });
             });
         },
@@ -246,7 +246,7 @@
                     columns: columnsOption
                 }));
 
-                var title = Mapbender.trans('mb.query.builder.Results') + ": " + item[widget.options.titleFieldName];
+                var title = Mapbender.trans('mb.querybuilder.frontend.Results') + ": " + item[widget.options.configuration.titleFieldName];
                 var $dialog = baseDialog(title, $content, {
                     width: 1000,
                     height: 400,
@@ -307,15 +307,11 @@
                     $input.trigger('change');
                 }
             });
-            baseDialog(item[this.options.titleFieldName], $form, {
+            baseDialog(item[this.options.configuration.titleFieldName], $form, {
                 width: 600,
                 buttons: buttons
             });
             this._addDialogEvents($form);
-
-            if (!this.options.allowSave) {
-                $(':input', $form).prop('disabled', true).prop('readonly', true);
-            }
             return $form;
         },
         _initInteractionEventsCommon: function($scope, dataFn, livePrefix) {
@@ -374,7 +370,7 @@
                     } else {
                         self.redrawListTable();
                     }
-                    $.notify(Mapbender.trans('mb.query.builder.sql.saved'), 'notice');
+                    $.notify(Mapbender.trans('mb.querybuilder.frontend.sql.saved'), 'notice');
                 });
             });
             this._initInteractionEventsCommon($dialog.closest('.ui-dialog'), dataFn);
@@ -401,7 +397,7 @@
             }
 
             buttons.push({
-                text: Mapbender.trans('mb.query.builder.Cancel'),
+                text: Mapbender.trans('mb.querybuilder.frontend.Cancel'),
                 'class': 'button btn critical',
                 click: function() {
                     $(this).dialog('close');
@@ -411,44 +407,40 @@
         },
         _initInteractionButtons: function() {
             var defs = {};
-            if (this.options.allowExport) {
-                defs['export'] = {
-                    label: Mapbender.trans('mb.query.builder.Export'),
-                    iconClass: 'fa-download',
-                    fnClass: '-fn-export'
-                };
+            if (this.options.allowHtmlExport) {
                 defs['export-html'] = {
-                    label: Mapbender.trans('mb.query.builder.HTML-Export'),
+                    label: Mapbender.trans('mb.querybuilder.frontend.HTML-Export'),
                     iconClass: 'fa-table',
                     fnClass: '-fn-export-html'
                 };
             }
+            if (this.options.allowFileExport) {
+                defs['export'] = {
+                    label: Mapbender.trans('mb.querybuilder.frontend.Export'),
+                    iconClass: 'fa-download',
+                    fnClass: '-fn-export'
+                };
+            }
             if (this.options.allowExecute) {
                 defs['execute'] = {
-                    label: Mapbender.trans('mb.query.builder.Execute'),
+                    label: Mapbender.trans('mb.querybuilder.frontend.Execute'),
                     iconClass: 'fa-play',
                     fnClass: '-fn-execute'
                 };
             }
             if (this.options.allowEdit) {
                 defs['edit'] = {
-                    label: Mapbender.trans('mb.query.builder.Edit'),
+                    label: Mapbender.trans('mb.querybuilder.frontend.Edit'),
                     iconClass: 'fa-edit',
                     fnClass: '-fn-edit'
                 };
             }
             if (this.options.allowRemove) {
                 defs['delete'] = {
-                    label: Mapbender.trans('mb.query.builder.Remove'),
+                    label: Mapbender.trans('mb.querybuilder.frontend.Remove'),
                     iconClass: 'fa-remove',
                     fnClass: '-fn-delete',
                     colorClass: 'critical'
-                };
-            }
-            if (this.options.allowSave) {
-                defs['save'] = {
-                    label: Mapbender.trans('mb.query.builder.Save'),
-                    fnClass: '-fn-save'
                 };
             }
 
@@ -529,7 +521,7 @@
                 dataType:    "json",
                 data: request
             }).fail(function(xhr) {
-                var errorMessage = Mapbender.trans('mb.query.builder.api.error') + ": " + xhr.statusText;
+                var errorMessage = Mapbender.trans('mb.querybuilder.frontend.api.error') + ": " + xhr.statusText;
                 $.notify(errorMessage);
                 console.error(errorMessage, xhr);
             });

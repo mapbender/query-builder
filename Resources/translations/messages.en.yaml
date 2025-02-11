@@ -1,0 +1,20 @@
+mb.querybuilder:
+  frontend:
+    Cancel: Cancel
+    Edit: Edit
+    Create: Create
+    Save: Save
+    Remove: Remove
+    Execute: Execute
+    OK: OK
+    Export: Export
+    Results: Results
+    HTML-Export: HTML-Export
+    sql:
+      title: Title
+      connection.name: Connection
+      publish: Public
+      saved: 'SQL saved successfully.'
+      removed: 'SQL removed successfully.'
+    confirm.remove: 'Confirm remove'
+

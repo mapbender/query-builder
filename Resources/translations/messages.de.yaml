@@ -1,0 +1,31 @@
+mb.querybuilder:
+  class.title: QueryBuilder
+  frontend:
+    Cancel: Abbrechen
+    Edit: Bearbeiten
+    Create: Erstellen
+    Save: Speichern
+    Remove: Löschen
+    Execute: Ausführen
+    OK: OK
+    Export: Exportieren
+    Results: Ergebnisse
+    HTML-Export: HTML-Export
+    sql:
+      title: Titel
+      connection.name: Verbindungsname
+      publish: Anzeigen
+      saved: 'SQL erfolgreich gespeichert.'
+      removed: 'SQL erfolgreich gelöscht.'
+    confirm.remove: 'Löschen bestätigen'
+    api.error: Fehler beim Laden der Daten
+  admin:
+    configuration: Konfiguration der Verbindung
+    configuration.help: 'Hier info'
+    allowCreate: Erstellen erlauben
+    allowEdit: Bearbeiten erlauben
+    allowRemove: Löschen erlauben
+    allowExecute: Ausführen erlauben
+    allowFileExport: Datei-Export erlauben
+    allowHtmlExport: HTML-Export erlauben
+    allowSearch: Suche erlauben
