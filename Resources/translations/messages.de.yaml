@@ -29,3 +29,9 @@ mb.querybuilder:
     allowFileExport: Datei-Export erlauben
     allowHtmlExport: HTML-Export erlauben
     allowSearch: Suche erlauben
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Erstellen
+  qb_edit: Bearbeiten
+  qb_delete: Löschen

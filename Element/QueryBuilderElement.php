@@ -7,13 +7,17 @@ use Mapbender\Component\Element\TemplateView;
 use Mapbender\CoreBundle\Entity\Element;
 use Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType;
 use Mapbender\QueryBuilderBundle\Form\QueryType;
+use Mapbender\QueryBuilderBundle\Permission\QueryBuilderPermissionProvider;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class QueryBuilderElement extends AbstractElementService
 {
     public function __construct(
         protected FormFactoryInterface $formFactory,
-        protected HttpHandler          $httpHandler)
+        protected HttpHandler          $httpHandler,
+        protected AuthorizationCheckerInterface $security,
+    )
     {
     }
 
@@ -123,6 +127,10 @@ class QueryBuilderElement extends AbstractElementService
     {
         $values = $element->getConfiguration() + $this->getDefaultConfiguration();
         $values['configuration'] = $values['configuration'] + self::getYamlConfigurationDefaults();
+
+        $values['allowEdit'] = $values['allowEdit'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_EDIT);
+        $values['allowCreate'] = $values['allowCreate'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_CREATE);
+        $values['allowRemove'] = $values['allowRemove'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_DELETE);
 
         foreach ($values['tableColumns'] as $i => $tableColumn) {
             switch ($tableColumn['title']) {

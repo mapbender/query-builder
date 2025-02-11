@@ -10,19 +10,23 @@ use Mapbender\Component\Element\ElementHttpHandlerInterface;
 use Mapbender\CoreBundle\Entity\Element;
 use Mapbender\DataSourceBundle\Component\Factory\DataStoreFactory;
 use Mapbender\DataSourceBundle\Entity\DataItem;
+use Mapbender\QueryBuilderBundle\Permission\QueryBuilderPermissionProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig;
 
 class HttpHandler implements ElementHttpHandlerInterface
 {
     public function __construct(
-        protected ConnectionRegistry $doctrineRegistry,
-        protected Twig\Environment   $templateEngine,
-        protected DataStoreFactory $dataStoreFactory)
+        protected ConnectionRegistry            $doctrineRegistry,
+        protected Twig\Environment              $templateEngine,
+        protected DataStoreFactory              $dataStoreFactory,
+        protected AuthorizationCheckerInterface $security,
+    )
     {
     }
 
@@ -69,7 +73,7 @@ class HttpHandler implements ElementHttpHandlerInterface
     {
         $query = $this->requireQuery($element, $request->request->get('id'));
         $rows = $this->executeQuery($element, $query);
-        $exportFormat = match($this->getSafeConfiguration($element)['export_format']) {
+        $exportFormat = match ($this->getSafeConfiguration($element)['export_format']) {
             'csv' => ExportResponse::TYPE_CSV,
             'xls' => ExportResponse::TYPE_XLS,
             default => ExportResponse::TYPE_XLSX,
@@ -134,9 +138,10 @@ class HttpHandler implements ElementHttpHandlerInterface
                 return $config['allowExecute'];
             case 'save':
                 // TODO: genauer checken
-                return $config['allowCreate'] || $config['allowEdit'];
+                return ($config['allowCreate'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_CREATE))
+                    || ($config['allowEdit'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_EDIT));
             case 'remove':
-                return $config['allowRemove'];
+                return $config['allowRemove'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_DELETE);
             case 'export':
                 return $config['allowFileExport'];
             case 'exportHtml':

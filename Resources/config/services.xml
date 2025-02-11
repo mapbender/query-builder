@@ -7,6 +7,7 @@
             <argument type="service" id="doctrine" />
             <argument type="service" id="twig" />
             <argument type="service" id="mbds.default_datastore_factory" />
+            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
         </service>
         <service id="mapbender.form_type.element.query_builder" class="Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType">
             <tag name="form.type" />
@@ -20,6 +21,10 @@
             <tag name="mapbender.element" />
             <argument type="service" id="form.factory" />
             <argument type="service" id="mb.querybuilder.http_handler" />
+            <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
+        </service>
+        <service id="mb.querybuilder.permission_provider" class="Mapbender\QueryBuilderBundle\Permission\QueryBuilderPermissionProvider">
+            <tag name="fom.security.global_permission" />
         </service>
     </services>
 </container>
