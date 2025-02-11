@@ -11,6 +11,7 @@ mb.querybuilder:
     Export: Exportieren
     Results: Ergebnisse
     HTML-Export: HTML-Export
+    search: Suchen
     sql:
       title: Titel
       connection.name: Verbindungsname

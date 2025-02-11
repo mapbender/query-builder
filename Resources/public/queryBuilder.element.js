@@ -491,6 +491,9 @@
                 lengthChange: false,
                 info:       false,
                 searching:  this.options.allowSearch,
+                language: {
+                    search: Mapbender.trans('mb.querybuilder.frontend.search'),
+                },
                 processing: false,
                 ordering:   true,
                 paging:     false,
