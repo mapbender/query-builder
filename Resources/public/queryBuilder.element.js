@@ -99,6 +99,7 @@
             widget.query("select", null, 'GET').done(function(results) {
                 widget.renderQueryList(results);
             });
+            Mapbender.ElementUtil.adjustScrollbarsIfNecessary(this.element);
         },
 
         /**
