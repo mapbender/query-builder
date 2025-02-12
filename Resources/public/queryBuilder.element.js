@@ -92,7 +92,11 @@
         },
         _initialize: function() {
             var widget = this;
-            $('.toolbar', this.element).toggleClass('hidden', !this.options.allowCreate);
+            const $toolbar = $('.toolbar', this.element);
+            $toolbar.toggleClass('hidden', !this.options.allowCreate);
+            if (this.options.allowCreate && this.options.allowSearch) {
+                $toolbar.addClass('floating');
+            }
             this.interactionButtons_ = this._initInteractionButtons();
             this._initElementEvents();
 
@@ -425,7 +429,7 @@
             if (this.options.allowExecute) {
                 defs['execute'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.Execute'),
-                    iconClass: 'fas fa-play',
+                    iconClass: 'fas fa-share-from-square',
                     fnClass: '-fn-execute'
                 };
             }
