@@ -9,7 +9,7 @@
         {"name": "Rolf Neuberger"},
         {"name": "Robert Klemm"},
         {"name": "Astrid Emde"},
-        {"name": "Thorsten Hack"},
+        {"name": "Thorsten Hack"}
     ],
     "require": {
         "php": ">=8.1",
