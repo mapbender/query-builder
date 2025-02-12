@@ -1,36 +1,4 @@
 (function ($) {
-
-    function baseDialog(title, content, options) {
-        var $content = $((typeof content === 'string') ? $.parseHTML(content) : content);
-        var defaults = {
-            classes: {
-                'ui-dialog': 'ui-dialog qb-dialog',
-                'ui-button': 'ui-button button btn'
-            },
-            resizable: false,
-            hide: {
-                effect: 'fadeOut',
-                duration: 200
-            }
-        };
-        var options_ = Object.assign({}, defaults, {title: title}, options || {});
-        $content.dialog(options_);
-        // Hide text labels on .ui-button-icon-only, with or without jqueryui css
-        $('.ui-dialog-titlebar .ui-button-icon-only', $content.closest('.ui-dialog')).each(function () {
-            var $button = $(this);
-            var $icon = $('.ui-button-icon', this);
-            $button.empty().append($icon);
-        });
-        $content.on('dialogclose', function () {
-            window.setTimeout(function () {
-                $content.dialog('destroy')
-            }, 500);
-        });
-
-        return $content;
-    }
-
-
     $.widget("mapbender.mbQueryBuilderElement", {
 
         options: {
@@ -59,7 +27,6 @@
             this._initialize();
         },
         _initialize: function () {
-            var widget = this;
             const $toolbar = $('.toolbar', this.element);
             $toolbar.toggleClass('hidden', !this.options.allowCreate);
             if (this.options.allowCreate && this.options.allowSearch) {
@@ -68,8 +35,8 @@
             this.interactionButtons_ = this._initInteractionButtons();
             this._initElementEvents();
 
-            widget.query("select", null, 'GET').done(function (results) {
-                widget.renderQueryList(results);
+            this.query("select", null, 'GET').done((results) => {
+                this.renderQueryList(results);
             });
             Mapbender.ElementUtil.adjustScrollbarsIfNecessary(this.element);
         },
@@ -82,8 +49,7 @@
          * @param item
          */
         exportData: function (item) {
-            var widget = this;
-            var form = $('<form action="' + widget.elementUrl + 'export" style="display: none" method="post"/>')
+            var form = $('<form action="' + this.elementUrl + 'export" style="display: none" method="post"/>')
                 .append('<input type="text" name="id"  value="' + item.id + '"/>');
             form.appendTo("body");
 
@@ -93,30 +59,12 @@
 
             return form.submit();
         },
-
-        /**
-         * Export as HTML.
-         *
-         * @param item
-         */
         exportHtml: function (item) {
-            var widget = this;
-            window.open(widget.elementUrl + 'exportHtml?id=' + item.id);
+            window.open(this.elementUrl + 'exportHtml?id=' + item.id);
         },
-
-        /**
-         * Save item data
-         * @param item
-         * @returns {*}
-         */
         saveData: function (item) {
-            var widget = this;
-            return widget.query("save", {item: item});
+            return this.query("save", {item: item});
         },
-
-        /**
-         * Redraw list table
-         */
         redrawListTable: function () {
             var dt = this.getListTableApi();
             dt.rows().every(function () {
@@ -134,15 +82,9 @@
             dt.page(rowPage);
             dt.draw(false);
         },
-        /**
-         * Get list table API
-         *
-         * @returns {*}
-         */
         getListTableApi: function () {
             return $('table', this.element).dataTable().api();
         },
-
         confirmRemoveItem: function (item) {
             var message = [Mapbender.trans('mb.querybuilder.frontend.confirm.remove'), ': ', item[this.options.configuration.titleFieldName]].join('');
 
@@ -197,61 +139,66 @@
          * @param item Item
          * @return XHR Object this has "dialog" property to get the popup dialog.
          */
-        displayResults: function (item) {
-            var widget = this;
-            return widget.query("execute", {id: item.id}, 'GET').then(function (results) {
-                var $content = $(document.createElement('div'))
-                    .data("item", item)
-                    .addClass('queryBuilder-results')
-                ;
-                var columnsOption;
-                if (!results || !results.length) {
-                    columnsOption = [{data: null, title: ''}];
-                } else {
-                    var columnNames = Object.keys(results[0]);
-                    columnsOption = columnNames.map(function (name) {
-                        return {
-                            title: name,
-                            render: function (data, type, row) {
-                                switch (type) {
-                                    case 'display':
-                                        return widget._escapeHtml(row[name]);
-                                    case 'filter':
-                                        return ('' + row[name]) || undefined;
-                                    default:
-                                        return row[name];
-                                }
-                            }
-                        };
-                    });
-                }
-                $content.append(widget.initDataTable({
-                    selectable: false,
-                    paging: false,
-                    data: results,
-                    searching: false,
-                    info: false,
-                    columns: columnsOption
-                }));
-
-                var title = Mapbender.trans('mb.querybuilder.frontend.Results') + ": " + item[widget.options.configuration.titleFieldName];
-                var $dialog = baseDialog(title, $content, {
-                    width: 1000,
-                    height: 400,
-                    resizable: true,
-                    buttons: widget._getDialogButtonsOption(['export', 'export-html'])
-                });
-                if (typeof ($dialog.dialogExtend) === 'function') {
-                    $dialog.dialogExtend({
-                        maximizable: true,
-                        collapsable: true,
-                        closable: true,
-                        dblclick: 'maximize'
-                    });
-                }
-                widget._addDialogEvents($dialog);
-            });
+        loadResults: function (item) {
+            return this.query("execute", {id: item.id}, 'GET')
+                .then((results) => this._displayResults(item, results));
         },
+
+        _displayResults: function (item, results) {
+            var $content = $(document.createElement('div'))
+                .data("item", item)
+                .addClass('queryBuilder-results')
+            ;
+
+            const hasNoResults = !results || !results.length;
+            var columnsOption;
+            if (hasNoResults) {
+                columnsOption = [{data: null, title: ''}];
+            } else {
+                var columnNames = Object.keys(results[0]);
+                columnsOption = columnNames.map((name) => {
+                    return {
+                        title: name,
+                        render: (data, type, row) => {
+                            switch (type) {
+                                case 'display':
+                                    return this._escapeHtml(row[name]);
+                                case 'filter':
+                                    return ('' + row[name]) || undefined;
+                                default:
+                                    return row[name];
+                            }
+                        }
+                    };
+                });
+            }
+            $content.append(this.initDataTable({
+                selectable: false,
+                paging: false,
+                data: results,
+                searching: false,
+                info: false,
+                columns: columnsOption
+            }));
+
+            const title = Mapbender.trans('mb.querybuilder.frontend.Results') + ": " + item[this.options.configuration.titleFieldName];
+
+            const $dialog = new Mapbender.Popup({
+                title: title,
+                draggable: true,
+                modal: false,
+                closeOnESC: true,
+                resizable: true,
+                cssClass: 'qb-dialog',
+                height: Math.min(hasNoResults ? 300 : 800, window.innerHeight * 0.8),
+                content: $content,
+                width: Math.min(hasNoResults ? 500 : 1000, window.innerWidth * 0.8),
+                buttons: this._getDialogButtonsOption(['export', 'export-html']),
+            });
+
+            this._addDialogEvents($content);
+        },
+
         initDataTable: function (options) {
             var $table = $(document.createElement('table'))
                 .addClass('table table-striped table-condensed table-hover')
@@ -273,14 +220,7 @@
             return Object.assign($dialog.data("item"), formData);
         },
 
-        /**
-         * Open SQL edit dialog
-         *
-         * @param item
-         */
         openEditDialog: function (item) {
-            var buttons = this._getDialogButtonsOption(['save', 'execute', 'export', 'export-html', 'delete']);
-
             var $form = this.editTemplate.clone().data("item", item);
             var nameMap = this.editFieldMap_;
             $(':input[name]', $form).each(function () {
@@ -295,10 +235,19 @@
                     $input.trigger('change');
                 }
             });
-            baseDialog(item[this.options.configuration.titleFieldName], $form, {
-                width: 600,
-                buttons: buttons
+
+            const $dialog = new Mapbender.Popup({
+                title: item[this.options.configuration.titleFieldName],
+                draggable: true,
+                resizable: true,
+                modal: false,
+                cssClass: 'qb-dialog',
+                closeOnESC: true,
+                content: $form,
+                width: Math.min(600, window.innerWidth * 0.8),
+                buttons: this._getDialogButtonsOption(['save', 'execute', 'export', 'export-html', 'delete']),
             });
+
             this._addDialogEvents($form);
             return $form;
         },
@@ -312,11 +261,12 @@
                 self.exportHtml(dataFn(this));
             });
             $scope.on('click', prefix_ + '.-fn-execute', function () {
-                self.displayResults(dataFn(this));
+                self.loadResults(dataFn(this));
             });
             $scope.on('click', prefix_ + '.-fn-delete', function () {
                 var item = dataFn(this);
                 self.confirmRemoveItem(item).then(function () {
+                    // TODO: FIX THIS
                     var $dialog = $('.qb-dialog .ui-dialog-content').filter(function () {
                         return $(this).data('item') === item;
                     });
@@ -346,7 +296,7 @@
                     return $dialog.data('item');
                 }
             };
-            $dialog.closest('.ui-dialog').on('click', '.-fn-save', function () {
+            $dialog.closest('.popup').on('click', '.-fn-save', function () {
                 var item = $dialog.data('item');
                 var isNew = !item || !item.id;
                 var mergedData = self.mergeDialogData($dialog);
@@ -361,7 +311,7 @@
                     $.notify(Mapbender.trans('mb.querybuilder.frontend.sql.saved'), 'notice');
                 });
             });
-            this._initInteractionEventsCommon($dialog.closest('.ui-dialog'), dataFn);
+            this._initInteractionEventsCommon($dialog.closest('.popup'), dataFn);
         },
         /**
          * @param {Array<string>} functions
@@ -369,31 +319,22 @@
          * @private
          */
         _getDialogButtonsOption: function (functions) {
-            var buttons = [];
-            var noop = function () {
-            };
-            var notEmpty = function (x) {
-                return !!x;
-            };
+            const buttons = [];
             for (var i = 0; i < functions.length; ++i) {
-                var buttonDef = this.interactionButtons_[functions[i]];
+                const buttonDef = this.interactionButtons_[functions[i]];
                 if (buttonDef) {
-                    var className = ['button btn', buttonDef.fnClass, buttonDef.colorClass].filter(notEmpty).join(' ');
                     buttons.push({
-                        text: buttonDef.label,
-                        'class': className,
-                        click: noop
+                        label: buttonDef.label,
+                        cssClass: 'btn btn-outlined ' + buttonDef.fnClass + ' ' + (buttonDef.colorClass ?? 'btn-light')
                     });
                 }
             }
 
             buttons.push({
-                text: Mapbender.trans('mb.querybuilder.frontend.Cancel'),
-                'class': 'button btn critical',
-                click: function () {
-                    $(this).dialog('close');
-                }
+                label: Mapbender.trans('mb.querybuilder.frontend.Cancel'),
+                cssClass: 'btn btn-light popupClose',
             });
+
             return buttons;
         },
         _initInteractionButtons: function () {
@@ -431,7 +372,7 @@
                     label: Mapbender.trans('mb.querybuilder.frontend.Remove'),
                     iconClass: 'far fa-trash-can',
                     fnClass: '-fn-delete',
-                    colorClass: 'critical'
+                    colorClass: 'btn-danger'
                 };
             }
 
@@ -478,7 +419,11 @@
 
             var $tableWrap = $('.-js-table-wrap', this.element);
             $tableWrap.empty();
-            $tableWrap.append(this.initDataTable({
+            $tableWrap.append(this.initDataTable(this._getDataTableOptions(queries, columnsOption)));
+        },
+
+        _getDataTableOptions: function (queries, columnsOption) {
+            return {
                 lengthChange: false,
                 info: false,
                 searching: this.options.allowSearch,
@@ -491,12 +436,10 @@
                 selectable: false,
                 autoWidth: false,
                 order: [[1, "asc"]],
-                createdRow: function (tr, item) {
-                    $(tr).data({item: item})
-                },
+                createdRow: (tr, item) => $(tr).data({item: item}),
                 data: queries,
                 columns: columnsOption
-            }));
+            }
         },
 
         /**
@@ -508,9 +451,8 @@
          * @version 0.2
          */
         query: function (uri, request, method) {
-            var widget = this;
             return $.ajax({
-                url: widget.elementUrl + uri,
+                url: this.elementUrl + uri,
                 type: method || 'POST',
                 dataType: "json",
                 data: request

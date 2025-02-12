@@ -60,69 +60,11 @@ $buttonActiveTextColor: $buttonTextColor !default;
   max-height: 100vh;
   font-size: 11px;
 
-  .ui-dialog-content {
-    flex: 1 1 auto;   // Grow to fill (resizable) space
-    height: initial !important; // Overrule inline style
-  }
-  .ui-dialog-titlebar, .ui-dialog-buttonpane {
-    flex: 0 1 auto;   // Minimal height to fit content
-  }
-
-  .ui-dialog-titlebar {
-    line-height: 2;
-    padding: 0 0 0 15px;
-    color: $buttonActiveTextColor;
-    background-color: $buttonFirstActiveColor;
-    font-size: 16px;
-    > .ui-button, > .ui-dialog-titlebar-buttonpane {
-      font-size: inherit;
-      color: inherit;
-      float: right;
-      border: none;
-      text-indent: 0;
-      outline: none;
-      background: transparent;
-    }
-    .ui-dialog-titlebar-close {
-      &:before {
-        content: "\f00d"; // =.fa-times
-        font-family: "FontAwesome", "Font Awesome 5 Free", "Font Awesome 5 Pro";
-      }
-      .ui-button-icon {
-        display: none;
-      }
-    }
-  }
-  .ui-dialog-content, .ui-dialog-buttonpane {
-    padding: 15px;  // Exact value required to prevent overflow of Bootstrap .row
-  }
-
-  .ui-dialog-content {
-    width: auto;
-    min-width: 100%;
-    outline: none;
-    // Fix horizontal scroll weirdness on non-resizable height: auto dialog
-    overflow: visible;
-    &.queryBuilder-results {
-      overflow-y: auto;
-    }
-    label, .form-control {
-      font-size: inherit;
-    }
-    .control-label {
-      color: #707070;
-    }
-  }
   textarea {
     resize: none;
   }
-  .ui-dialog-buttonpane {
-    text-align: right;
-    .ui-dialog-buttonset > * {
-      margin-left: 0.5em;
-    }
-  }
 }
+
 .qb-dialog, .mb-element-queryBuilder {
   thead {
     background-color: $buttonFirstColor;
