@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
 
     function baseDialog(title, content, options) {
         var $content = $((typeof content === 'string') ? $.parseHTML(content) : content);
@@ -16,67 +16,35 @@
         var options_ = Object.assign({}, defaults, {title: title}, options || {});
         $content.dialog(options_);
         // Hide text labels on .ui-button-icon-only, with or without jqueryui css
-        $('.ui-dialog-titlebar .ui-button-icon-only', $content.closest('.ui-dialog')).each(function() {
+        $('.ui-dialog-titlebar .ui-button-icon-only', $content.closest('.ui-dialog')).each(function () {
             var $button = $(this);
             var $icon = $('.ui-button-icon', this);
             $button.empty().append($icon);
         });
-        $content.on('dialogclose', function() {
-            window.setTimeout(function() { $content.dialog('destroy') }, 500);
+        $content.on('dialogclose', function () {
+            window.setTimeout(function () {
+                $content.dialog('destroy')
+            }, 500);
         });
 
         return $content;
     }
 
-    /**
-     * Example:
-     *     confirmDialog('Dialog title', '<p>Really show this dialog?'</p>')
-     * @param {String} title
-     * @param {string|Element|jQuery} content
-     * @returns {Promise}
-     */
-    function confirmDialog(title, content) {
-        var deferred = $.Deferred();
-        baseDialog(title, content, {
-            modal: true,
-            buttons:[
-                {
-                    text: Mapbender.trans('mb.querybuilder.frontend.OK'),
-                    'class': 'button success btn',
-                    click: function() {
-                        deferred.resolve();
-                        $(this).dialog('close');
-                        return false;
-                    }
-                }, {
-                    text: Mapbender.trans('mb.querybuilder.frontend.Cancel'),
-                    'class': 'button critical btn',
-                    click:   function() {
-                        deferred.reject();
-                        $(this).dialog('close');
-                        return false;
-                    }
-                }
-            ]
-        });
-        return deferred.promise();
-    }
-
 
     $.widget("mapbender.mbQueryBuilderElement", {
 
-        options:     {
+        options: {
             maxResults: 100
         },
         editTemplate: null,
         editFieldMap_: null,
 
-        _create: function() {
+        _create: function () {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
             this.editTemplate = $('.-js-edit-template', this.element).remove().removeClass('hidden');
             if (Array.isArray(this.options.tableColumns)) {
-                this.options.tableColumns.forEach(function(column) {
-                    if (column.title){
+                this.options.tableColumns.forEach(function (column) {
+                    if (column.title) {
                         var translationKey = 'mb.querybuilder.frontend.sql.' + column.title.toLowerCase();
                         column.title = Mapbender.trans(translationKey);
                     }
@@ -90,7 +58,7 @@
             };
             this._initialize();
         },
-        _initialize: function() {
+        _initialize: function () {
             var widget = this;
             const $toolbar = $('.toolbar', this.element);
             $toolbar.toggleClass('hidden', !this.options.allowCreate);
@@ -100,7 +68,7 @@
             this.interactionButtons_ = this._initInteractionButtons();
             this._initElementEvents();
 
-            widget.query("select", null, 'GET').done(function(results) {
+            widget.query("select", null, 'GET').done(function (results) {
                 widget.renderQueryList(results);
             });
             Mapbender.ElementUtil.adjustScrollbarsIfNecessary(this.element);
@@ -113,13 +81,13 @@
          * @returns jQuery form object
          * @param item
          */
-        exportData: function(item) {
+        exportData: function (item) {
             var widget = this;
             var form = $('<form action="' + widget.elementUrl + 'export" style="display: none" method="post"/>')
                 .append('<input type="text" name="id"  value="' + item.id + '"/>');
             form.appendTo("body");
 
-            setTimeout(function() {
+            setTimeout(function () {
                 form.remove();
             });
 
@@ -131,9 +99,9 @@
          *
          * @param item
          */
-        exportHtml: function(item) {
+        exportHtml: function (item) {
             var widget = this;
-            window.open(widget.elementUrl + 'exportHtml?id='+item.id);
+            window.open(widget.elementUrl + 'exportHtml?id=' + item.id);
         },
 
         /**
@@ -141,7 +109,7 @@
          * @param item
          * @returns {*}
          */
-        saveData: function(item) {
+        saveData: function (item) {
             var widget = this;
             return widget.query("save", {item: item});
         },
@@ -149,12 +117,14 @@
         /**
          * Redraw list table
          */
-        redrawListTable: function() {
+        redrawListTable: function () {
             var dt = this.getListTableApi();
-            dt.rows().every(function() { this.data(this.data()); })
+            dt.rows().every(function () {
+                this.data(this.data());
+            })
             dt.draw(true);
         },
-        addQueryRow: function(item) {
+        addQueryRow: function (item) {
             var dt = this.getListTableApi();
             var tr = dt.row.add(item).node();
             // NOTE: current dataTables versions could just do dt.row(tr).show().draw(false)
@@ -169,42 +139,55 @@
          *
          * @returns {*}
          */
-        getListTableApi: function() {
+        getListTableApi: function () {
             return $('table', this.element).dataTable().api();
         },
 
-        /**
-         * Remove  item data
-         *
-         * @param item
-         * @returns {*}
-         */
-        removeData: function(item) {
-            var widget = this;
+        confirmRemoveItem: function (item) {
             var message = [Mapbender.trans('mb.querybuilder.frontend.confirm.remove'), ': ', item[this.options.configuration.titleFieldName]].join('');
-            var title = [Mapbender.trans('mb.querybuilder.frontend.Remove'), ' #', item.id].join('');
-            var content = $(document.createElement('div')).text(message);
-            return confirmDialog(title, content).then(function() {
-                return widget.query("remove", {id: item.id}).done(function() {
-                    var dt = widget.getListTableApi();
-                    var dtRow = dt.row(function(_, data) {
-                        return data === item;
-                    });
-                    if (dtRow) {
-                        dtRow.remove();
-                        dt.draw(false);
+
+            new Mapbender.Popup({
+                title: [Mapbender.trans('mb.querybuilder.frontend.Remove'), ' #', item.id].join(''),
+                draggable: true,
+                modal: false,
+                closeOnESC: true,
+                content: $(document.createElement('div')).text(message),
+                width: 500,
+                buttons: [
+                    {
+                        label: Mapbender.trans('mb.querybuilder.frontend.OK'),
+                        cssClass: 'btn btn-sm btn-danger popupClose',
+                        callback: () => this._removeItem(item),
+                    },
+                    {
+                        label: Mapbender.trans('mb.actions.close'),
+                        cssClass: 'btn btn-sm btn-light popupClose',
                     }
-                    $.notify(Mapbender.trans('mb.querybuilder.frontend.sql.removed'), 'notice');
-                });
+                ]
             });
         },
 
-        _escapeHtml: function(value) {
+        _removeItem: function (item) {
+            this.query("remove", {id: item.id}).done(() => {
+                var dt = this.getListTableApi();
+                var dtRow = dt.row(function (_, data) {
+                    return data === item;
+                });
+                if (dtRow) {
+                    dtRow.remove();
+                    dt.draw(false);
+                }
+                $.notify(Mapbender.trans('mb.querybuilder.frontend.sql.removed'), 'notice');
+            });
+
+        },
+
+        _escapeHtml: function (value) {
             'use strict';
             return ('' + (value || '')).replace(/["&'\/<>]/g, function (a) {
                 return {
                     '"': '&quot;', '&': '&amp;', "'": '&#39;',
-                    '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+                    '/': '&#47;', '<': '&lt;', '>': '&gt;'
                 }[a];
             });
         },
@@ -214,9 +197,9 @@
          * @param item Item
          * @return XHR Object this has "dialog" property to get the popup dialog.
          */
-        displayResults: function(item) {
+        displayResults: function (item) {
             var widget = this;
-            return widget.query("execute", {id: item.id}, 'GET').then(function(results) {
+            return widget.query("execute", {id: item.id}, 'GET').then(function (results) {
                 var $content = $(document.createElement('div'))
                     .data("item", item)
                     .addClass('queryBuilder-results')
@@ -226,10 +209,10 @@
                     columnsOption = [{data: null, title: ''}];
                 } else {
                     var columnNames = Object.keys(results[0]);
-                    columnsOption = columnNames.map(function(name) {
+                    columnsOption = columnNames.map(function (name) {
                         return {
                             title: name,
-                            render: function(data, type, row) {
+                            render: function (data, type, row) {
                                 switch (type) {
                                     case 'display':
                                         return widget._escapeHtml(row[name]);
@@ -239,7 +222,7 @@
                                         return row[name];
                                 }
                             }
-                         };
+                        };
                     });
                 }
                 $content.append(widget.initDataTable({
@@ -269,7 +252,7 @@
                 widget._addDialogEvents($dialog);
             });
         },
-        initDataTable: function(options) {
+        initDataTable: function (options) {
             var $table = $(document.createElement('table'))
                 .addClass('table table-striped table-condensed table-hover')
             ;
@@ -278,10 +261,10 @@
             return $table.closest('.dataTables_wrapper');
         },
 
-        mergeDialogData: function($dialog) {
+        mergeDialogData: function ($dialog) {
             var formData = {};
             var nameMap = this.editFieldMap_;
-            $(':input[name]', $dialog).each(function() {
+            $(':input[name]', $dialog).each(function () {
                 var $input = $(this);
                 var name = nameMap[this.name] || this.name;
                 formData[name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
@@ -295,12 +278,12 @@
          *
          * @param item
          */
-        openEditDialog: function(item) {
+        openEditDialog: function (item) {
             var buttons = this._getDialogButtonsOption(['save', 'execute', 'export', 'export-html', 'delete']);
 
             var $form = this.editTemplate.clone().data("item", item);
             var nameMap = this.editFieldMap_;
-            $(':input[name]', $form).each(function() {
+            $(':input[name]', $form).each(function () {
                 var name = nameMap[this.name] || this.name;
                 var $input = $(this);
                 if (typeof (item[name]) !== 'undefined') {
@@ -319,56 +302,56 @@
             this._addDialogEvents($form);
             return $form;
         },
-        _initInteractionEventsCommon: function($scope, dataFn, livePrefix) {
+        _initInteractionEventsCommon: function ($scope, dataFn, livePrefix) {
             var self = this;
             var prefix_ = (livePrefix && livePrefix.replace(/\s*$/, ' ')) || '';
-            $scope.on('click', prefix_ + '.-fn-export', function() {
+            $scope.on('click', prefix_ + '.-fn-export', function () {
                 self.exportData(dataFn(this));
             });
-            $scope.on('click', prefix_ + '.-fn-export-html', function() {
+            $scope.on('click', prefix_ + '.-fn-export-html', function () {
                 self.exportHtml(dataFn(this));
             });
-            $scope.on('click', prefix_ + '.-fn-execute', function() {
+            $scope.on('click', prefix_ + '.-fn-execute', function () {
                 self.displayResults(dataFn(this));
             });
-            $scope.on('click', prefix_ + '.-fn-delete', function() {
+            $scope.on('click', prefix_ + '.-fn-delete', function () {
                 var item = dataFn(this);
-                self.removeData(item).then(function() {
-                    var $dialog = $('.qb-dialog .ui-dialog-content').filter(function() {
+                self.confirmRemoveItem(item).then(function () {
+                    var $dialog = $('.qb-dialog .ui-dialog-content').filter(function () {
                         return $(this).data('item') === item;
                     });
                     $dialog.dialog('destroy');
                 });
             });
         },
-        _initElementEvents: function() {
+        _initElementEvents: function () {
             var self = this;
-            var tableDataFn = function(target) {
+            var tableDataFn = function (target) {
                 return $(target).closest('tr').data('item');
             };
-            this.element.on('click', '.-fn-create', function() {
+            this.element.on('click', '.-fn-create', function () {
                 self.openEditDialog({});
             });
-            this.element.on('click', 'table tbody tr .-fn-edit', function() {
+            this.element.on('click', 'table tbody tr .-fn-edit', function () {
                 self.openEditDialog($(this).closest('tr').data('item'));
             });
             this._initInteractionEventsCommon(this.element, tableDataFn, 'table tbody tr');
         },
-        _addDialogEvents: function($dialog) {
+        _addDialogEvents: function ($dialog) {
             var self = this;
-            var dataFn = function(clickTarget) {
+            var dataFn = function (clickTarget) {
                 if (/-fn-execute(\s|$)/.test(clickTarget.className)) {
                     return self.mergeDialogData($dialog)
                 } else {
                     return $dialog.data('item');
                 }
             };
-            $dialog.closest('.ui-dialog').on('click', '.-fn-save', function() {
+            $dialog.closest('.ui-dialog').on('click', '.-fn-save', function () {
                 var item = $dialog.data('item');
                 var isNew = !item || !item.id;
                 var mergedData = self.mergeDialogData($dialog);
 
-                self.saveData(mergedData).done(function(savedItem) {
+                self.saveData(mergedData).done(function (savedItem) {
                     Object.assign(mergedData, savedItem);
                     if (isNew) {
                         self.addQueryRow(mergedData);
@@ -385,10 +368,13 @@
          * @return {Array<Object>}
          * @private
          */
-        _getDialogButtonsOption: function(functions) {
+        _getDialogButtonsOption: function (functions) {
             var buttons = [];
-            var noop = function() {};
-            var notEmpty = function(x) { return !!x; };
+            var noop = function () {
+            };
+            var notEmpty = function (x) {
+                return !!x;
+            };
             for (var i = 0; i < functions.length; ++i) {
                 var buttonDef = this.interactionButtons_[functions[i]];
                 if (buttonDef) {
@@ -404,13 +390,13 @@
             buttons.push({
                 text: Mapbender.trans('mb.querybuilder.frontend.Cancel'),
                 'class': 'button btn critical',
-                click: function() {
+                click: function () {
                     $(this).dialog('close');
                 }
             });
             return buttons;
         },
-        _initInteractionButtons: function() {
+        _initInteractionButtons: function () {
             var defs = {};
             if (this.options.allowHtmlExport) {
                 defs['export-html'] = {
@@ -451,9 +437,9 @@
 
             return defs;
         },
-        renderQueryList: function(queries) {
+        renderQueryList: function (queries) {
             var interactions = ['export', 'export-html', 'execute', 'edit', 'delete'];
-            var buttons =[];
+            var buttons = [];
             for (var i = 0; i < interactions.length; ++i) {
                 var buttonDef = this.interactionButtons_[interactions[i]];
                 if (buttonDef) {
@@ -462,7 +448,7 @@
             }
             var columnsOption = this.options.tableColumns.slice();
             if (buttons.length) {
-                var buttonMarkup = buttons.map(function(buttonDef) {
+                var buttonMarkup = buttons.map(function (buttonDef) {
                     var $icon = $(document.createElement('i'))
                         .addClass('fa')
                         .addClass(buttonDef.iconClass)
@@ -480,7 +466,7 @@
                 columnsOption.push({
                     data: null,
                     title: '',
-                    render: function(val, type) {
+                    render: function (val, type) {
                         return type === 'display' && navMarkup || null;
                     },
                     width: '1%',
@@ -494,18 +480,18 @@
             $tableWrap.empty();
             $tableWrap.append(this.initDataTable({
                 lengthChange: false,
-                info:       false,
-                searching:  this.options.allowSearch,
+                info: false,
+                searching: this.options.allowSearch,
                 language: {
                     search: Mapbender.trans('mb.querybuilder.frontend.search'),
                 },
                 processing: false,
-                ordering:   true,
-                paging:     false,
+                ordering: true,
+                paging: false,
                 selectable: false,
-                autoWidth:  false,
-                order:      [[1, "asc"]],
-                createdRow: function(tr, item) {
+                autoWidth: false,
+                order: [[1, "asc"]],
+                createdRow: function (tr, item) {
                     $(tr).data({item: item})
                 },
                 data: queries,
@@ -521,14 +507,14 @@
          * @return xhr jQuery XHR object
          * @version 0.2
          */
-        query: function(uri, request, method) {
+        query: function (uri, request, method) {
             var widget = this;
             return $.ajax({
-                url:         widget.elementUrl + uri,
+                url: widget.elementUrl + uri,
                 type: method || 'POST',
-                dataType:    "json",
+                dataType: "json",
                 data: request
-            }).fail(function(xhr) {
+            }).fail(function (xhr) {
                 var errorMessage = Mapbender.trans('mb.querybuilder.frontend.api.error') + ": " + xhr.statusText;
                 $.notify(errorMessage);
                 console.error(errorMessage, xhr);
