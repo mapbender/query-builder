@@ -210,21 +210,27 @@
 
         mergeDialogData: function ($dialog) {
             var formData = {};
-            var nameMap = this.editFieldMap_;
+            const self = this;
             $(':input[name]', $dialog).each(function () {
                 var $input = $(this);
-                var name = nameMap[this.name] || this.name;
+                const name = self._getActualFieldName(this);
                 formData[name] = (!$input.is(':checkbox') || $input.prop('checked')) && $input.val();
             });
             // NOTE: original data item is modified
             return Object.assign($dialog.data("item"), formData);
         },
 
+        requestInfoForEditDialog: function (item) {
+            this.query("edit", {id: item.id}, 'GET').done((result) => {
+                this.openEditDialog(result);
+            });
+        },
+
         openEditDialog: function (item) {
             var $form = this.editTemplate.clone().data("item", item);
-            var nameMap = this.editFieldMap_;
+            const self = this;
             $(':input[name]', $form).each(function () {
-                var name = nameMap[this.name] || this.name;
+                const name = self._getActualFieldName(this);
                 var $input = $(this);
                 if (typeof (item[name]) !== 'undefined') {
                     if ($input.is(':checkbox')) {
@@ -283,7 +289,7 @@
                 self.openEditDialog({});
             });
             this.element.on('click', 'table tbody tr .-fn-edit', function () {
-                self.openEditDialog($(this).closest('tr').data('item'));
+                self.requestInfoForEditDialog($(this).closest('tr').data('item'));
             });
             this._initInteractionEventsCommon(this.element, tableDataFn, 'table tbody tr');
         },
@@ -296,6 +302,7 @@
                     return $dialog.data('item');
                 }
             };
+
             $dialog.closest('.popup').on('click', '.-fn-save', function () {
                 var item = $dialog.data('item');
                 var isNew = !item || !item.id;
@@ -365,6 +372,13 @@
                     label: Mapbender.trans('mb.querybuilder.frontend.Edit'),
                     iconClass: 'fas fa-edit',
                     fnClass: '-fn-edit'
+                };
+            }
+            if (this.options.allowEdit || this.options.allowCreate) {
+                defs['save'] = {
+                    label: Mapbender.trans('mb.querybuilder.frontend.Save'),
+                    fnClass: '-fn-save',
+                    colorClass: 'btn-success',
                 };
             }
             if (this.options.allowRemove) {
@@ -461,6 +475,17 @@
                 $.notify(errorMessage);
                 console.error(errorMessage, xhr);
             });
+        },
+
+        /**
+         * the symfony form prefixes the names with querybuilder, this method extracts the raw name
+         */
+        _getActualFieldName: function (formElement) {
+            let name = formElement.name.substring('querybuilder['.length, formElement.name.length - 1);
+            if (this.editFieldMap_[name] !== undefined) {
+                name = this.editFieldMap_[name];
+            }
+            return name;
         }
     });
 })(jQuery);

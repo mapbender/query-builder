@@ -38,6 +38,7 @@ class HttpHandler implements ElementHttpHandlerInterface
 
         return match ($request->attributes->get('action')) {
             'select' => $this->selectAction($element),
+            'edit' => $this->selectForEditAction($element, $request),
             'execute' => $this->executeAction($element, $request),
             'remove' => $this->removeAction($element, $request),
             'export' => $this->exportAction($element, $request),
@@ -49,11 +50,26 @@ class HttpHandler implements ElementHttpHandlerInterface
 
     protected function selectAction(Element $element)
     {
+        $config = $this->getSafeConfiguration($element);
         $results = array();
         foreach ($this->getDataStore($element)->search() as $item) {
-            $results[] = $item->toArray();
+            $results[] = [
+                $config['uniqueId'] => $item->getAttribute($config['uniqueId']),
+                $config['titleFieldName'] => $item->getAttribute($config['titleFieldName']),
+                $config['orderByFieldName'] => $item->getAttribute($config['orderByFieldName']),
+            ];
         }
         return new JsonResponse($results);
+    }
+
+    protected function selectForEditAction(Element $element, Request $request)
+    {
+        $id = $request->query->get('id');
+        $element = $this->getDataStore($element)->getById($id);
+        if (!$element) {
+            return new Response(null, Response::HTTP_NOT_FOUND);
+        }
+        return new JsonResponse($element->toArray());
     }
 
     protected function executeAction(Element $element, Request $request)
@@ -64,7 +80,12 @@ class HttpHandler implements ElementHttpHandlerInterface
 
     protected function saveAction(Element $element, Request $request)
     {
-        $values = $request->request->get('item');
+        $values = $request->request->all('item');
+        $isNew = !array_key_exists('id', $values);
+        if (!$this->checkAccess($element, $isNew ? 'create' : 'edit')) {
+            return new Response(null, Response::HTTP_FORBIDDEN);
+        }
+
         $item = $this->getDataStore($element)->save($values);
         return new JsonResponse($item->toArray());
     }
@@ -128,16 +149,20 @@ class HttpHandler implements ElementHttpHandlerInterface
      * @param Request $request
      * @return bool
      */
-    protected function checkAccess(Element $element, Request $request)
+    protected function checkAccess(Element $element, Request|string $requestOrAction)
     {
+        $action = $requestOrAction instanceof Request ? $requestOrAction->attributes->get('action') : $requestOrAction;
         $config = $element->getConfiguration();
-        switch ($request->attributes->get('action')) {
+        switch ($action) {
             default:
                 return true;
             case 'execute':
                 return $config['allowExecute'];
+            case 'edit':
+                return $config['allowEdit'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_EDIT);
+            case 'create':
+                return ($config['allowCreate'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_CREATE));
             case 'save':
-                // TODO: genauer checken
                 return ($config['allowCreate'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_CREATE))
                     || ($config['allowEdit'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_EDIT));
             case 'remove':
