@@ -73,19 +73,12 @@
             dt.draw(true);
         },
         addQueryRow: function (item) {
-            var dt = this.getListTableApi();
-            var tr = dt.row.add(item).node();
-            // NOTE: current dataTables versions could just do dt.row(tr).show().draw(false)
-            var rowIndex = dt.rows({order: 'current'}).nodes().indexOf(tr);
-            var pageLength = dt.page.len();
-            var rowPage = Math.floor(rowIndex / pageLength);
-            dt.page(rowPage);
-            dt.draw(false);
+            this.getListTableApi().row.add(item).draw(false);
         },
         getListTableApi: function () {
             return $('table', this.element).dataTable().api();
         },
-        confirmRemoveItem: function (item) {
+        confirmRemoveItem: function (item, callback) {
             var message = [Mapbender.trans('mb.querybuilder.frontend.confirm.remove'), ': ', item[this.options.configuration.titleFieldName]].join('');
 
             new Mapbender.Popup({
@@ -99,7 +92,10 @@
                     {
                         label: Mapbender.trans('mb.querybuilder.frontend.OK'),
                         cssClass: 'btn btn-sm btn-danger popupClose',
-                        callback: () => this._removeItem(item),
+                        callback: () => {
+                            this._removeItem(item);
+                            if (callback) callback(item);
+                        },
                     },
                     {
                         label: Mapbender.trans('mb.actions.close'),
@@ -121,7 +117,6 @@
                 }
                 $.notify(Mapbender.trans('mb.querybuilder.frontend.sql.removed'), 'notice');
             });
-
         },
 
         _escapeHtml: function (value) {
@@ -150,37 +145,18 @@
                 .addClass('queryBuilder-results')
             ;
 
-            const hasNoResults = !results || !results.length;
-            var columnsOption;
-            if (hasNoResults) {
-                columnsOption = [{data: null, title: ''}];
-            } else {
-                var columnNames = Object.keys(results[0]);
-                columnsOption = columnNames.map((name) => {
-                    return {
-                        title: name,
-                        render: (data, type, row) => {
-                            switch (type) {
-                                case 'display':
-                                    return this._escapeHtml(row[name]);
-                                case 'filter':
-                                    return ('' + row[name]) || undefined;
-                                default:
-                                    return row[name];
-                            }
-                        }
-                    };
-                });
-            }
+            const columns = this._processResults(results);
+
             $content.append(this.initDataTable({
                 selectable: false,
                 paging: false,
                 data: results,
                 searching: false,
                 info: false,
-                columns: columnsOption
+                columns: columns
             }));
 
+            const hasNoResults = !results || !results.length;
             const title = Mapbender.trans('mb.querybuilder.frontend.Results') + ": " + item[this.options.configuration.titleFieldName];
 
             const $dialog = new Mapbender.Popup({
@@ -196,7 +172,30 @@
                 buttons: this._getDialogButtonsOption(['export', 'export-html']),
             });
 
+            $content.data("dialog", $dialog);
             this._addDialogEvents($content);
+        },
+
+        _processResults: function (results) {
+            if (!results || !results.length) {
+                return [{data: null, title: ''}];
+            }
+            var columnNames = Object.keys(results[0]);
+            return columnNames.map((name) => {
+                return {
+                    title: name,
+                    render: (data, type, row) => {
+                        switch (type) {
+                            case 'display':
+                                return this._escapeHtml(row[name]);
+                            case 'filter':
+                                return ('' + row[name]) || undefined;
+                            default:
+                                return row[name];
+                        }
+                    }
+                };
+            });
         },
 
         initDataTable: function (options) {
@@ -257,6 +256,7 @@
             this._addDialogEvents($form);
             return $form;
         },
+
         _initInteractionEventsCommon: function ($scope, dataFn, livePrefix) {
             var self = this;
             var prefix_ = (livePrefix && livePrefix.replace(/\s*$/, ' ')) || '';
@@ -271,12 +271,10 @@
             });
             $scope.on('click', prefix_ + '.-fn-delete', function () {
                 var item = dataFn(this);
-                self.confirmRemoveItem(item).then(function () {
-                    // TODO: FIX THIS
-                    var $dialog = $('.qb-dialog .ui-dialog-content').filter(function () {
+                self.confirmRemoveItem(item, function () {
+                    $('.qb-dialog .queryBuilder-results').filter(function () {
                         return $(this).data('item') === item;
-                    });
-                    $dialog.dialog('destroy');
+                    }).data("dialog")?.close();
                 });
             });
         },
@@ -320,11 +318,6 @@
             });
             this._initInteractionEventsCommon($dialog.closest('.popup'), dataFn);
         },
-        /**
-         * @param {Array<string>} functions
-         * @return {Array<Object>}
-         * @private
-         */
         _getDialogButtonsOption: function (functions) {
             const buttons = [];
             for (var i = 0; i < functions.length; ++i) {
@@ -478,7 +471,7 @@
         },
 
         /**
-         * the symfony form prefixes the names with querybuilder, this method extracts the raw name
+         * symfony form prefixes the names with querybuilder, this method extracts the raw name
          */
         _getActualFieldName: function (formElement) {
             let name = formElement.name.substring('querybuilder['.length, formElement.name.length - 1);
