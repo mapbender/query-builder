@@ -411,35 +411,35 @@
             if (this.options.allowHtmlExport) {
                 defs['export-html'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.HTML-Export'),
-                    iconClass: 'fa-table',
+                    iconClass: 'fas fa-table',
                     fnClass: '-fn-export-html'
                 };
             }
             if (this.options.allowFileExport) {
                 defs['export'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.Export'),
-                    iconClass: 'fa-download',
+                    iconClass: 'fas fa-download',
                     fnClass: '-fn-export'
                 };
             }
             if (this.options.allowExecute) {
                 defs['execute'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.Execute'),
-                    iconClass: 'fa-play',
+                    iconClass: 'fas fa-play',
                     fnClass: '-fn-execute'
                 };
             }
             if (this.options.allowEdit) {
                 defs['edit'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.Edit'),
-                    iconClass: 'fa-edit',
+                    iconClass: 'fas fa-edit',
                     fnClass: '-fn-edit'
                 };
             }
             if (this.options.allowRemove) {
                 defs['delete'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.Remove'),
-                    iconClass: 'fa-remove',
+                    iconClass: 'far fa-trash-can',
                     fnClass: '-fn-delete',
                     colorClass: 'critical'
                 };
@@ -460,11 +460,11 @@
             if (buttons.length) {
                 var buttonMarkup = buttons.map(function(buttonDef) {
                     var $icon = $(document.createElement('i'))
-                        .addClass('fa fas')
+                        .addClass('fa')
                         .addClass(buttonDef.iconClass)
                     ;
                     var $button = $(document.createElement('span'))
-                        .addClass('button')
+                        .addClass('qb-button clickable hover-highlight-effect')
                         .addClass(buttonDef.fnClass)
                         .addClass(buttonDef.colorClass || '')
                         .attr('title', buttonDef.label)

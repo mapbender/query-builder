@@ -2,41 +2,16 @@ $buttonTextColor: #fff !default;
 $buttonActiveTextColor: $buttonTextColor !default;
 
 .mb-element-queryBuilder {
-    --qb-sidepane-header-background: #eeeeee;
-    --qb-sidepane-header-background-sorting-active: #cccccc;
-    --qb-sidepane-header-color: #000000;
-    --qb-sidepane-header-color-sorting-active: var(--qb-sidepane-header-color);
-
-    --qb-table-header-background: rgb(from var(--primary) r g b / 50%);
-    --qb-table-header-background-sorting-active: var(--primary);
-    --qb-table-header-color: #FFFFFF;
-    --qb-table-header-color-sorting-active: var(--qb-table-header-color);
-
   .toolbar {
     margin-bottom: 10px;
   }
   table td.interactions {
     white-space: nowrap;
-    border-top: none;
-    .button {
-      padding: 0 3px;
-      font-size: inherit;
-      line-height: 2;
-      height: auto;
-    }
-    .button + .button {
-      border-left: none;
-    }
   }
-  // Defeat super specific td padding rule from Mapbender
-  table td.interactions, .mapbender-element-result-table > .dataTables_wrapper > table[role="grid"] > tbody > tr > td.interactions {
-    padding: 0;
-  }
-  table .button-navigation .button {
-    padding: 0 3px;
-    line-height: 2;
-    height: auto; // Defeat global fixed pixel height on .button
-  }
+}
+.qb-button {
+    padding: 4px;
+    position: relative;
 }
 
 .mb-element-queryBuilder {
@@ -134,35 +109,31 @@ $buttonActiveTextColor: $buttonTextColor !default;
     background-color: $buttonFirstColor;
     color: $buttonTextColor;
   }
-  th {
-    border-bottom: none !important; // Defeat highly specific Bootstrap 3 rule
-    white-space: nowrap;
-  }
+
   .sorting, .sorting_asc, .sorting_desc {
     cursor: pointer;
   }
-  .sorting_asc, .sorting_desc {
-    background-color: $buttonFirstActiveColor;
-  }
-  .sorting:before, .sorting_asc:before, .sorting_desc:before {
-    display: inline-block;
+
+  .sorting:before, .sorting_asc:before, .sorting_desc:after {
+    display: inline-block !important;
     min-width: 1.4em; // Prevent width change on sorting state change
-    font-family: "FontAwesome", "Font Awesome 5 Free", "Font Awesome 5 Pro";
+    font-family: var(--fa-style-family, "Font Awesome 6 Free");
+    font-weight: var(--fa-style, 900);
+    line-height: 1;
+    transform: translateY(1px);
+    right: 1em !important;
   }
   .sorting:before {
-    content: "\f0dc";   // = .fa-sort / .fa-unsorted
+    content: "\f0dc" !important; // = .fa-sort / .fa-unsorted
+    opacity: 1 !important;
   }
   .sorting_asc:before {
-    content: "\f160";   // = .fa-sort-amount-asc
+    content: "\f160" !important;   // = .fa-sort-amount-asc
   }
-  .sorting_desc:before {
-    content: "\f161";   // = .fa-sort-amount-desc
+  .sorting_desc:after {
+    content: "\f161" !important;   // = .fa-sort-amount-desc
   }
-  .mapbender-element-result-table {
-    .sorting, .sorting_asc, .sorting_desc {
-      &:before {
-        margin: 0;  // Undo margin rule (we have fixed width instead)
-      }
-    }
+  .sorting:after, .sorting_asc:after, .sorting_desc:before {
+      content: "" !important;
   }
 }
