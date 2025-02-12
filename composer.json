@@ -19,7 +19,7 @@
         "mapbender/mapbender": "^4"
     },
     "conflict": {
-        "symfony/symfony": "<5.4",
+        "symfony/symfony": "<5.4"
     },
     "autoload": {
         "psr-4": {
