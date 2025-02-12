@@ -23,23 +23,27 @@ class QueryBuilderAdminType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('configuration', YAMLConfigurationType::class, array(
+            ->add('configuration', YAMLConfigurationType::class, $this->createInlineHelpText([
                     'required' => true,
-                    'label' => 'mb.querybuilder.admin.configuration'
-                )
+                    'label' => 'mb.querybuilder.admin.configuration',
+                    'help' => 'mb.querybuilder.admin.configuration_help',
+                ], $this->trans)
             )
-            ->add('allowCreate', CheckboxType::class, array(
+            ->add('allowCreate', CheckboxType::class, $this->createInlineHelpText([
                 'required' => false,
-                'label' => 'mb.querybuilder.admin.allowCreate'
-            ))
-            ->add('allowEdit', CheckboxType::class, array(
+                'label' => 'mb.querybuilder.admin.allowCreate',
+                'help' => 'mb.querybuilder.admin.allowCreate_help'
+            ], $this->trans))
+            ->add('allowEdit', CheckboxType::class, $this->createInlineHelpText([
                 'required' => false,
-                'label' => 'mb.querybuilder.admin.allowEdit'
-            ))
-            ->add('allowRemove', CheckboxType::class, array(
+                'label' => 'mb.querybuilder.admin.allowEdit',
+                'help' => 'mb.querybuilder.admin.allowEdit_help'
+            ], $this->trans))
+            ->add('allowRemove', CheckboxType::class, $this->createInlineHelpText([
                 'required' => false,
-                'label' => 'mb.querybuilder.admin.allowRemove'
-            ))
+                'label' => 'mb.querybuilder.admin.allowRemove',
+                'help' => 'mb.querybuilder.admin.allowRemove_help'
+            ], $this->trans))
             ->add('allowExecute', CheckboxType::class, array(
                 'required' => false,
                 'label' => 'mb.querybuilder.admin.allowExecute'
