@@ -147,17 +147,11 @@
 
             const columns = this._processResults(results);
 
-            $content.append(this.initDataTable({
-                selectable: false,
-                paging: false,
-                data: results,
-                searching: false,
-                info: false,
-                columns: columns
-            }));
+            const options = this._getDataTableOptions(results, columns);
+            $content.append(this.initDataTable(options));
 
             const hasNoResults = !results || !results.length;
-            const title = Mapbender.trans('mb.querybuilder.frontend.Results') + ": " + item[this.options.configuration.titleFieldName];
+            const title = item[this.options.configuration.titleFieldName];
 
             const $dialog = new Mapbender.Popup({
                 title: title,
@@ -371,7 +365,7 @@
                 defs['save'] = {
                     label: Mapbender.trans('mb.querybuilder.frontend.Save'),
                     fnClass: '-fn-save',
-                    colorClass: 'btn-success',
+                    colorClass: 'btn-primary',
                 };
             }
             if (this.options.allowRemove) {
@@ -429,7 +423,7 @@
             $tableWrap.append(this.initDataTable(this._getDataTableOptions(queries, columnsOption)));
         },
 
-        _getDataTableOptions: function (queries, columnsOption) {
+        _getDataTableOptions: function (queries, columnsOption, customOptions) {
             return {
                 lengthChange: false,
                 info: false,
@@ -445,7 +439,8 @@
                 order: [[1, "asc"]],
                 createdRow: (tr, item) => $(tr).data({item: item}),
                 data: queries,
-                columns: columnsOption
+                columns: columnsOption,
+                ...(customOptions || {})
             }
         },
 

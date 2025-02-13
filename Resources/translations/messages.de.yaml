@@ -9,7 +9,6 @@ mb.querybuilder:
     Execute: Ausführen
     OK: OK
     Export: Exportieren
-    Results: Ergebnisse
     HTML-Export: HTML-Export
     search: Suchen
     sql:
