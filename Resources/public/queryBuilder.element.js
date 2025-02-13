@@ -285,7 +285,7 @@
                 cssClass: 'qb-dialog',
                 closeOnESC: true,
                 content: $form,
-                width: Math.min(600, window.innerWidth * 0.8),
+                width: Math.min(650, window.innerWidth * 0.8),
                 buttons: this._getDialogButtonsOption(['save', 'execute', 'export', 'export-html', 'delete']),
             });
 
