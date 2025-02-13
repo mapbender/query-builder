@@ -91,6 +91,7 @@ class QueryBuilderElement extends AbstractElementService
     {
         $view = new TemplateView('@MapbenderQueryBuilder/Element/queryBuilder.html.twig');
         $view->attributes['class'] = 'mb-element-queryBuilder';
+        $view->attributes['data-title'] = $element->getTitle();
         $form = $this->formFactory->createNamed('querybuilder', QueryType::class);
         $view->variables['form'] = $form->createView();
         return $view;

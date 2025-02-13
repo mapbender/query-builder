@@ -1,11 +1,12 @@
 (function ($) {
-    $.widget("mapbender.mbQueryBuilderElement", {
+    $.widget("mapbender.mbQueryBuilderElement", $.mapbender.mbDialogElement, {
 
         options: {
             maxResults: 100
         },
         editTemplate: null,
         editFieldMap_: null,
+        useDialog_: false,
 
         _create: function () {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
@@ -16,6 +17,7 @@
                 sql: this.options.configuration.sqlFieldName,
                 order: this.options.configuration.orderByFieldName
             };
+            this.useDialog_ = this.checkDialogMode();
             this._initialize();
         },
         _initialize: function () {
@@ -31,6 +33,54 @@
                 this.renderQueryList(results);
             });
             Mapbender.ElementUtil.adjustScrollbarsIfNecessary(this.element);
+        },
+
+        open: function (callback) {
+            this.callback = callback ? callback : null;
+            if (this.useDialog_) {
+                if (!this.popup || !this.popup.$element) {
+                    var popupOptions = Object.assign(this._getPopupOptions(), {
+                        content: [this.element.show()]
+                    });
+                    this.popup = new Mapbender.Popup(popupOptions);
+                    this.popup.$element.on('close', $.proxy(this.close, this));
+                } else {
+                    this.popup.$element.show();
+                }
+            }
+            this.notifyWidgetActivated();
+        },
+
+        _getPopupOptions: function () {
+            return {
+                title: this.element.attr('data-title'),
+                modal: false,
+                resizable: true,
+                draggable: true,
+                closeOnESC: false,
+                detachOnClose: false,
+                width: 350,
+                height: 500,
+                buttons: [
+                    {
+                        label: Mapbender.trans('mb.actions.close'),
+                        cssClass: 'btn btn-sm btn-light popupClose'
+                    }
+                ]
+            };
+        },
+
+        close: function () {
+            if (this.useDialog_) {
+                if (this.popup && this.popup.$element) {
+                    this.popup.$element.hide();
+                }
+            }
+            if (this.callback) {
+                (this.callback)();
+                this.callback = null;
+            }
+            this.notifyWidgetDeactivated();
         },
 
         /**
