@@ -99,6 +99,12 @@ class HttpHandler implements ElementHttpHandlerInterface
             'xls' => ExportResponse::TYPE_XLS,
             default => ExportResponse::TYPE_XLSX,
         };
+        if ($exportFormat === ExportResponse::TYPE_XLSX && count($rows) > 1) {
+            // XLSX export does not automatically add title rows, so add them manually
+            $keys = array_keys($rows[0]);
+            $titleRow = array_combine($keys, $keys);
+            $rows = array_merge([$titleRow], $rows);
+        }
         return new ExportResponse($rows, 'export-list', $exportFormat);
     }
 
