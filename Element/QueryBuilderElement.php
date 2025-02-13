@@ -59,17 +59,6 @@ class QueryBuilderElement extends AbstractElementService
             'allowFileExport' => true,
             'allowSearch' => false,
             'configuration' => self::getYamlConfigurationDefaults(),
-            'tableColumns' => [
-                [
-                    'data' => 'name',
-                    'title' => 'Title',
-                ],
-                [
-                    'data' => 'anzeigen_reihenfolge',
-                    'visible' => false,
-                    'title' => 'Sort',
-                ],
-            ],
         );
     }
 
@@ -132,16 +121,6 @@ class QueryBuilderElement extends AbstractElementService
         $values['allowCreate'] = $values['allowCreate'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_CREATE);
         $values['allowRemove'] = $values['allowRemove'] && $this->security->isGranted(QueryBuilderPermissionProvider::PERMISSION_DELETE);
 
-        foreach ($values['tableColumns'] as $i => $tableColumn) {
-            switch ($tableColumn['title']) {
-                case 'Title':
-                    $values['tableColumns'][$i]['data'] = $values['configuration']['titleFieldName'];
-                    break;
-                case 'Sort':
-                    $values['tableColumns'][$i]['data'] = $values['configuration']['orderByFieldName'];
-                    break;
-            }
-        }
         return $values;
     }
 

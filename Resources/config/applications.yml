@@ -90,10 +90,6 @@ parameters:
 
             orderByFieldName: id
 
-            # Queries field definitions
-            tableColumns:
-              - {title: "Title", data: "name"}
-
 
           layertree:
             title: Layertree

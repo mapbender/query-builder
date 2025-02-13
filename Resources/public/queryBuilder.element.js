@@ -10,14 +10,6 @@
         _create: function () {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
             this.editTemplate = $('.-js-edit-template', this.element).remove().removeClass('hidden');
-            if (Array.isArray(this.options.tableColumns)) {
-                this.options.tableColumns.forEach(function (column) {
-                    if (column.title) {
-                        var translationKey = 'mb.querybuilder.frontend.sql.' + column.title.toLowerCase();
-                        column.title = Mapbender.trans(translationKey);
-                    }
-                });
-            }
             this.editFieldMap_ = {
                 title: this.options.configuration.titleFieldName,
                 connection: this.options.configuration.connectionFieldName,
@@ -388,22 +380,9 @@
                     buttons.push(buttonDef);
                 }
             }
-            var columnsOption = this.options.tableColumns.slice();
+            const columnsOption = this._getQueryListColumns();
             if (buttons.length) {
-                var buttonMarkup = buttons.map(function (buttonDef) {
-                    var $icon = $(document.createElement('i'))
-                        .addClass('fa')
-                        .addClass(buttonDef.iconClass)
-                    ;
-                    var $button = $(document.createElement('span'))
-                        .addClass('qb-button clickable hover-highlight-effect')
-                        .addClass(buttonDef.fnClass)
-                        .addClass(buttonDef.colorClass || '')
-                        .attr('title', buttonDef.label)
-                        .append($icon)
-                    ;
-                    return $button.get(0).outerHTML;
-                });
+                var buttonMarkup = buttons.map(this._generateButtonMarkup.bind(this));
                 var navMarkup = buttonMarkup.join('');
                 columnsOption.push({
                     data: null,
@@ -420,9 +399,37 @@
 
             var $tableWrap = $('.-js-table-wrap', this.element);
             $tableWrap.empty();
-            $tableWrap.append(this.initDataTable(this._getDataTableOptions(queries, columnsOption)));
+            const tableOptions = this._getDataTableOptions(queries, columnsOption, {order: [[1, "asc"]]});
+            $tableWrap.append(this.initDataTable(tableOptions));
         },
 
+        _generateButtonMarkup: function (buttonDef) {
+            var $icon = $(document.createElement('i'))
+                .addClass('fa')
+                .addClass(buttonDef.iconClass)
+            ;
+            var $button = $(document.createElement('span'))
+                .addClass('qb-button clickable hover-highlight-effect')
+                .addClass(buttonDef.fnClass)
+                .addClass(buttonDef.colorClass || '')
+                .attr('title', buttonDef.label)
+                .append($icon)
+            ;
+            return $button.get(0).outerHTML;
+        },
+        _getQueryListColumns: function () {
+            return [
+                {
+                    data: this.options.configuration.titleFieldName,
+                    title: Mapbender.trans('mb.querybuilder.frontend.sql.title'),
+                },
+                {
+                    data: this.options.configuration.orderByFieldName,
+                    searchable: false,
+                    visible: false,
+                },
+            ]
+        },
         _getDataTableOptions: function (queries, columnsOption, customOptions) {
             return {
                 lengthChange: false,
@@ -436,7 +443,6 @@
                 paging: false,
                 selectable: false,
                 autoWidth: false,
-                order: [[1, "asc"]],
                 createdRow: (tr, item) => $(tr).data({item: item}),
                 data: queries,
                 columns: columnsOption,

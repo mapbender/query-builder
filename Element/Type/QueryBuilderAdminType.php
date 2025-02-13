@@ -60,7 +60,6 @@ class QueryBuilderAdminType extends AbstractType
                 'required' => false,
                 'label' => 'mb.querybuilder.admin.allowSearch'
             ))
-            // @todo: add field for implemented option 'tableColumns'? (can be set via yaml definition; check functionality)
         ;
     }
 }
