@@ -16,7 +16,7 @@
         "doctrine/dbal": "^3",
         "mapbender/digitizer": "^2",
         "doctrine/persistence": "^2 || ^3",
-        "mapbender/mapbender": "^4"
+        "mapbender/mapbender": "^4.1"
     },
     "conflict": {
         "symfony/symfony": "<5.4"
