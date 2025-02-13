@@ -23,9 +23,9 @@ mb.querybuilder:
     configuration: Konfiguration der Verbindung
     configuration_help: 'Die Konfiguration zu der Tabelle, in der die gespeicherten Abfragen gespeichert sind als YAML. Dokumentation auf <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
     allowCreate: Erstellen erlauben
-    allowCreate_help: 'Das Erstellen von SQL-Queries ist nur Nutzer:innen erlaubt, die zusätzlich die globale Berechtigung QueryBuilder/Erstellen erteilt bekommen haben.'
+    allowCreate_help: 'Das Erstellen von SQL-Queries ist nur Nutzer:innen erlaubt, die zusätzlich die globale Berechtigung QueryBuilder/Erstellen erteilt bekommen haben. Außerdem müssen alle Datenbankverbindungen über den Parameter <code>querybuilder_allowed_connections</code> freigegeben werden.'
     allowEdit: Bearbeiten erlauben
-    allowEdit_help: 'Das Bearbeiten von SQL-Queries ist nur Nutzer:innen erlaubt, die zusätzlich die globale Berechtigung QueryBuilder/Bearbeiten erteilt bekommen haben.'
+    allowEdit_help: 'Das Bearbeiten von SQL-Queries ist nur Nutzer:innen erlaubt, die zusätzlich die globale Berechtigung QueryBuilder/Bearbeiten erteilt bekommen haben. Außerdem müssen alle Datenbankverbindungen über den Parameter <code>querybuilder_allowed_connections</code> freigegeben werden.'
     allowRemove: Löschen erlauben
     allowRemove_help: 'Das Löschen von SQL-Queries ist nur Nutzer:innen erlaubt, die zusätzlich die globale Berechtigung QueryBuilder/Löschen erteilt bekommen haben.'
     allowExecute: Ausführen erlauben

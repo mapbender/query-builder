@@ -12,7 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ConnectionChoiceType extends AbstractType
 {
-    public function __construct(protected ConnectionRegistry $connectionRegistry)
+    public function __construct(
+        protected ConnectionRegistry $connectionRegistry,
+        protected array $allowedConnections,
+    )
     {
     }
 
@@ -28,7 +31,9 @@ class ConnectionChoiceType extends AbstractType
             'choices' => function(Options $options) use ($registry) {
                 $choices = array();
                 foreach (\array_keys($registry->getConnectionNames()) as $name) {
-                    $choices[$name] = $name;
+                    if (in_array($name, $this->allowedConnections)) {
+                        $choices[$name] = $name;
+                    }
                 }
                 return $choices;
             }

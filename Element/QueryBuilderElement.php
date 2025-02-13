@@ -14,8 +14,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 class QueryBuilderElement extends AbstractElementService
 {
     public function __construct(
-        protected FormFactoryInterface $formFactory,
-        protected HttpHandler          $httpHandler,
+        protected FormFactoryInterface          $formFactory,
+        protected HttpHandler                   $httpHandler,
         protected AuthorizationCheckerInterface $security,
     )
     {

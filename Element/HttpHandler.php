@@ -26,6 +26,7 @@ class HttpHandler implements ElementHttpHandlerInterface
         protected Twig\Environment              $templateEngine,
         protected DataStoreFactory              $dataStoreFactory,
         protected AuthorizationCheckerInterface $security,
+        protected array $allowedConnections,
     )
     {
     }
@@ -84,6 +85,10 @@ class HttpHandler implements ElementHttpHandlerInterface
         $isNew = !array_key_exists('id', $values);
         if (!$this->checkAccess($element, $isNew ? 'create' : 'edit')) {
             return new Response(null, Response::HTTP_FORBIDDEN);
+        }
+        $connectionColumn = $this->getSafeConfiguration($element)['connectionFieldName'];
+        if (!array_key_exists($connectionColumn, $values) || !in_array($values[$connectionColumn], $this->allowedConnections)) {
+            return new Response('connection not permitted by parameter querybuilder_allowed_connections', Response::HTTP_FORBIDDEN);
         }
 
         $item = $this->getDataStore($element)->save($values);

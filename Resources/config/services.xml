@@ -2,12 +2,17 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <!-- ensure required parameter is defined (parameters.yaml will override this) -->
+        <parameter key="querybuilder_allowed_connections" type="collection" />
+    </parameters>
     <services>
         <service id="mb.querybuilder.http_handler" class="Mapbender\QueryBuilderBundle\Element\HttpHandler">
             <argument type="service" id="doctrine" />
             <argument type="service" id="twig" />
             <argument type="service" id="mbds.default_datastore_factory" />
             <argument type="service" id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" />
+            <argument>%querybuilder_allowed_connections%</argument>
         </service>
         <service id="mapbender.form_type.element.query_builder" class="Mapbender\QueryBuilderBundle\Element\Type\QueryBuilderAdminType">
             <tag name="form.type" />
@@ -16,6 +21,7 @@
         <service id="mb.querybuilder.form_type.ConnectionChoiceType" class="Mapbender\QueryBuilderBundle\Form\ConnectionChoiceType">
             <tag name="form.type" />
             <argument type="service" id="doctrine" />
+            <argument>%querybuilder_allowed_connections%</argument>
         </service>
         <service id="mapbender.element.QueryBuilder" class="Mapbender\QueryBuilderBundle\Element\QueryBuilderElement">
             <tag name="mapbender.element" />

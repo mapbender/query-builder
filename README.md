@@ -33,14 +33,25 @@ Depending on the settings, the QueryBuilder allows you to
 The respective authorizations for the query options can be assigned in the configuration of the element
 
 
-###Configuration
+### Configuration
 
 You need an administration table in your database where you store your sql definitions (see example below).
 
 * **Title:** Title of the element.
-* **Configuration:** YAML-Field to define the connection and settings for the administration table
+* **Configuration:** YAML-Field to define the connection and settings for the administration table:
+  * **connection:** database connection name (as defined in `doctrine.yaml`, default: `default`)
+  * **table:** administration table name where the queries are stored (required)
+  * **uniqueId:** refer to the unique id of the table (default: `id`)
+  * **titleFieldName:** name to display for the SQL query. Appears later in the SQL query table as the title. (default: `name`)
+  * **sqlFieldName:** table column with the SQL query (default: `sql_definition`)
+  * **orderByFieldName:** table column for specifying the order in the SQL query table (default: `id`)
+  * **connectionFieldName:** table column with the database connection for the SQL query (default: the same connection as given in `connection`)
+  * **filter:** definition of a filter if not all queries should be visible as sql WHERE query, e.g. `active = 1` (optional)
+  * **export_format:**: file type for the file export: `xlsx` (default), `xls` or `csv`
 
-```
+Example:
+
+```yaml
    connection: geodata_db    
    table: query_builder_data   
    uniqueId: id
@@ -52,51 +63,53 @@ You need an administration table in your database where you store your sql defin
    export_format: xlsx
 ```
 
-* **connection:** database connection 
-* **table:** administration table where the queries are stored
-* **uniqueId:** refer to the unique id of the table
-* **titleFieldName:** name to display for the SQL query. Appears later in the SQL query table as the title.
-* **sqlFieldName:** table column with the SQL query
-* **orderByFieldName:** table column for specifying the order in the SQL query table
-* **connectionFieldName:** table column with the database connection for the SQL query
-* **Allow create:** gives the permission to create new queries. Not activated per default. 
-* **filter:** definition of a filter if not all queries should be published
-* **export_format:** activate export to xlsx
-
 There are also some options that you can configure:
 
-* **Allow save:** Gives the permission to save changes in the queries (default: false).
-* **Allow remove:** Gives the permission to remove queries (default: false).
-* **Allow execute:** Gives the permission to execute queries (default: true).
-* **Allow print:** Gives the permission to print the results of queries (default: true).
-* **Allow export:** Gives the permission to export the results of queries (default: true).
-* **Allow search:** Gives the permission to search for a query/ results of queries (default: false).
+* **Allow execute:** If checked, users can execute the query to show the results in a popup (default: `true`).
+* **Allow search:** If checked, users can filter the query list and popup results by a search string (default: `false`).
+* **Allow HTML export:** If checked, users can view the data as a printable HTML page in a new window (default: `true`)
+* **Allow file export:** If checked, users can download the query results as a spreadsheet file (xlsx, xls or csv depending on configuration; default: `true`)
 
+You can either modify the queries directly in the database, the query builder also supports manipulating the data directly in mapbender. Since allowing users to modify arbitrary SQL is a potential security threat, in addition to checking the respective checkboxes, users with edit rights also need to be granted a global permission (Security - Global Permissions - QueryBuilder). 
+
+In addition to the permissions, the databases that allow executing query builder queries need to be defined in the `parameters.yaml` file using the parameter `querybuilder_allowed_connections`, e.g.
+
+```yaml
+parameters:
+    querybuilder_allowed_connections:
+        - default
+        - geodata
+```
+
+The following configuration entries toggle the availability of editing functionality:
+
+* **Allow save:** If checked, users with the permission QueryBuilder.edit can modify existing queries (default: `false`). 
+* **Allow create:** If checked, users with the permission QueryBuilder.create can add new queries (default: `false`).
+* **Allow remove:** If checked, users with the permission QueryBuilder.remove can remove existing queries (default: `false`).
 
 
 ### Administration table to store the query definitions and metadata
 
-This administration table can be created in an existing database using the following SQL command.
-
+This administration table can be created in an existing database using the following SQL command. This is just an example, you can choose the column names freely, just adjust the configuration accordingly.
 
 ```
-   CREATE TABLE public.query_builder_data (
-      id serial PRIMARY KEY,
-      name character varying,
-      sql_definition text,
-      display integer,
-      ordering integer,
-      connection_field_name character varying
-   );
+CREATE TABLE public.query_builder_data (
+   id serial PRIMARY KEY,
+   name character varying,
+   sql_definition text,
+   display integer,
+   ordering integer,
+   connection_field_name character varying
+);
 ```
 
 The following demodata with SQL queries can be used for the exemplary use.
 The SQL commands for the creation of the queried tables can be found in the documentation for the digitizer element.
 
 ```                
-   INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (1, 'Report 1: Time and Date', 'Select now() as "Zeit", date(now()) as "Datum";', 1, 1, 'geodata_db');
-   INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (3, 'Report 2: Mapbender applications', 'Select id, title, slug from mb_core_application;', 1, 4, 'default');
-   INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (4, 'Report 3: Mapbender users', 'Select id, username from fom_user;', 1, 3, 'default');
-   INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (2, 'Hello world', 'Select now() as "Zeit", date(now()) as "Datum", ''Hello world!'' as gruss;', 1, 2, 'default');
+INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (1, 'Report 1: Time and Date', 'Select now() as "Zeit", date(now()) as "Datum";', 1, 1, 'geodata_db');
+INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (3, 'Report 2: Mapbender applications', 'Select id, title, slug from mb_core_application;', 1, 4, 'default');
+INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (4, 'Report 3: Mapbender users', 'Select id, username from fom_user;', 1, 3, 'default');
+INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (2, 'Hello world', 'Select now() as "Zeit", date(now()) as "Datum", ''Hello world!'' as gruss;', 1, 2, 'default');
 ```
  
