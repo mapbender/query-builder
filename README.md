@@ -59,7 +59,7 @@ Example:
    sqlFieldName: sql_definition
    orderByFieldName: ordering
    connectionFieldName: connection_field_name
-   filter: 'display is not null'
+   filter: 'active is not null'
    export_format: xlsx
 ```
 
@@ -97,7 +97,7 @@ CREATE TABLE public.query_builder_data (
    id serial PRIMARY KEY,
    name character varying,
    sql_definition text,
-   display integer,
+   active integer,
    ordering integer,
    connection_field_name character varying
 );
@@ -107,9 +107,9 @@ The following demodata with SQL queries can be used for the exemplary use.
 The SQL commands for the creation of the queried tables can be found in the documentation for the digitizer element.
 
 ```                
-INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (1, 'Report 1: Time and Date', 'Select now() as "Zeit", date(now()) as "Datum";', 1, 1, 'geodata_db');
-INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (3, 'Report 2: Mapbender applications', 'Select id, title, slug from mb_core_application;', 1, 4, 'default');
-INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (4, 'Report 3: Mapbender users', 'Select id, username from fom_user;', 1, 3, 'default');
-INSERT INTO public.query_builder_data (id, name, sql_definition, display, ordering, connection_field_name) VALUES (2, 'Hello world', 'Select now() as "Zeit", date(now()) as "Datum", ''Hello world!'' as gruss;', 1, 2, 'default');
+INSERT INTO public.query_builder_data (id, name, sql_definition, active, ordering, connection_field_name) VALUES (1, 'Report 1: Time and Date', 'Select now() as "Zeit", date(now()) as "Datum";', 1, 1, 'geodata_db');
+INSERT INTO public.query_builder_data (id, name, sql_definition, active, ordering, connection_field_name) VALUES (3, 'Report 2: Mapbender applications', 'Select id, title, slug from mb_core_application;', 1, 4, 'default');
+INSERT INTO public.query_builder_data (id, name, sql_definition, active, ordering, connection_field_name) VALUES (4, 'Report 3: Mapbender users', 'Select id, username from fom_user;', 1, 3, 'default');
+INSERT INTO public.query_builder_data (id, name, sql_definition, active, ordering, connection_field_name) VALUES (2, 'Hello world', 'Select now() as "Zeit", date(now()) as "Datum", ''Hello world!'' as gruss;', 1, 2, 'default');
 ```
  
