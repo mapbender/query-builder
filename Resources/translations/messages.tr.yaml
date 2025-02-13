@@ -1,0 +1,40 @@
+mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: QueryBuilder, özel SQL sorguları çalıştırır ve sonuçları görselleştirir veya dışa aktarır
+  frontend:
+    OK: OK
+    Cancel: İptal
+    Edit: Düzenle
+    Create: Yeni sorgu oluştur
+    Save: Kaydet
+    Remove: Sil
+    Execute: Çalıştır
+    Export: Dışa aktar
+    HTML-Export: HTML dışa aktarım
+    search: Ara
+    sql:
+      title: Başlık
+      connection.name: Bağlantı adı
+      saved: 'SQL başarıyla kaydedildi.'
+      removed: 'SQL başarıyla silindi.'
+    confirm.remove: 'Silme işlemini onayla'
+    api.error: Veri yükleme hatası
+  admin:
+    configuration: Bağlantı yapılandırması
+    configuration_help: 'Kaydedilmiş sorguların saklandığı tablo yapılandırması YAML formatında. Belgelere <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a> üzerinden ulaşabilirsiniz.'
+    allowCreate: Oluşturmaya izin ver
+    allowCreate_help: 'SQL sorguları oluşturma, yalnızca küresel QueryBuilder/Oluşturma izni verilmiş kullanıcılara açıktır. Ayrıca, tüm veritabanı bağlantıları <code>querybuilder_allowed_connections</code> parametresi aracılığıyla etkinleştirilmelidir.'
+    allowEdit: Düzenlemeye izin ver
+    allowEdit_help: 'SQL sorgularını düzenleme, yalnızca küresel QueryBuilder/Düzenleme izni verilmiş kullanıcılara açıktır. Ayrıca, tüm veritabanı bağlantıları <code>querybuilder_allowed_connections</code> parametresi aracılığıyla etkinleştirilmelidir.'
+    allowRemove: Silmeye izin ver
+    allowRemove_help: 'SQL sorgularını silme, yalnızca küresel QueryBuilder/Silme izni verilmiş kullanıcılara açıktır.'
+    allowExecute: Çalıştırmaya izin ver
+    allowFileExport: Dosya dışa aktarmaya izin ver
+    allowHtmlExport: HTML dışa aktarmaya izin ver
+    allowSearch: Aramaya izin ver
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Oluştur
+  qb_edit: Düzenle
+  qb_delete: Sil

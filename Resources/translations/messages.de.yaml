@@ -1,20 +1,20 @@
 mb.querybuilder:
   class.title: QueryBuilder
+  class.description: Der QueryBuilder führt benutzerdefinierte SQL-Abfragen aus und visualiert oder exportiert die Ergebnisse
   frontend:
+    OK: OK
     Cancel: Abbrechen
     Edit: Bearbeiten
-    Create: Erstellen
+    Create: Neue Abfrage erstellen
     Save: Speichern
     Remove: Löschen
     Execute: Ausführen
-    OK: OK
     Export: Exportieren
     HTML-Export: HTML-Export
     search: Suchen
     sql:
       title: Titel
       connection.name: Verbindungsname
-      publish: Anzeigen
       saved: 'SQL erfolgreich gespeichert.'
       removed: 'SQL erfolgreich gelöscht.'
     confirm.remove: 'Löschen bestätigen'

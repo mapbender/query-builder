@@ -1,20 +1,40 @@
 mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: The QueryBuilder executes custom SQL queries and visualizes or exports the results
   frontend:
+    OK: OK
     Cancel: Cancel
     Edit: Edit
-    Create: Create
+    Create: Create new query
     Save: Save
-    Remove: Remove
+    Remove: Delete
     Execute: Execute
-    OK: OK
     Export: Export
-    Results: Results
-    HTML-Export: HTML-Export
+    HTML-Export: HTML Export
+    search: Search
     sql:
       title: Title
-      connection.name: Connection
-      publish: Public
-      saved: 'SQL saved successfully.'
-      removed: 'SQL removed successfully.'
-    confirm.remove: 'Confirm remove'
-
+      connection.name: Connection name
+      saved: 'SQL successfully saved.'
+      removed: 'SQL successfully deleted.'
+    confirm.remove: 'Confirm deletion'
+    api.error: Error loading data
+  admin:
+    configuration: Connection configuration
+    configuration_help: 'The configuration for the table in which the saved queries are stored as YAML. Documentation on <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    allowCreate: Allow create
+    allowCreate_help: 'Creating SQL queries is only allowed for users who have been granted the global QueryBuilder/Create permission. Additionally, all database connections must be enabled via the parameter <code>querybuilder_allowed_connections</code>.'
+    allowEdit: Allow edit
+    allowEdit_help: 'Editing SQL queries is only allowed for users who have been granted the global QueryBuilder/Edit permission. Additionally, all database connections must be enabled via the parameter <code>querybuilder_allowed_connections</code>.'
+    allowRemove: Allow deletion
+    allowRemove_help: 'Deleting SQL queries is only allowed for users who have been granted the global QueryBuilder/Delete permission.'
+    allowExecute: Allow execution
+    allowFileExport: Allow file export
+    allowHtmlExport: Allow HTML export
+    allowSearch: Allow search
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Create
+  qb_edit: Edit
+  qb_delete: Delete

@@ -1,0 +1,40 @@
+mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: O QueryBuilder executa consultas SQL personalizadas e visualiza ou exporta os resultados
+  frontend:
+    OK: OK
+    Cancel: Cancelar
+    Edit: Editar
+    Create: Criar nova consulta
+    Save: Salvar
+    Remove: Excluir
+    Execute: Executar
+    Export: Exportar
+    HTML-Export: Exportação HTML
+    search: Pesquisar
+    sql:
+      title: Título
+      connection.name: Nome da conexão
+      saved: 'SQL salvo com sucesso.'
+      removed: 'SQL excluído com sucesso.'
+    confirm.remove: 'Confirmar exclusão'
+    api.error: Erro ao carregar os dados
+  admin:
+    configuration: Configuração da conexão
+    configuration_help: 'A configuração da tabela onde as consultas salvas são armazenadas em YAML. Documentação em <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    allowCreate: Permitir criação
+    allowCreate_help: 'A criação de consultas SQL só é permitida para usuários que receberam a permissão global QueryBuilder/Criar. Além disso, todas as conexões de banco de dados devem ser permitidas através do parâmetro <code>querybuilder_allowed_connections</code>.'
+    allowEdit: Permitir edição
+    allowEdit_help: 'A edição de consultas SQL só é permitida para usuários que receberam a permissão global QueryBuilder/Editar. Além disso, todas as conexões de banco de dados devem ser permitidas através do parâmetro <code>querybuilder_allowed_connections</code>.'
+    allowRemove: Permitir exclusão
+    allowRemove_help: 'A exclusão de consultas SQL só é permitida para usuários que receberam a permissão global QueryBuilder/Excluir.'
+    allowExecute: Permitir execução
+    allowFileExport: Permitir exportação de arquivos
+    allowHtmlExport: Permitir exportação HTML
+    allowSearch: Permitir pesquisa
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Criar
+  qb_edit: Editar
+  qb_delete: Excluir

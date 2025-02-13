@@ -1,0 +1,40 @@
+mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: Le QueryBuilder exécute des requêtes SQL personnalisées et visualise ou exporte les résultats
+  frontend:
+    OK: OK
+    Cancel: Annuler
+    Edit: Modifier
+    Create: Créer une nouvelle requête
+    Save: Enregistrer
+    Remove: Supprimer
+    Execute: Exécuter
+    Export: Exporter
+    HTML-Export: Export HTML
+    search: Rechercher
+    sql:
+      title: Titre
+      connection.name: Nom de la connexion
+      saved: 'SQL enregistré avec succès.'
+      removed: 'SQL supprimé avec succès.'
+    confirm.remove: 'Confirmer la suppression'
+    api.error: Erreur lors du chargement des données
+  admin:
+    configuration: Configuration de la connexion
+    configuration_help: 'La configuration de la table dans laquelle les requêtes enregistrées sont stockées sous forme de YAML. Documentation sur <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    allowCreate: Autoriser la création
+    allowCreate_help: 'La création de requêtes SQL est uniquement autorisée pour les utilisateurs ayant reçu l’autorisation globale QueryBuilder/Créer. De plus, toutes les connexions de base de données doivent être activées via le paramètre <code>querybuilder_allowed_connections</code>.'
+    allowEdit: Autoriser la modification
+    allowEdit_help: 'La modification des requêtes SQL est uniquement autorisée pour les utilisateurs ayant reçu l’autorisation globale QueryBuilder/Modifier. De plus, toutes les connexions de base de données doivent être activées via le paramètre <code>querybuilder_allowed_connections</code>.'
+    allowRemove: Autoriser la suppression
+    allowRemove_help: 'La suppression des requêtes SQL est uniquement autorisée pour les utilisateurs ayant reçu l’autorisation globale QueryBuilder/Supprimer.'
+    allowExecute: Autoriser l’exécution
+    allowFileExport: Autoriser l’exportation de fichiers
+    allowHtmlExport: Autoriser l’exportation HTML
+    allowSearch: Autoriser la recherche
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Créer
+  qb_edit: Modifier
+  qb_delete: Supprimer

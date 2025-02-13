@@ -1,0 +1,40 @@
+mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: Il QueryBuilder esegue query SQL personalizzate e visualizza o esporta i risultati
+  frontend:
+    OK: OK
+    Cancel: Annulla
+    Edit: Modifica
+    Create: Crea nuova query
+    Save: Salva
+    Remove: Elimina
+    Execute: Esegui
+    Export: Esporta
+    HTML-Export: Esportazione HTML
+    search: Cerca
+    sql:
+      title: Titolo
+      connection.name: Nome della connessione
+      saved: 'SQL salvato con successo.'
+      removed: 'SQL eliminato con successo.'
+    confirm.remove: 'Conferma eliminazione'
+    api.error: Errore nel caricamento dei dati
+  admin:
+    configuration: Configurazione della connessione
+    configuration_help: 'La configurazione della tabella in cui sono memorizzate le query salvate in formato YAML. Documentazione su <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    allowCreate: Permetti creazione
+    allowCreate_help: 'La creazione di query SQL è consentita solo agli utenti che hanno ricevuto il permesso globale QueryBuilder/Creazione. Inoltre, tutte le connessioni al database devono essere abilitate tramite il parametro <code>querybuilder_allowed_connections</code>.'
+    allowEdit: Permetti modifica
+    allowEdit_help: 'La modifica delle query SQL è consentita solo agli utenti che hanno ricevuto il permesso globale QueryBuilder/Modifica. Inoltre, tutte le connessioni al database devono essere abilitate tramite il parametro <code>querybuilder_allowed_connections</code>.'
+    allowRemove: Permetti eliminazione
+    allowRemove_help: 'L’eliminazione delle query SQL è consentita solo agli utenti che hanno ricevuto il permesso globale QueryBuilder/Eliminazione.'
+    allowExecute: Permetti esecuzione
+    allowFileExport: Permetti esportazione file
+    allowHtmlExport: Permetti esportazione HTML
+    allowSearch: Permetti ricerca
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Creare
+  qb_edit: Modificare
+  qb_delete: Eliminare

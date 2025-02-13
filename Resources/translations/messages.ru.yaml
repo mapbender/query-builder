@@ -1,19 +1,40 @@
 mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: QueryBuilder выполняет пользовательские SQL-запросы, визуализирует или экспортирует результаты
   frontend:
+    OK: OK
     Cancel: Отмена
     Edit: Редактировать
-    Create: Создать
+    Create: Создать новый запрос
     Save: Сохранить
     Remove: Удалить
     Execute: Выполнить
-    OK: OK
-    Export: Экспорт
-    Results: Результат
-    HTML-Export: 'HTML Экспорт'
+    Export: Экспортировать
+    HTML-Export: HTML-экспорт
+    search: Поиск
     sql:
       title: Заголовок
-      connection.name: Соеденение
-      publish: Опубликовать
-      saved: 'SQL запрос сохранён.'
-      removed: 'SQL запрос удалён.'
-    confirm.remove: 'Потвердите удаление'
+      connection.name: Имя подключения
+      saved: 'SQL успешно сохранён.'
+      removed: 'SQL успешно удалён.'
+    confirm.remove: 'Подтвердить удаление'
+    api.error: Ошибка при загрузке данных
+  admin:
+    configuration: Конфигурация подключения
+    configuration_help: 'Конфигурация таблицы, в которой хранятся сохранённые запросы в формате YAML. Документация на <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    allowCreate: Разрешить создание
+    allowCreate_help: 'Создание SQL-запросов разрешено только пользователям, которым предоставлено глобальное разрешение QueryBuilder/Создание. Кроме того, все подключения к базе данных должны быть включены через параметр <code>querybuilder_allowed_connections</code>.'
+    allowEdit: Разрешить редактирование
+    allowEdit_help: 'Редактирование SQL-запросов разрешено только пользователям, которым предоставлено глобальное разрешение QueryBuilder/Редактирование. Кроме того, все подключения к базе данных должны быть включены через параметр <code>querybuilder_allowed_connections</code>.'
+    allowRemove: Разрешить удаление
+    allowRemove_help: 'Удаление SQL-запросов разрешено только пользователям, которым предоставлено глобальное разрешение QueryBuilder/Удаление.'
+    allowExecute: Разрешить выполнение
+    allowFileExport: Разрешить экспорт файлов
+    allowHtmlExport: Разрешить HTML-экспорт
+    allowSearch: Разрешить поиск
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Создать
+  qb_edit: Редактировать
+  qb_delete: Удалить

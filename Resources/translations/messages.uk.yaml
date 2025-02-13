@@ -1,0 +1,40 @@
+mb.querybuilder:
+  class.title: QueryBuilder
+  class.description: QueryBuilder виконує користувацькі SQL-запити, візуалізує або експортує результати
+  frontend:
+    OK: OK
+    Cancel: Скасувати
+    Edit: Редагувати
+    Create: Створити новий запит
+    Save: Зберегти
+    Remove: Видалити
+    Execute: Виконати
+    Export: Експортувати
+    HTML-Export: HTML-експорт
+    search: Пошук
+    sql:
+      title: Заголовок
+      connection.name: Назва підключення
+      saved: 'SQL успішно збережено.'
+      removed: 'SQL успішно видалено.'
+    confirm.remove: 'Підтвердити видалення'
+    api.error: Помилка завантаження даних
+  admin:
+    configuration: Налаштування підключення
+    configuration_help: 'Налаштування таблиці, в якій збережені запити зберігаються у форматі YAML. Документація на <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    allowCreate: Дозволити створення
+    allowCreate_help: 'Створення SQL-запитів дозволено лише користувачам, які отримали глобальний дозвіл QueryBuilder/Створення. Крім того, всі підключення до бази даних повинні бути дозволені через параметр <code>querybuilder_allowed_connections</code>.'
+    allowEdit: Дозволити редагування
+    allowEdit_help: 'Редагування SQL-запитів дозволено лише користувачам, які отримали глобальний дозвіл QueryBuilder/Редагування. Крім того, всі підключення до бази даних повинні бути дозволені через параметр <code>querybuilder_allowed_connections</code>.'
+    allowRemove: Дозволити видалення
+    allowRemove_help: 'Видалення SQL-запитів дозволено лише користувачам, які отримали глобальний дозвіл QueryBuilder/Видалення.'
+    allowExecute: Дозволити виконання
+    allowFileExport: Дозволити експорт файлів
+    allowHtmlExport: Дозволити HTML-експорт
+    allowSearch: Дозволити пошук
+  permission:
+    category: QueryBuilder
+fom.security.resource.installation:
+  qb_create: Створити
+  qb_edit: Редагувати
+  qb_delete: Видалити
