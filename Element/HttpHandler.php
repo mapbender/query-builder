@@ -128,7 +128,6 @@ class HttpHandler implements ElementHttpHandlerInterface
     {
         $id = $request->request->get('id');
         $deleted = $this->getDataStore($element)->remove($id);
-        // @todo: check if this response form is required
         return new JsonResponse(array($deleted));
     }
 

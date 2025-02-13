@@ -15,6 +15,7 @@ mb.querybuilder:
     sql:
       title: Заголовок
       connection.name: Назва підключення
+      order: порядок
       saved: 'SQL успішно збережено.'
       removed: 'SQL успішно видалено.'
     confirm.remove: 'Підтвердити видалення'

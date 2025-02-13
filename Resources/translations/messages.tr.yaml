@@ -15,6 +15,7 @@ mb.querybuilder:
     sql:
       title: Başlık
       connection.name: Bağlantı adı
+      order: sıra
       saved: 'SQL başarıyla kaydedildi.'
       removed: 'SQL başarıyla silindi.'
     confirm.remove: 'Silme işlemini onayla'

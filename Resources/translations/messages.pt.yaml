@@ -15,6 +15,7 @@ mb.querybuilder:
     sql:
       title: Título
       connection.name: Nome da conexão
+      order: Ordem
       saved: 'SQL salvo com sucesso.'
       removed: 'SQL excluído com sucesso.'
     confirm.remove: 'Confirmar exclusão'

@@ -15,6 +15,7 @@ mb.querybuilder:
     sql:
       title: Titel
       connection.name: Verbindingsnaam
+      order: Volgorde
       saved: 'SQL succesvol opgeslagen.'
       removed: 'SQL succesvol verwijderd.'
     confirm.remove: 'Verwijderen bevestigen'

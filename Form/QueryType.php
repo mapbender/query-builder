@@ -21,7 +21,7 @@ class QueryType extends AbstractType
                 'label' => 'mb.querybuilder.frontend.sql.connection.name',
             ))
             ->add('order', TextType::class, array(
-                'label' => 'Order', /** @todo: translate? */
+                'label' => 'mb.querybuilder.frontend.sql.order',
                 'required' => false,
             ))
             ->add('sql', TextareaType::class, array(
