@@ -1,3 +1,6 @@
+## 2.0.1
+* Fix xlsx export was faulty when exporting results with exactly 0 or 1 result
+
 ## 2.0.0
 * Update to Mapbender 4.1
 * Removed dataStores entry in `parameters.yaml`
