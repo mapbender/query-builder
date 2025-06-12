@@ -84,7 +84,7 @@
         },
 
         /**
-         * Execute SQL and export als excel or data.
+         * Execute SQL and export as excel or data.
          * This fake the form POST method to get download export file.
          *
          * @returns jQuery form object
