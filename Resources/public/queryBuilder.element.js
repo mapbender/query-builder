@@ -487,6 +487,7 @@
                 searching: this.options.allowSearch,
                 language: {
                     search: Mapbender.trans('mb.querybuilder.frontend.search'),
+                    emptyTable: Mapbender.trans('mb.querybuilder.frontend.empty_table'),
                 },
                 processing: false,
                 ordering: true,

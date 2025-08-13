@@ -12,6 +12,7 @@ mb.querybuilder:
     Export: Экспортировать
     HTML-Export: HTML-экспорт
     search: Поиск
+    empty_table: По запросу не найдено результатов.
     sql:
       title: Заголовок
       connection.name: Имя подключения
