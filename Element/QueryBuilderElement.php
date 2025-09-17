@@ -42,7 +42,7 @@ class QueryBuilderElement extends AbstractElementService
      */
     public function getWidgetName(Element $element)
     {
-        return 'mapbender.mbQueryBuilderElement';
+        return 'MbQueryBuilder';
     }
 
     /**
@@ -105,7 +105,7 @@ class QueryBuilderElement extends AbstractElementService
                 '@MapbenderQueryBuilderBundle/Resources/styles/queryBuilder.element.scss',
             ),
             'js' => array(
-                '@MapbenderQueryBuilderBundle/Resources/public/queryBuilder.element.js',
+                '@MapbenderQueryBuilderBundle/Resources/public/MbQueryBuilder.js',
             ),
             'trans' => array(
                 'mb.querybuilder.frontend.*',
