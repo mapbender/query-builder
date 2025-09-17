@@ -62,8 +62,8 @@
             this.notifyWidgetActivated();
         }
 
-        deactivateByButton() {
-            super.deactivateByButton();
+        closeByButton() {
+            super.closeByButton();
             this.notifyWidgetDeactivated();
         }
 
