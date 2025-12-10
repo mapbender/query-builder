@@ -59,9 +59,14 @@ class QueryBuilderElement extends AbstractElementService
             'allowFileExport' => true,
             'allowSearch' => false,
             'configuration' => self::getYamlConfigurationDefaults(),
+            'element_icon' => self::getDefaultIcon(),
         );
     }
 
+    public static function getDefaultIcon()
+    {
+        return 'iconChartColumn';
+    }
     public static function getYamlConfigurationDefaults(): array
     {
         return [
