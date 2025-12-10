@@ -67,6 +67,7 @@ class QueryBuilderElement extends AbstractElementService
     {
         return 'iconChartColumn';
     }
+
     public static function getYamlConfigurationDefaults(): array
     {
         return [
