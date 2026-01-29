@@ -7,6 +7,8 @@
         editTemplate: null,
         editFieldMap_: null,
         useDialog_: false,
+        // shown in the data table when a value is null. Could be e.g. overridden with '–'
+        nullValue: '',
 
         _create: function () {
             this.elementUrl = Mapbender.configuration.application.urls.element + '/' + this.element.attr('id') + '/';
@@ -181,7 +183,9 @@
         },
 
         _escapeHtml: function (value) {
-            'use strict';
+            if (value === null || value === undefined) {
+                return this.nullValue;
+            }
             return ('' + (value || '')).replace(/["&'\/<>]/g, function (a) {
                 return {
                     '"': '&quot;', '&': '&amp;', "'": '&#39;',
@@ -244,9 +248,9 @@
                             case 'display':
                                 return this._escapeHtml(row[name]);
                             case 'filter':
-                                return ('' + row[name]) || undefined;
+                                return ('' + row[name]) || this.nullValue;
                             default:
-                                return row[name];
+                                return row[name] || this.nullValue;
                         }
                     }
                 };
