@@ -17,6 +17,8 @@
                 order: this.options.configuration.orderByFieldName
             };
             this.useDialog_ = this.checkDialogMode();
+            // shown in the data table when a value is null. Could be e.g. overridden with '–'
+            this.nullValue = '';
             this._initialize();
         }
 
@@ -74,16 +76,35 @@
          * @returns jQuery form object
          * @param item
          */
-        exportData(item) {
-            var form = $('<form action="' + this.elementUrl + 'export" style="display: none" method="post"/>')
-                .append('<input type="text" name="id"  value="' + item.id + '"/>');
-            form.appendTo("body");
+        async exportData(item) {
+            const body = new URLSearchParams();
+            body.append('id', item.id);
 
-            setTimeout(function () {
-                form.remove();
+            const response = await fetch(this.elementUrl + 'export', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: body.toString(),
             });
 
-            return form.submit();
+            if (response.status === 204) {
+                Mapbender.info(Mapbender.trans("mb.querybuilder.frontend.empty_table"));
+            } else if (response.status === 200) {
+                // Download the response as a file
+                const blob = await response.blob();
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+
+                a.download = "export-list";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+            } else {
+                Mapbender.info(`Unexpected response status: ${response.status}`);
+            }
         }
 
         exportHtml(item) {
@@ -152,7 +173,9 @@
         }
 
         _escapeHtml(value) {
-            'use strict';
+            if (value === null || value === undefined) {
+                return this.nullValue;
+            }
             return ('' + (value || '')).replace(/["&'\/<>]/g, function (a) {
                 return {
                     '"': '&quot;', '&': '&amp;', "'": '&#39;',
@@ -181,7 +204,7 @@
             const columns = this._processResults(results);
 
             const options = this._getDataTableOptions(results, columns);
-            $content.append(this.initDataTable(options));
+            this.initDataTable(options, $content);
 
             const hasNoResults = !results || !results.length;
             const title = item[this.options.configuration.titleFieldName];
@@ -216,22 +239,22 @@
                             case 'display':
                                 return this._escapeHtml(row[name]);
                             case 'filter':
-                                return ('' + row[name]) || undefined;
+                                return ('' + row[name]) || this.nullValue;
                             default:
-                                return row[name];
+                                return row[name] || this.nullValue;
                         }
                     }
                 };
             });
         }
 
-        initDataTable(options) {
+        initDataTable(options, $parent) {
             var $table = $(document.createElement('table'))
                 .addClass('table table-striped table-condensed table-hover')
             ;
+            $parent.append($table);
             $table.DataTable(options);
             $table.css('width', '');    // Support auto-growth when resizing dialog
-            return $table.closest('.dataTables_wrapper');
         }
 
         mergeDialogData($dialog) {
@@ -446,7 +469,7 @@
             var $tableWrap = $('.-js-table-wrap', this.$element);
             $tableWrap.empty();
             const tableOptions = this._getDataTableOptions(queries, columnsOption, {order: [[1, "asc"]]});
-            $tableWrap.append(this.initDataTable(tableOptions));
+            this.initDataTable(tableOptions, $tableWrap);
         }
 
         _generateButtonMarkup(buttonDef) {
@@ -485,6 +508,7 @@
                 searching: this.options.allowSearch,
                 language: {
                     search: Mapbender.trans('mb.querybuilder.frontend.search'),
+                    emptyTable: Mapbender.trans('mb.querybuilder.frontend.empty_table'),
                 },
                 processing: false,
                 ordering: true,

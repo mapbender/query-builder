@@ -1,3 +1,8 @@
+## 2.0.2
+* Do not show warning message for null values in the data ([PR#10](https://github.com/mapbender/query-builder/pull/10))
+* Ensure compatibility with DataTables 2 ([PR#11](https://github.com/mapbender/query-builder/pull/11))
+* Show message when trying to export results to file with 0 results ([PR#9](https://github.com/mapbender/query-builder/pull/9))
+
 ## 2.0.1
 * Fix xlsx export was faulty when exporting results with exactly 0 or 1 result
 

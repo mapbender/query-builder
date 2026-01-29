@@ -12,6 +12,7 @@ mb.querybuilder:
     Export: Exporteren
     HTML-Export: HTML-export
     search: Zoeken
+    empty_table: Geen resultaten gevonden voor de query.
     sql:
       title: Titel
       connection.name: Verbindingsnaam
@@ -22,13 +23,13 @@ mb.querybuilder:
     api.error: Fout bij het laden van gegevens
   admin:
     configuration: Verbindingsconfiguratie
-    configuration_help: 'De configuratie voor de tabel waarin de opgeslagen query's worden bewaard als YAML. Documentatie op <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
+    configuration_help: 'De configuratie voor de tabel waarin de opgeslagen query''s worden bewaard als YAML. Documentatie op <a class="text-primary" target="_blank" href="https://github.com/mapbender/query-builder?tab=readme-ov-file#configuration">Github</a>'
     allowCreate: Maken toestaan
-    allowCreate_help: 'Het maken van SQL-query's is alleen toegestaan voor gebruikers die de globale machtiging QueryBuilder/Maken hebben gekregen. Daarnaast moeten alle databaseverbindingen worden toegestaan via de parameter <code>querybuilder_allowed_connections</code>.'
+    allowCreate_help: 'Het maken van SQL-query''s is alleen toegestaan voor gebruikers die de globale machtiging QueryBuilder/Maken hebben gekregen. Daarnaast moeten alle databaseverbindingen worden toegestaan via de parameter <code>querybuilder_allowed_connections</code>.'
     allowEdit: Bewerken toestaan
-    allowEdit_help: 'Het bewerken van SQL-query's is alleen toegestaan voor gebruikers die de globale machtiging QueryBuilder/Bewerken hebben gekregen. Daarnaast moeten alle databaseverbindingen worden toegestaan via de parameter <code>querybuilder_allowed_connections</code>.'
+    allowEdit_help: 'Het bewerken van SQL-query''s is alleen toegestaan voor gebruikers die de globale machtiging QueryBuilder/Bewerken hebben gekregen. Daarnaast moeten alle databaseverbindingen worden toegestaan via de parameter <code>querybuilder_allowed_connections</code>.'
     allowRemove: Verwijderen toestaan
-    allowRemove_help: 'Het verwijderen van SQL-query's is alleen toegestaan voor gebruikers die de globale machtiging QueryBuilder/Verwijderen hebben gekregen.'
+    allowRemove_help: 'Het verwijderen van SQL-query''s is alleen toegestaan voor gebruikers die de globale machtiging QueryBuilder/Verwijderen hebben gekregen.'
     allowExecute: Uitvoeren toestaan
     allowFileExport: Bestandsexport toestaan
     allowHtmlExport: HTML-export toestaan
