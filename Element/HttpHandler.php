@@ -100,20 +100,20 @@ class HttpHandler implements ElementHttpHandlerInterface
         $query = $this->requireQuery($element, $request->request->get('id'));
         $rows = $this->executeQuery($element, $query);
 
+        if (count($rows) === 0) {
+            return new Response(null, Response::HTTP_NO_CONTENT);
+        }
+
         $exportFormat = match ($this->getSafeConfiguration($element)['export_format']) {
             'csv' => ExportResponse::TYPE_CSV,
             'xls' => ExportResponse::TYPE_XLS,
             default => ExportResponse::TYPE_XLSX,
         };
-        if ($exportFormat === ExportResponse::TYPE_XLSX && count($rows) > 0) {
+        if ($exportFormat === ExportResponse::TYPE_XLSX) {
             // XLSX export does not automatically add title rows, so add them manually
             $keys = array_keys($rows[0]);
             $titleRow = array_combine($keys, $keys);
             $rows = array_merge([$titleRow], $rows);
-        }
-        if (count($rows) === 0) {
-            // XLSX export does not allow empty files, so add a dummy row
-            $rows[] = [];
         }
         return new ExportResponse($rows, 'export-list', $exportFormat);
     }

@@ -90,16 +90,35 @@
          * @returns jQuery form object
          * @param item
          */
-        exportData: function (item) {
-            var form = $('<form action="' + this.elementUrl + 'export" style="display: none" method="post"/>')
-                .append('<input type="text" name="id"  value="' + item.id + '"/>');
-            form.appendTo("body");
+        exportData: async function (item) {
+            const body = new URLSearchParams();
+            body.append('id', item.id);
 
-            setTimeout(function () {
-                form.remove();
+            const response = await fetch(this.elementUrl + 'export', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: body.toString(),
             });
 
-            return form.submit();
+            if (response.status === 204) {
+                Mapbender.info(Mapbender.trans("mb.querybuilder.frontend.empty_table"));
+            } else if (response.status === 200) {
+                // Download the response as a file
+                const blob = await response.blob();
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+
+                a.download = "export-list";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+            } else {
+                Mapbender.info(`Unexpected response status: ${response.status}`);
+            }
         },
         exportHtml: function (item) {
             window.open(this.elementUrl + 'exportHtml?id=' + item.id);
@@ -487,6 +506,7 @@
                 searching: this.options.allowSearch,
                 language: {
                     search: Mapbender.trans('mb.querybuilder.frontend.search'),
+                    emptyTable: Mapbender.trans('mb.querybuilder.frontend.empty_table'),
                 },
                 processing: false,
                 ordering: true,

@@ -12,6 +12,7 @@ mb.querybuilder:
     Export: Dışa aktar
     HTML-Export: HTML dışa aktarım
     search: Ara
+    empty_table: Sorgu için sonuç bulunamadı.
     sql:
       title: Başlık
       connection.name: Bağlantı adı

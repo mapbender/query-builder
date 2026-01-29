@@ -12,6 +12,7 @@ mb.querybuilder:
     Export: Exporter
     HTML-Export: Export HTML
     search: Rechercher
+    empty_table: No results found for the query.
     sql:
       title: Titre
       connection.name: Nom de la connexion
