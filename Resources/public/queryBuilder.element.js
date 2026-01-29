@@ -213,7 +213,7 @@
             const columns = this._processResults(results);
 
             const options = this._getDataTableOptions(results, columns);
-            $content.append(this.initDataTable(options));
+            this.initDataTable(options, $content);
 
             const hasNoResults = !results || !results.length;
             const title = item[this.options.configuration.titleFieldName];
@@ -257,13 +257,13 @@
             });
         },
 
-        initDataTable: function (options) {
+        initDataTable: function (options, $parent) {
             var $table = $(document.createElement('table'))
                 .addClass('table table-striped table-condensed table-hover')
             ;
+            $parent.append($table);
             $table.DataTable(options);
             $table.css('width', '');    // Support auto-growth when resizing dialog
-            return $table.closest('.dataTables_wrapper');
         },
 
         mergeDialogData: function ($dialog) {
@@ -473,7 +473,7 @@
             var $tableWrap = $('.-js-table-wrap', this.element);
             $tableWrap.empty();
             const tableOptions = this._getDataTableOptions(queries, columnsOption, {order: [[1, "asc"]]});
-            $tableWrap.append(this.initDataTable(tableOptions));
+            this.initDataTable(tableOptions, $tableWrap);
         },
 
         _generateButtonMarkup: function (buttonDef) {

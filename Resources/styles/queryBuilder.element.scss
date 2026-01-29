@@ -35,8 +35,8 @@ $buttonActiveTextColor: $buttonTextColor !default;
   }
 
   .mapbender-element-result-table {
-    > .dataTables_wrapper {
-      > .dataTables_filter > label {
+    > .dataTables_wrapper, > .dt-container {
+      > .dataTables_filter > label, > .dt-search > label {
         display: block;
         input {
           display: block;
