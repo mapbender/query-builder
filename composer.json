@@ -14,8 +14,8 @@
     "require": {
         "php": ">=8.1",
         "doctrine/dbal": "^3 || ^4",
-        "mapbender/digitizer": "^2",
         "doctrine/persistence": "^2 || ^3 || ^4",
+        "mapbender/digitizer": "^3",
         "mapbender/mapbender": "^4.1"
     },
     "conflict": {
