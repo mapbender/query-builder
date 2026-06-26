@@ -1,3 +1,7 @@
+## 2.1
+* Ensure compatibility with doctrine 4 and Mapbender 5 ([PR#13](https://github.com/mapbender/query-builder/pull/13))
+
+
 ## 2.0.2
 * Do not show warning message for null values in the data ([PR#10](https://github.com/mapbender/query-builder/pull/10))
 * Ensure compatibility with DataTables 2 ([PR#11](https://github.com/mapbender/query-builder/pull/11))
